@@ -38,6 +38,14 @@ class Register extends React.Component {
 
 	constructor(props) {
 		super(props);
+
+		let today = new Date()
+		let month = (today.getMonth() + 1) >= 10 ? today.getMonth() + 1 : '0'+(today.getMonth() + 1);
+		let day = today.getDate() >= 10 ? today.getDate() : '0'+today.getDate();
+		let dateToday = today.getFullYear()-18 + '-' + month + '-' + day
+		
+
+
 		this.state = {
 			type: 'Donor',
 			name: '',
@@ -47,7 +55,8 @@ class Register extends React.Component {
 			address:'',
 			pincode: '',
 			password: '',
-			bloodGroup:'B+'
+			bloodGroup:'B+',
+			date: dateToday
 		}
 	}
 
@@ -100,6 +109,7 @@ class Register extends React.Component {
 	}
 
 	render() {
+		console.log("state = ",this.state);
 		return (
 			<>
 				<Col lg="6" md="8">
@@ -205,7 +215,7 @@ class Register extends React.Component {
 												<i className="ni ni-calendar-grid-58 mr-2" /> DOB
                       </InputGroupText>
 										</InputGroupAddon>
-										<Input type="date" pattern="[0-9]*" value={this.state.dob} onChange={(e) => this.handleDob(e)}/>
+										<Input type="date" pattern="[0-9]*" value={this.state.dob} onChange={(e) => this.handleDob(e)} max={this.state.date}/>
 									</InputGroup>
 								</FormGroup>
 
