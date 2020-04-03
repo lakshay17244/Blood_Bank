@@ -28,12 +28,102 @@ import {
   Input,
   Container,
   Row,
-  Col
+  Col,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText
 } from "reactstrap";
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
 
 class Profile extends React.Component {
+
+  constructor(props) {
+    super(props);
+    let today = new Date()
+    let month = (today.getMonth() + 1) >= 10 ? today.getMonth() + 1 : '0' + (today.getMonth() + 1);
+    let day = today.getDate() >= 10 ? today.getDate() : '0' + today.getDate();
+    let dateToday = today.getFullYear() - 18 + '-' + month + '-' + day
+
+    this.state = {
+      type: 'Donor',
+      date: dateToday,
+      username: 'Lakshay',
+      userid: '1',
+      name: '',
+      email: '',
+      dob: '2000-01-01',
+      bloodgroup: '',
+      phone: '',
+      address: '',
+      pincode: '',
+      oldpass: '',
+      newpass: '',
+    }
+  }
+
+  handleusername(e) {
+    this.setState({
+      username: e.target.value
+    })
+  }
+
+  handleuserid(e) {
+    this.setState({
+      userid: e.target.value
+    })
+  }
+  handlename(e) {
+    this.setState({
+      name: e.target.value
+    })
+  }
+  handleemail(e) {
+    this.setState({
+      email: e.target.value
+    })
+  }
+  handledob(e) {
+    this.setState({
+      dob: e.target.value
+    })
+  }
+  handlebloodgroup(e) {
+    this.setState({
+      bloodgroup: e.target.value
+    })
+  }
+  handlephone(e) {
+    this.setState({
+      phone: e.target.value
+    })
+  }
+  handleaddress(e) {
+    this.setState({
+      address: e.target.value
+    })
+  }
+  handleupincode(e) {
+    this.setState({
+      pincode: e.target.value
+    })
+  }
+  handlepass(e) {
+    this.setState({
+      pass: e.target.value
+    })
+  }
+  handleoldpass(e) {
+    this.setState({
+      oldpass: e.target.value
+    })
+  }
+  handlenewpass(e) {
+    this.setState({
+      newpass: e.target.value
+    })
+  }
+
   render() {
     return (
       <>
@@ -41,7 +131,7 @@ class Profile extends React.Component {
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row>
-            <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
+            {/* <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
               <Card className="card-profile shadow">
                 <Row className="justify-content-center">
                   <Col className="order-lg-2" lg="3">
@@ -127,9 +217,28 @@ class Profile extends React.Component {
                 </CardBody>
               </Card>
             </Col>
-            <Col className="order-xl-1" xl="8">
+            */}
+            <Col className="order-xl-1" xl="12">
+              {/* Profile Picture */}
+
               <Card className="bg-secondary shadow">
+                <Row className="justify-content-center">
+                  <Col className="order-lg-2" lg="3">
+                    <div className="card-profile-image">
+                      <a href="#pablo" onClick={e => e.preventDefault()}>
+                        <img
+                          alt="..."
+                          className="rounded-circle"
+                          src={require("assets/img/theme/team-4-800x800.jpg")}
+                        />
+                      </a>
+                    </div>
+                  </Col>
+                </Row>
                 <CardHeader className="bg-white border-0">
+
+
+
                   <Row className="align-items-center">
                     <Col xs="8">
                       <h3 className="mb-0">My account</h3>
@@ -141,7 +250,7 @@ class Profile extends React.Component {
                         onClick={e => e.preventDefault()}
                         size="sm"
                       >
-                        Settings
+                        Save
                       </Button>
                     </Col>
                   </Row>
@@ -151,8 +260,10 @@ class Profile extends React.Component {
                     <h6 className="heading-small text-muted mb-4">
                       User information
                     </h6>
+
                     <div className="pl-lg-4">
                       <Row>
+                        {/* USERNAME */}
                         <Col lg="6">
                           <FormGroup>
                             <label
@@ -161,15 +272,64 @@ class Profile extends React.Component {
                             >
                               Username
                             </label>
-                            <Input
+                            {/* <Input
                               className="form-control-alternative"
-                              defaultValue="lucky.jesse"
+                              defaultValue="NA"
+                              id="input-username"
+                              placeholder="Username"
+                              type="text"
+                            /> */}
+                            <Input
+                              readOnly
+                              className="form-control-alternative"
+                              value={this.state.username}
                               id="input-username"
                               placeholder="Username"
                               type="text"
                             />
                           </FormGroup>
                         </Col>
+                        {/* USER ID */}
+                        <Col lg="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-userid"
+                            >
+                              User ID
+                            </label>
+                            <Input
+                              readOnly
+                              value={this.state.userid}
+                              className="form-control-alternative"
+                              id="input-userID"
+                              placeholder="UserID"
+                              type="text"
+                            />
+                          </FormGroup>
+                        </Col>
+
+                        {/* NAME */}
+                        <Col lg="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-first-name"
+                            >
+                              Name
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              value={this.state.name}
+                              onChange={(e) => this.handlename(e)}
+                              id="input-first-name"
+                              placeholder="Name"
+                              type="text"
+                            />
+                          </FormGroup>
+                        </Col>
+
+                        {/* EMAIL */}
                         <Col lg="6">
                           <FormGroup>
                             <label
@@ -182,55 +342,102 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="input-email"
                               placeholder="jesse@example.com"
+                              value={this.state.email}
+                              onChange={(e) => this.handleemail(e)}
                               type="email"
                             />
                           </FormGroup>
                         </Col>
                       </Row>
+
                       <Row>
-                        <Col lg="6">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
-                              First name
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              defaultValue="Lucky"
-                              id="input-first-name"
-                              placeholder="First name"
-                              type="text"
-                            />
-                          </FormGroup>
-                        </Col>
+
+                        {/* DOB */}
                         <Col lg="6">
                           <FormGroup>
                             <label
                               className="form-control-label"
                               htmlFor="input-last-name"
                             >
-                              Last name
+                              DOB
                             </label>
                             <Input
+                              value={this.state.dob}
                               className="form-control-alternative"
-                              defaultValue="Jesse"
-                              id="input-last-name"
-                              placeholder="Last name"
-                              type="text"
+                              id="input-dob"
+                              type="date"
+                              onChange={(e) => this.handledob(e)}
+                              max={this.state.date}
                             />
                           </FormGroup>
+                        </Col>
+
+                        {/* Blood Group */}
+                        <Col lg="6">
+                          {
+                            this.state.type === 'Donor' ?
+                              (<FormGroup>
+                                < label
+                                  className="form-control-label"
+                                  htmlFor="input-last-name"
+                                >
+                                  Blood Group
+                            </label>
+                                <InputGroup className="input-group-alternative mb-3">
+                                  <InputGroupAddon addonType="prepend">
+                                    <InputGroupText>
+                                      <i className="ni ni-favourite-28 mr-2" />
+
+                                    </InputGroupText>
+                                  </InputGroupAddon>
+                                  <select value={this.state.bloodgroup} onChange={(e) => this.handlebloodgroup(e)}>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                  </select>
+                                </InputGroup>
+                              </FormGroup>)
+                              :
+                              null
+                          }
                         </Col>
                       </Row>
                     </div>
                     <hr className="my-4" />
-                    {/* Address */}
+
                     <h6 className="heading-small text-muted mb-4">
                       Contact information
                     </h6>
                     <div className="pl-lg-4">
                       <Row>
+
+                        {/* Phone */}
+                        <Col md="12">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-address"
+                            >
+                              Phone
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              id="input-phont"
+                              placeholder="Mobile Number"
+                              type="number"
+                              value={this.state.phone}
+                              onChange={(e) => this.handlephone(e)}
+                              max={999999999}
+                            />
+                          </FormGroup>
+                        </Col>
+
+                        {/* Address */}
                         <Col md="12">
                           <FormGroup>
                             <label
@@ -241,14 +448,35 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              defaultValue="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
+                              // defaultValue="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
                               id="input-address"
                               placeholder="Home Address"
                               type="text"
+                              value={this.state.address}
+                              onChange={(e) => this.handleaddress(e)}
+                            />
+                          </FormGroup>
+                        </Col>
+
+                        {/* Pincode */}
+                        <Col lg="4">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-country"
+                            >
+                              Pin Code
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              id="input-postal-code"
+                              placeholder="Postal code"
+                              type="number"
                             />
                           </FormGroup>
                         </Col>
                       </Row>
+                      {/* 
                       <Row>
                         <Col lg="4">
                           <FormGroup>
@@ -284,39 +512,43 @@ class Profile extends React.Component {
                             />
                           </FormGroup>
                         </Col>
+
+                      </Row>
+                   */}
+
+
+                    </div>
+                    <hr className="my-4" />
+                    {/* Description */}
+                    <h6 className="heading-small text-muted mb-4">Change Password</h6>
+                    <div className="pl-lg-4">
+                      <Row>
                         <Col lg="4">
                           <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-country"
-                            >
-                              Postal code
-                            </label>
+
+                            <label>Old Password</label>
                             <Input
                               className="form-control-alternative"
-                              id="input-postal-code"
-                              placeholder="Postal code"
-                              type="number"
+                              placeholder="Type your old password"
+                              type="password"
+                              value={this.state.oldpass}
+                              onChange={(e) => this.handleoldpass(e)}
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col lg="4">
+                          <FormGroup>
+                            <label>New Password</label>
+                            <Input
+                              className="form-control-alternative"
+                              placeholder="Type your new password"
+                              type="password"
+                              value={this.state.newpass}
+                              onChange={(e) => this.handlenewpass(e)}
                             />
                           </FormGroup>
                         </Col>
                       </Row>
-                    </div>
-                    <hr className="my-4" />
-                    {/* Description */}
-                    <h6 className="heading-small text-muted mb-4">About me</h6>
-                    <div className="pl-lg-4">
-                      <FormGroup>
-                        <label>About Me</label>
-                        <Input
-                          className="form-control-alternative"
-                          placeholder="A few words about you ..."
-                          rows="4"
-                          defaultValue="A beautiful Dashboard for Bootstrap 4. It is Free and
-                          Open Source."
-                          type="textarea"
-                        />
-                      </FormGroup>
                     </div>
                   </Form>
                 </CardBody>

@@ -16,7 +16,7 @@
 
 */
 import React from "react";
-
+import classnames from "classnames";
 // reactstrap components
 import {
 	Button,
@@ -40,10 +40,10 @@ class Register extends React.Component {
 		super(props);
 
 		let today = new Date()
-		let month = (today.getMonth() + 1) >= 10 ? today.getMonth() + 1 : '0'+(today.getMonth() + 1);
-		let day = today.getDate() >= 10 ? today.getDate() : '0'+today.getDate();
-		let dateToday = today.getFullYear()-18 + '-' + month + '-' + day
-		
+		let month = (today.getMonth() + 1) >= 10 ? today.getMonth() + 1 : '0' + (today.getMonth() + 1);
+		let day = today.getDate() >= 10 ? today.getDate() : '0' + today.getDate();
+		let dateToday = today.getFullYear() - 18 + '-' + month + '-' + day
+
 
 
 		this.state = {
@@ -52,10 +52,10 @@ class Register extends React.Component {
 			number: '',
 			email: '',
 			dob: '',
-			address:'',
+			address: '',
 			pincode: '',
 			password: '',
-			bloodGroup:'B+',
+			bloodGroup: 'B+',
 			date: dateToday
 		}
 	}
@@ -67,49 +67,49 @@ class Register extends React.Component {
 		})
 	}
 
-	handleName(e){
+	handleName(e) {
 		this.setState({
 			name: e.target.value
 		})
 	}
-	handleNumber(e){
+	handleNumber(e) {
 		this.setState({
 			number: e.target.value
 		})
 	}
-	handleEmail(e){
+	handleEmail(e) {
 		this.setState({
 			email: e.target.value
 		})
 	}
-	handleDob(e){
+	handleDob(e) {
 		this.setState({
 			dob: e.target.value
 		})
 	}
-	handleAddress(e){
+	handleAddress(e) {
 		this.setState({
 			address: e.target.value
 		})
 	}
-	handlePincode(e){
+	handlePincode(e) {
 		this.setState({
 			pincode: e.target.value
 		})
 	}
-	handlePassword(e){
+	handlePassword(e) {
 		this.setState({
 			password: e.target.value
 		})
 	}
-	handleBloodgroup(e){
+	handleBloodgroup(e) {
 		this.setState({
 			bloodGroup: e.target.value
 		})
 	}
 
 	render() {
-		console.log("state = ",this.state);
+		console.log("state = ", this.state);
 		return (
 			<>
 				<Col lg="6" md="8">
@@ -120,7 +120,7 @@ class Register extends React.Component {
 							</div>
 							<div className="text-center">
 								<Button
-									className="btn-neutral btn-icon mr-4"
+									className={classnames("btn-neutral btn-icon mr-4", { active: this.state.type==='Donor'})}
 									// color="default"
 									// href="#pablo"
 									onClick={e => {
@@ -133,12 +133,13 @@ class Register extends React.Component {
 											alt="..."
 											src={require("assets/img/icons/common/github.svg")}
 										/> */}
-										<i className='ni ni-single-02'/>
+										<i className='ni ni-single-02' />
 									</span>
 									<span className="btn-inner--text">Donor</span>
 								</Button>
 								<Button
-									className="btn-neutral btn-icon"
+									// className="btn-neutral btn-icon"
+									className={classnames("btn-neutral btn-icon", { active: this.state.type!=='Donor'})}
 									color="default"
 									href="#pablo"
 									onClick={e => {
@@ -151,8 +152,8 @@ class Register extends React.Component {
 											alt="..."
 											src={require("assets/img/icons/common/google.svg")}
 										/> */}
-											{/* <i className='ni ni-ambulance'/> */}
-											<i className='ni ni-badge'/>
+										{/* <i className='ni ni-ambulance'/> */}
+										<i className='ni ni-badge' />
 									</span>
 									<span className="btn-inner--text">Admin</span>
 								</Button>
@@ -163,7 +164,7 @@ class Register extends React.Component {
 
 						<CardBody className="px-lg-5 py-lg-5">
 							<div className="text-center text-muted mb-4">
-									<small>Sign up as {this.state.type}</small>
+								<small>Sign up as {this.state.type}</small>
 							</div>
 							<Form role="form">
 
@@ -202,7 +203,7 @@ class Register extends React.Component {
 												<i className="ni ni-email-83" />
 											</InputGroupText>
 										</InputGroupAddon>
-										<Input placeholder="Email" type="email" autoComplete="new-email" value={this.state.email} onChange={(e) => this.handleEmail(e)}/>
+										<Input placeholder="Email" type="email" autoComplete="new-email" value={this.state.email} onChange={(e) => this.handleEmail(e)} />
 									</InputGroup>
 								</FormGroup>
 
@@ -215,7 +216,7 @@ class Register extends React.Component {
 												<i className="ni ni-calendar-grid-58 mr-2" /> DOB
                       </InputGroupText>
 										</InputGroupAddon>
-										<Input type="date" pattern="[0-9]*" value={this.state.dob} onChange={(e) => this.handleDob(e)} max={this.state.date}/>
+										<Input type="date" pattern="[0-9]*" value={this.state.dob} onChange={(e) => this.handleDob(e)} max={this.state.date} />
 									</InputGroup>
 								</FormGroup>
 
@@ -231,7 +232,7 @@ class Register extends React.Component {
 													Blood Group
 												</InputGroupText>
 												</InputGroupAddon>
-												<select value={this.state.bloodGroup} onChange={(e)=> this.handleBloodgroup(e)}>
+												<select value={this.state.bloodGroup} onChange={(e) => this.handleBloodgroup(e)}>
 													<option value="A+">A+</option>
 													<option value="A-">A-</option>
 													<option value="B+">B+</option>
@@ -258,7 +259,7 @@ class Register extends React.Component {
 												<i className="ni ni-shop" />
 											</InputGroupText>
 										</InputGroupAddon>
-										<Input placeholder="Address" type="text" value={this.state.address} onChange={(e) => this.handleAddress(e)}/>
+										<Input placeholder="Address" type="text" value={this.state.address} onChange={(e) => this.handleAddress(e)} />
 									</InputGroup>
 								</FormGroup>
 
@@ -271,7 +272,7 @@ class Register extends React.Component {
 												<i className="ni ni-square-pin" />
 											</InputGroupText>
 										</InputGroupAddon>
-										<Input placeholder="Pincode" type="number" value={this.state.pincode} onChange={(e) => this.handlePincode(e)}/>
+										<Input placeholder="Pincode" type="number" value={this.state.pincode} onChange={(e) => this.handlePincode(e)} />
 									</InputGroup>
 								</FormGroup>
 
