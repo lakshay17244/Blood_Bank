@@ -66,7 +66,8 @@ class Index extends React.Component {
       patients: '',
       address: '',
       pincode: '',
-      registerButton: ''
+      registerButton: '',
+      addAdmin: ''
     };
     if (window.Chart) {
       parseOptions(Chart, chartOptions());
@@ -109,6 +110,12 @@ class Index extends React.Component {
   handleRegister(e) {
     this.setState({
       registerButton: e
+    })
+  }
+
+  handleaddAdmin(e) {
+    this.setState({
+      addAdmin: e.target.value
     })
   }
 
@@ -526,13 +533,25 @@ class Index extends React.Component {
                       <InputGroup className="input-group-alternative mb-3">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-hat-3" />
+                            <i className="ni ni-single-02" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Number of Admitted Patients" type="number" value={this.state.patients} onChange={(e) => this.handlePatients(e)} />
                       </InputGroup>
                     </FormGroup>
 
+                    {/* Add admins */}
+
+                    <FormGroup>
+                      <InputGroup className="input-group-alternative mb-3">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-badge" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Add Other Admins by UserID" type="text" value={this.state.addAdmin} onChange={(e) => this.handleaddAdmin(e)} />
+                      </InputGroup>
+                    </FormGroup>
                     <div className="text-center">
                       <Button className="my-4" color="primary" type="button">
                         Register
