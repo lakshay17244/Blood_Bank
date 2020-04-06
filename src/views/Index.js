@@ -34,6 +34,12 @@ import {
   Progress,
   Table,
   Container,
+  Form,
+  Input,
+  InputGroupAddon,
+  InputGroupText,
+  InputGroup,
+  FormGroup,
   Row,
   Col
 } from "reactstrap";
@@ -49,11 +55,18 @@ import {
 import Header from "components/Headers/Header.js";
 
 class Index extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
+      hasOrganization: true,
+      organization: '',
       activeNav: 1,
-      chartExample1Data: "data1"
+      chartExample1Data: "data1",
+      name: '',
+      patients: '',
+      address: '',
+      pincode: '',
+      registerButton: ''
     };
     if (window.Chart) {
       parseOptions(Chart, chartOptions());
@@ -67,16 +80,67 @@ class Index extends React.Component {
         this.state.chartExample1Data === "data1" ? "data2" : "data1"
     });
   };
+
+
+  handleName(e) {
+    this.setState({
+      name: e.target.value
+    })
+  }
+
+  handleAddress(e) {
+    this.setState({
+      address: e.target.value
+    })
+  }
+
+  handlePincode(e) {
+    this.setState({
+      pincode: e.target.value
+    })
+  }
+
+  handlePatients(e) {
+    this.setState({
+      patients: e.target.value
+    })
+  }
+
+  handleRegister(e) {
+    this.setState({
+      registerButton: e
+    })
+  }
+
+
+
   render() {
     return (
       <>
         <Header />
         {/* Page content */}
         <Container className="mt--7" fluid>
-          <Row>
-            <Col className="mb-5 mb-xl-0" xl="8">
-              <Card className="bg-gradient-default shadow">
-                <CardHeader className="bg-transparent">
+
+          {this.state.hasOrganization ?
+            /* NO ORGANIZATION */
+            <Row >
+              <Col xl="4" l="4" m="4"></Col>
+              <Col xl="4" l="4" m="4">
+                <Card className="bg-gradient-default shadow">
+                  <CardBody>
+                    <h2 className="text-white mb-0">You have not been added to any organization yet. More updates to follow.</h2>
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col xl="4" l="4" m="4"></Col>
+            </Row>
+            :
+            (
+              <>
+                <Row>
+                  <Col className="mb-5 mb-xl-0" xl="8">
+                    {/* <Card className="bg-gradient-default shadow"> */}
+                    {/* <CardHeader className="bg-transparent">
                   <Row className="align-items-center">
                     <div className="col">
                       <h6 className="text-uppercase text-light ls-1 mb-1">
@@ -114,9 +178,11 @@ class Index extends React.Component {
                       </Nav>
                     </div>
                   </Row>
-                </CardHeader>
-                <CardBody>
-                  {/* Chart */}
+                </CardHeader> */}
+
+
+                    {/* Chart */}
+                    {/* <CardBody>
                   <div className="chart">
                     <Line
                       data={chartExample1[this.state.chartExample1Data]}
@@ -124,12 +190,16 @@ class Index extends React.Component {
                       getDatasetAtEvent={e => console.log(e)}
                     />
                   </div>
-                </CardBody>
-              </Card>
-            </Col>
-            <Col xl="4">
-              <Card className="shadow">
-                <CardHeader className="bg-transparent">
+                </CardBody> */}
+                    {/* </Card> */}
+                  </Col>
+
+
+                  <Col xl="4">
+                    {/* <Card className="shadow"> */}
+
+
+                    {/* <CardHeader className="bg-transparent">
                   <Row className="align-items-center">
                     <div className="col">
                       <h6 className="text-uppercase text-muted ls-1 mb-1">
@@ -138,22 +208,26 @@ class Index extends React.Component {
                       <h2 className="mb-0">Total orders</h2>
                     </div>
                   </Row>
-                </CardHeader>
-                <CardBody>
-                  {/* Chart */}
+                </CardHeader> */}
+
+
+                    {/* Chart */}
+                    {/* <CardBody>
                   <div className="chart">
                     <Bar
                       data={chartExample2.data}
                       options={chartExample2.options}
                     />
                   </div>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-          <Row className="mt-5">
-            <Col className="mb-5 mb-xl-0" xl="8">
-              <Card className="shadow">
+                </CardBody> */}
+                    {/* </Card> */}
+                  </Col>
+                </Row>
+
+
+                <Row className="mt-5">
+                  <Col className="mb-5 mb-xl-0" xl="8">
+                    {/* <Card className="shadow">
                 <CardHeader className="border-0">
                   <Row className="align-items-center">
                     <div className="col">
@@ -228,10 +302,10 @@ class Index extends React.Component {
                     </tr>
                   </tbody>
                 </Table>
-              </Card>
-            </Col>
-            <Col xl="4">
-              <Card className="shadow">
+              </Card> */}
+                  </Col>
+                  <Col xl="4">
+                    {/*<Card className="shadow">
                 <CardHeader className="border-0">
                   <Row className="align-items-center">
                     <div className="col">
@@ -337,9 +411,144 @@ class Index extends React.Component {
                   </tbody>
                 </Table>
               </Card>
+              */}
+                  </Col>
+                </Row>
+
+              </>
+            )
+          }
+
+          <Row className="mt-5">
+            <Col xl="2"></Col>
+            <Col xl="8">
+              <Card className="bg-secondary shadow border-0">
+                <CardHeader className="bg-transparent pb-5">
+                  <Row className="align-items-center">
+                    <div className="col">
+                      <h6 className="text-uppercase text-muted ls-1 mb-1">
+                        Only Admins Can Do this
+                      </h6>
+                      <h2 className="mb-0">Add new Organization</h2>
+                    </div>
+                  </Row>
+                  <div className="text-muted text-center mt-2 mb-3">
+                    <small>Register a</small>
+                  </div>
+                  <div className="btn-wrapper text-center">
+                    <Button
+                      className="btn-neutral btn-icon"
+                      color="default"
+                      href="#pablo"
+                      onClick={e => {
+                        e.preventDefault()
+                        this.handleRegister("Hospital")
+                      }}
+                      active={this.state.registerButton === "Hospital"}
+                    >
+                      <span className="btn-inner--text">Hospital</span>
+                    </Button>
+                    <Button
+                      className="btn-neutral btn-icon"
+                      color="default"
+                      href="#pablo"
+                      onClick={e => {
+                        e.preventDefault()
+                        this.handleRegister("BloodBank")
+                      }}
+                      active={this.state.registerButton === "BloodBank"}
+                    >
+                      <span className="btn-inner--text">Blood Bank</span>
+                    </Button>
+                    <Button
+                      className="btn-neutral btn-icon"
+                      color="default"
+                      href="#pablo"
+                      onClick={e => {
+                        e.preventDefault()
+                        this.handleRegister("DonationCenter")
+                      }}
+                      active={this.state.registerButton === "DonationCenter"}
+                    >
+                      <span className="btn-inner--text">Donation Center</span>
+                    </Button>
+                  </div>
+                  {/* </CardHeader> */}
+                </CardHeader>
+                <CardBody>
+
+
+                  <Form role="form">
+
+                    {/* Name */}
+
+                    <FormGroup>
+                      <InputGroup className="input-group-alternative mb-3">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-hat-3" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Name" type="text" value={this.state.name} onChange={(e) => this.handleName(e)} />
+                      </InputGroup>
+                    </FormGroup>
+
+
+                    {/* Address */}
+
+                    <FormGroup>
+                      <InputGroup className="input-group-alternative mb-3">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-shop" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Address" type="text" value={this.state.address} onChange={(e) => this.handleAddress(e)} />
+                      </InputGroup>
+                    </FormGroup>
+
+                    {/* Pincode */}
+
+                    <FormGroup>
+                      <InputGroup className="input-group-alternative mb-3">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-square-pin" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Pincode" type="number" value={this.state.pincode} onChange={(e) => this.handlePincode(e)} />
+                      </InputGroup>
+                    </FormGroup>
+
+                    {/* Patients */}
+
+                    <FormGroup>
+                      <InputGroup className="input-group-alternative mb-3">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-hat-3" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Number of Admitted Patients" type="number" value={this.state.patients} onChange={(e) => this.handlePatients(e)} />
+                      </InputGroup>
+                    </FormGroup>
+
+                    <div className="text-center">
+                      <Button className="my-4" color="primary" type="button">
+                        Register
+                  </Button>
+                    </div>
+                  </Form>
+
+
+                </CardBody>
+              </Card>
             </Col>
+            <Col xl="2"></Col>
           </Row>
+
         </Container>
+
       </>
     );
   }

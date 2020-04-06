@@ -62,6 +62,18 @@ class Profile extends React.Component {
     }
   }
 
+  input = {
+    UserID: 2,
+   AdmissionDate: '2000-01-01',
+   BloodNeeded: 'AB+',
+   HID: 23
+  }
+
+  output={
+    status:200,
+    message: 'Success'
+  }
+
   handleusername(e) {
     this.setState({
       username: e.target.value

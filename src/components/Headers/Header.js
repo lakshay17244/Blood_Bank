@@ -28,7 +28,7 @@ class Header extends React.Component {
           <Container fluid>
             <div className="header-body">
               {/* Card stats */}
-              <Row>
+              {/* <Row>
                 <Col lg="6" xl="3">
                   <Card className="card-stats mb-4 mb-xl-0">
                     <CardBody>
@@ -38,7 +38,7 @@ class Header extends React.Component {
                             tag="h5"
                             className="text-uppercase text-muted mb-0"
                           >
-                            Traffic
+                            Hello
                           </CardTitle>
                           <span className="h2 font-weight-bold mb-0">
                             350,897
@@ -147,8 +147,8 @@ class Header extends React.Component {
                     </CardBody>
                   </Card>
                 </Col>
-              </Row>
-            </div>
+              </Row>*/}
+            </div> 
           </Container>
         </div>
       </>
