@@ -42,8 +42,8 @@ class UserHeader extends React.Component {
               <Col lg="7" md="10">
                 <h1 className="display-2 text-white">Hello Jesse</h1>
                 <p className="text-white mt-0 mb-5">
-                  This is your profile page. You can see the progress you've
-                  made with your work and manage your projects or assigned tasks
+                  You can see your details here and update them.
+                  You can also add admins, register patients, etc.
                 </p>
                 <Button
                   color="info"

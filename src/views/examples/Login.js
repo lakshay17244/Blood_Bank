@@ -16,7 +16,7 @@
 
 */
 import React from "react";
-
+import { Link } from "react-router-dom";
 // reactstrap components
 import {
   Button,
@@ -34,13 +34,33 @@ import {
 } from "reactstrap";
 
 class Login extends React.Component {
+  constructor(props){
+    super(props);
+    this.state={
+      password: '',
+      userID: ''
+    }
+  }
+
+  handlepassword(e){
+    this.setState({
+      password:e.target.value
+    })
+  }
+
+  handleuserID(e){
+    this.setState({
+      userID:e.target.value
+    })
+  }
+
   render() {
     return (
       <>
         <Col lg="5" md="7">
           <Card className="bg-secondary shadow border-0">
-            <CardHeader className="bg-transparent pb-5">
-              <div className="text-muted text-center mt-2 mb-3">
+            {/* <CardHeader className="bg-transparent pb-5"> */}
+            {/*<div className="text-muted text-center mt-2 mb-3">
                 <small>Sign in with</small>
               </div>
               <div className="btn-wrapper text-center">
@@ -72,21 +92,24 @@ class Login extends React.Component {
                   </span>
                   <span className="btn-inner--text">Google</span>
                 </Button>
-              </div>
-            </CardHeader>
+              </div>*/}
+            {/* <div className="text-center text-muted mb-4">
+              <small>Or sign in with credentials</small>
+            </div>
+            </CardHeader> */}
             <CardBody className="px-lg-5 py-lg-5">
               <div className="text-center text-muted mb-4">
-                <small>Or sign in with credentials</small>
+                <small>Sign in with UserID</small>
               </div>
               <Form role="form">
                 <FormGroup className="mb-3">
                   <InputGroup className="input-group-alternative">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
-                        <i className="ni ni-email-83" />
+                        <i className="ni ni-single-02" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Email" type="email" autoComplete="new-email"/>
+                    <Input placeholder="UserID" type="number" value={this.state.userID} onChange={(e)=>this.handleuserID(e)}/>
                   </InputGroup>
                 </FormGroup>
                 <FormGroup>
@@ -96,7 +119,7 @@ class Login extends React.Component {
                         <i className="ni ni-lock-circle-open" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Password" type="password" autoComplete="new-password"/>
+                    <Input placeholder="Password" type="password" autoComplete="new-password" value={this.state.password} onChange={(e)=>this.handlepassword(e)}/>
                   </InputGroup>
                 </FormGroup>
                 <div className="custom-control custom-control-alternative custom-checkbox">
@@ -121,23 +144,27 @@ class Login extends React.Component {
             </CardBody>
           </Card>
           <Row className="mt-3">
-            <Col xs="6">
-              <a
-                className="text-light"
-                href="#pablo"
-                onClick={e => e.preventDefault()}
-              >
-                <small>Forgot password?</small>
-              </a>
-            </Col>
-            <Col className="text-right" xs="6">
-              <a
-                className="text-light"
-                href="#pablo"
-                onClick={e => e.preventDefault()}
-              >
-                <small>Create new account</small>
-              </a>
+            {/* <Col xs="6"> */}
+            {/* <a
+              className="text-light"
+              href="#pablo"
+              onClick={e => e.preventDefault()}
+            >
+              <small>Forgot password?</small>
+            </a> */}
+            {/* </Col> */}
+            <Col className="text-center">
+              <Link to="/auth/register">
+                {/* <a
+                  className="text-light"
+                  // href="#pablo"
+                  onClick={e => {
+                    e.preventDefault();
+                  }}
+                > */}
+                  <small className="text-light">Create new account</small>
+                {/* </a> */}
+              </Link>
             </Col>
           </Row>
         </Col>

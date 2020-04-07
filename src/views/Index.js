@@ -131,21 +131,21 @@ class Index extends React.Component {
           {this.state.hasOrganization ?
             /* NO ORGANIZATION */
             <Row >
-              <Col xl="4" l="4" m="4"></Col>
-              <Col xl="4" l="4" m="4">
+              <Col xl={4} l={4} m={4}></Col>
+              <Col xl={4} l={4} m={4}>
                 <Card className="bg-gradient-default shadow">
                   <CardBody>
                     <h2 className="text-white mb-0">You have not been added to any organization yet. More updates to follow.</h2>
                   </CardBody>
                 </Card>
               </Col>
-              <Col xl="4" l="4" m="4"></Col>
+              <Col xl={4} l={4} m={4}></Col>
             </Row>
             :
             (
               <>
                 <Row>
-                  <Col className="mb-5 mb-xl-0" xl="8">
+                  <Col className="mb-5 mb-xl-0" xl={8}>
                     {/* <Card className="bg-gradient-default shadow"> */}
                     {/* <CardHeader className="bg-transparent">
                   <Row className="align-items-center">
@@ -202,7 +202,7 @@ class Index extends React.Component {
                   </Col>
 
 
-                  <Col xl="4">
+                  <Col xl={4}>
                     {/* <Card className="shadow"> */}
 
 
@@ -233,7 +233,7 @@ class Index extends React.Component {
 
 
                 <Row className="mt-5">
-                  <Col className="mb-5 mb-xl-0" xl="8">
+                  <Col className="mb-5 mb-xl-0" xl={8}>
                     {/* <Card className="shadow">
                 <CardHeader className="border-0">
                   <Row className="align-items-center">
@@ -311,7 +311,7 @@ class Index extends React.Component {
                 </Table>
               </Card> */}
                   </Col>
-                  <Col xl="4">
+                  <Col xl={4}>
                     {/*<Card className="shadow">
                 <CardHeader className="border-0">
                   <Row className="align-items-center">
@@ -427,59 +427,66 @@ class Index extends React.Component {
           }
 
           <Row className="mt-5">
-            <Col xl="2"></Col>
-            <Col xl="8">
+            <Col xl={2}></Col>
+            <Col xl={8}>
               <Card className="bg-secondary shadow border-0">
                 <CardHeader className="bg-transparent pb-5">
-                  <Row className="align-items-center">
-                    <div className="col">
-                      <h6 className="text-uppercase text-muted ls-1 mb-1">
-                        Only Admins Can Do this
+                  {/* <Row className="align-items-center"> */}
+                  {/* <div className="col"> */}
+                  <h6 className="text-uppercase text-muted ls-1 mb-1">
+                    Only Admins Can Do this
                       </h6>
-                      <h2 className="mb-0">Add new Organization</h2>
-                    </div>
-                  </Row>
+                  <h2 className="mb-0">Add new Organization</h2>
+                  {/* </div> */}
+                  {/* </Row> */}
                   <div className="text-muted text-center mt-2 mb-3">
                     <small>Register a</small>
                   </div>
-                  <div className="btn-wrapper text-center">
-                    <Button
-                      className="btn-neutral btn-icon"
-                      color="default"
-                      href="#pablo"
-                      onClick={e => {
-                        e.preventDefault()
-                        this.handleRegister("Hospital")
-                      }}
-                      active={this.state.registerButton === "Hospital"}
-                    >
-                      <span className="btn-inner--text">Hospital</span>
-                    </Button>
-                    <Button
-                      className="btn-neutral btn-icon"
-                      color="default"
-                      href="#pablo"
-                      onClick={e => {
-                        e.preventDefault()
-                        this.handleRegister("BloodBank")
-                      }}
-                      active={this.state.registerButton === "BloodBank"}
-                    >
-                      <span className="btn-inner--text">Blood Bank</span>
-                    </Button>
-                    <Button
-                      className="btn-neutral btn-icon"
-                      color="default"
-                      href="#pablo"
-                      onClick={e => {
-                        e.preventDefault()
-                        this.handleRegister("DonationCenter")
-                      }}
-                      active={this.state.registerButton === "DonationCenter"}
-                    >
-                      <span className="btn-inner--text">Donation Center</span>
-                    </Button>
-                  </div>
+
+                  <Row className="btn-wrapper text-center">
+                    <Col>
+                      <Button
+                        className="btn-neutral btn-icon"
+                        color="default"
+                        href="#pablo"
+                        onClick={e => {
+                          e.preventDefault()
+                          this.handleRegister("Hospital")
+                        }}
+                        active={this.state.registerButton === "Hospital"}
+                      >
+                        <span className="btn-inner--text">Hospital</span>
+                      </Button>
+                    </Col>
+                    <Col>
+                      <Button
+                        className="btn-neutral btn-icon"
+                        color="default"
+                        href="#pablo"
+                        onClick={e => {
+                          e.preventDefault()
+                          this.handleRegister("BloodBank")
+                        }}
+                        active={this.state.registerButton === "BloodBank"}
+                      >
+                        <span className="btn-inner--text">Blood Bank</span>
+                      </Button>
+                    </Col>
+                    <Col>
+                      <Button
+                        className="btn-neutral btn-icon mt-0 mt-4 mt-sm-0"
+                        color="default"
+                        href="#pablo"
+                        onClick={e => {
+                          e.preventDefault()
+                          this.handleRegister("DonationCenter")
+                        }}
+                        active={this.state.registerButton === "DonationCenter"}
+                      >
+                        <span className="btn-inner--text">Donation Center</span>
+                      </Button>
+                    </Col>
+                  </Row>
                   {/* </CardHeader> */}
                 </CardHeader>
                 <CardBody>
@@ -563,7 +570,7 @@ class Index extends React.Component {
                 </CardBody>
               </Card>
             </Col>
-            <Col xl="2"></Col>
+            <Col xl={2}></Col>
           </Row>
 
         </Container>
