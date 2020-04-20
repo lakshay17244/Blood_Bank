@@ -50,15 +50,12 @@ class Profile extends React.Component {
           type: e.Type,
           username: e.Username,
           userid: e.UserID,
-          // name: '',
           email: e.Email,
           dob: e.Age,
           // bloodgroup: '',
           phone: e.Phone,
           address: e.Address,
           pincode: e.Pincode,
-          // oldpass: '',
-          // newpass: '',
         })
       })
     }

@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React, { useState } from 'react';
 // node.js library that concatenates classes (strings)
 import classnames from "classnames";
 // javascipt plugin for creating charts
@@ -53,119 +53,96 @@ import {
 } from "variables/charts.js";
 
 import Header from "components/Headers/Header.js";
+import * as req from "../requests"
 
-class Index extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      hasOrganization: true,
-      organization: '',
-      activeNav: 1,
-      chartExample1Data: "data1",
-      name: '',
-      patients: '',
-      address: '',
-      pincode: '',
-      registerButton: 'Hospital',
-      addAdmin: '',
-      totalcapacity: '',
-      capacityleft: '',
-      associatedbbid: ''
-    };
-    if (window.Chart) {
-      parseOptions(Chart, chartOptions());
+
+const Index = () => {
+  const [hasOrganization, sethasOrganization] = useState(true)
+  const [organization, setOrganization] = useState('')
+  const [name, handleName] = useState('')
+  const [patients, handlePatients] = useState('')
+  const [address, handleAddress] = useState('')
+  const [pincode, handlePincode] = useState('')
+  const [registerButton, handleRegister] = useState('Hospital')
+  const [addAdmin, handleaddAdmin] = useState('')
+  const [totalcapacity, handletotalcapacity] = useState('')
+  const [capacityleft, handlecapacityleft] = useState('')
+  const [associatedbbid, handleassociatedbbid] = useState('')
+
+
+  if (window.Chart) {
+    parseOptions(Chart, chartOptions());
+  }
+
+
+  const registerOrganization = () => {
+    let toSend = {}
+    switch (registerButton) {
+
+      case "Hospital":
+        toSend = {
+          'Name': name,
+          'Address': address,
+          'Pincode': pincode,
+          'UserID': addAdmin.split(','), //Comma separated user IDs array
+          'AdmittedPatients': patients
+        }
+        console.log(toSend)
+        break;
+
+      case "BloodBank":
+        toSend = {
+          'Name': name,
+          'Address': address,
+          'Pincode': pincode,
+          'UserID': addAdmin.split(','), //Comma separated user IDs array
+          'TotalCapacity': totalcapacity,
+          'CapacityLeft': capacityleft
+        }
+        console.log(toSend)
+        break;
+
+      case "DonationCenter":
+        toSend = {
+          'Name': name,
+          'Address': address,
+          'Pincode': pincode,
+          'UserID': addAdmin.split(','), //Comma separated user IDs array
+          'BBID': associatedbbid
+        }
+        console.log(toSend)
+        break;
+
+      default: break;
     }
   }
-  toggleNavs = (e, index) => {
-    e.preventDefault();
-    this.setState({
-      activeNav: index,
-      chartExample1Data:
-        this.state.chartExample1Data === "data1" ? "data2" : "data1"
-    });
-  };
 
-  handleassociatedbbid(e) {
-    this.setState({
-      associatedbbid: e.target.value
-    })
-  }
-  handletotalcapacity(e) {
-    this.setState({
-      totalcapacity: e.target.value
-    })
-  }
-  handlecapacityleft(e) {
-    this.setState({
-      capacityleft: e.target.value
-    })
-  }
+  return (
+    <>
+      <Header />
+      {/* Page content */}
+      <Container className="mt--7" fluid>
 
-  handleName(e) {
-    this.setState({
-      name: e.target.value
-    })
-  }
-
-  handleAddress(e) {
-    this.setState({
-      address: e.target.value
-    })
-  }
-
-  handlePincode(e) {
-    this.setState({
-      pincode: e.target.value
-    })
-  }
-
-  handlePatients(e) {
-    this.setState({
-      patients: e.target.value
-    })
-  }
-
-  handleRegister(e) {
-    this.setState({
-      registerButton: e
-    })
-  }
-
-  handleaddAdmin(e) {
-    this.setState({
-      addAdmin: e.target.value
-    })
-  }
-
-
-
-  render() {
-    return (
-      <>
-        <Header />
-        {/* Page content */}
-        <Container className="mt--7" fluid>
-
-          {this.state.hasOrganization ?
-            /* NO ORGANIZATION */
-            <Row >
-              <Col xl={4} l={4} m={4}></Col>
-              <Col xl={4} l={4} m={4}>
-                <Card className="bg-gradient-default shadow">
-                  <CardBody>
-                    <h2 className="text-white mb-0">You have not been added to any organization yet. More updates to follow.</h2>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col xl={4} l={4} m={4}></Col>
-            </Row>
-            :
-            (
-              <>
-                <Row>
-                  <Col className="mb-5 mb-xl-0" xl={8}>
-                    {/* <Card className="bg-gradient-default shadow"> */}
-                    {/* <CardHeader className="bg-transparent">
+        {hasOrganization ?
+          /* NO ORGANIZATION */
+          <Row >
+            <Col xl={4} l={4} m={4}></Col>
+            <Col xl={4} l={4} m={4}>
+              <Card className="bg-gradient-default shadow">
+                <CardBody>
+                  <h2 className="text-white mb-0">You have not been added to any organization yet. More updates to follow.</h2>
+                </CardBody>
+              </Card>
+            </Col>
+            <Col xl={4} l={4} m={4}></Col>
+          </Row>
+          :
+          (
+            <>
+              <Row>
+                <Col className="mb-5 mb-xl-0" xl={8}>
+                  {/* <Card className="bg-gradient-default shadow"> */}
+                  {/* <CardHeader className="bg-transparent">
                   <Row className="align-items-center">
                     <div className="col">
                       <h6 className="text-uppercase text-light ls-1 mb-1">
@@ -206,8 +183,8 @@ class Index extends React.Component {
                 </CardHeader> */}
 
 
-                    {/* Chart */}
-                    {/* <CardBody>
+                  {/* Chart */}
+                  {/* <CardBody>
                   <div className="chart">
                     <Line
                       data={chartExample1[this.state.chartExample1Data]}
@@ -216,15 +193,15 @@ class Index extends React.Component {
                     />
                   </div>
                 </CardBody> */}
-                    {/* </Card> */}
-                  </Col>
+                  {/* </Card> */}
+                </Col>
 
 
-                  <Col xl={4}>
-                    {/* <Card className="shadow"> */}
+                <Col xl={4}>
+                  {/* <Card className="shadow"> */}
 
 
-                    {/* <CardHeader className="bg-transparent">
+                  {/* <CardHeader className="bg-transparent">
                   <Row className="align-items-center">
                     <div className="col">
                       <h6 className="text-uppercase text-muted ls-1 mb-1">
@@ -236,8 +213,8 @@ class Index extends React.Component {
                 </CardHeader> */}
 
 
-                    {/* Chart */}
-                    {/* <CardBody>
+                  {/* Chart */}
+                  {/* <CardBody>
                   <div className="chart">
                     <Bar
                       data={chartExample2.data}
@@ -245,14 +222,14 @@ class Index extends React.Component {
                     />
                   </div>
                 </CardBody> */}
-                    {/* </Card> */}
-                  </Col>
-                </Row>
+                  {/* </Card> */}
+                </Col>
+              </Row>
 
 
-                <Row className="mt-5">
-                  <Col className="mb-5 mb-xl-0" xl={8}>
-                    {/* <Card className="shadow">
+              <Row className="mt-5">
+                <Col className="mb-5 mb-xl-0" xl={8}>
+                  {/* <Card className="shadow">
                 <CardHeader className="border-0">
                   <Row className="align-items-center">
                     <div className="col">
@@ -328,9 +305,9 @@ class Index extends React.Component {
                   </tbody>
                 </Table>
               </Card> */}
-                  </Col>
-                  <Col xl={4}>
-                    {/*<Card className="shadow">
+                </Col>
+                <Col xl={4}>
+                  {/*<Card className="shadow">
                 <CardHeader className="border-0">
                   <Row className="align-items-center">
                     <div className="col">
@@ -437,155 +414,183 @@ class Index extends React.Component {
                 </Table>
               </Card>
               */}
+                </Col>
+              </Row>
+
+            </>
+          )
+        }
+
+        <Row className="mt-5">
+          <Col xl={2}></Col>
+          <Col xl={8}>
+            <Card className="bg-secondary shadow border-0">
+              <CardHeader className="bg-transparent pb-5">
+                {/* <Row className="align-items-center"> */}
+                {/* <div className="col"> */}
+                <h6 className="text-uppercase text-muted ls-1 mb-1">
+                  Only Admins Can Do this
+                      </h6>
+                <h2 className="mb-0">Add new Organization</h2>
+                {/* </div> */}
+                {/* </Row> */}
+                <div className="text-muted text-center mt-2 mb-3">
+                  <small>Register a</small>
+                </div>
+
+                <Row className="btn-wrapper text-center">
+                  <Col>
+                    <Button
+                      className="btn-neutral btn-icon"
+                      color="default"
+                      href="#pablo"
+                      onClick={e => {
+                        e.preventDefault()
+                        handleRegister("Hospital")
+                      }}
+                      active={registerButton === "Hospital"}
+                    >
+                      <span className="btn-inner--text">Hospital</span>
+                    </Button>
+                  </Col>
+                  <Col>
+                    <Button
+                      className="btn-neutral btn-icon"
+                      color="default"
+                      href="#pablo"
+                      onClick={e => {
+                        e.preventDefault()
+                        handleRegister("BloodBank")
+                      }}
+                      active={registerButton === "BloodBank"}
+                    >
+                      <span className="btn-inner--text">Blood Bank</span>
+                    </Button>
+                  </Col>
+                  <Col>
+                    <Button
+                      className="btn-neutral btn-icon mt-0 mt-4 mt-sm-0"
+                      color="default"
+                      href="#pablo"
+                      onClick={e => {
+                        e.preventDefault()
+                        handleRegister("DonationCenter")
+                      }}
+                      active={registerButton === "DonationCenter"}
+                    >
+                      <span className="btn-inner--text">Donation Center</span>
+                    </Button>
                   </Col>
                 </Row>
-
-              </>
-            )
-          }
-
-          <Row className="mt-5">
-            <Col xl={2}></Col>
-            <Col xl={8}>
-              <Card className="bg-secondary shadow border-0">
-                <CardHeader className="bg-transparent pb-5">
-                  {/* <Row className="align-items-center"> */}
-                  {/* <div className="col"> */}
-                  <h6 className="text-uppercase text-muted ls-1 mb-1">
-                    Only Admins Can Do this
-                      </h6>
-                  <h2 className="mb-0">Add new Organization</h2>
-                  {/* </div> */}
-                  {/* </Row> */}
-                  <div className="text-muted text-center mt-2 mb-3">
-                    <small>Register a</small>
-                  </div>
-
-                  <Row className="btn-wrapper text-center">
-                    <Col>
-                      <Button
-                        className="btn-neutral btn-icon"
-                        color="default"
-                        href="#pablo"
-                        onClick={e => {
-                          e.preventDefault()
-                          this.handleRegister("Hospital")
-                        }}
-                        active={this.state.registerButton === "Hospital"}
-                      >
-                        <span className="btn-inner--text">Hospital</span>
-                      </Button>
-                    </Col>
-                    <Col>
-                      <Button
-                        className="btn-neutral btn-icon"
-                        color="default"
-                        href="#pablo"
-                        onClick={e => {
-                          e.preventDefault()
-                          this.handleRegister("BloodBank")
-                        }}
-                        active={this.state.registerButton === "BloodBank"}
-                      >
-                        <span className="btn-inner--text">Blood Bank</span>
-                      </Button>
-                    </Col>
-                    <Col>
-                      <Button
-                        className="btn-neutral btn-icon mt-0 mt-4 mt-sm-0"
-                        color="default"
-                        href="#pablo"
-                        onClick={e => {
-                          e.preventDefault()
-                          this.handleRegister("DonationCenter")
-                        }}
-                        active={this.state.registerButton === "DonationCenter"}
-                      >
-                        <span className="btn-inner--text">Donation Center</span>
-                      </Button>
-                    </Col>
-                  </Row>
-                  {/* </CardHeader> */}
-                </CardHeader>
-                <CardBody>
+                {/* </CardHeader> */}
+              </CardHeader>
+              <CardBody>
 
 
-                  <Form role="form">
+                <Form role="form">
 
-                    {/* Name */}
+                  {/* Name */}
+                  <FormGroup>
+                    <InputGroup className="input-group-alternative mb-3">
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="ni ni-hat-3" />
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input placeholder="Name" type="text" value={name} onChange={(e) => handleName(e.target.value)} />
+                    </InputGroup>
+                  </FormGroup>
+
+
+                  {/* Address */}
+                  <FormGroup>
+                    <InputGroup className="input-group-alternative mb-3">
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="ni ni-shop" />
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input placeholder="Address" type="text" value={address} onChange={(e) => handleAddress(e.target.value)} />
+                    </InputGroup>
+                  </FormGroup>
+
+                  {/* Pincode */}
+                  <FormGroup>
+                    <InputGroup className="input-group-alternative mb-3">
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="ni ni-square-pin" />
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input placeholder="Pincode" type="number" value={pincode} onChange={(e) => handlePincode(e.target.value)} />
+                    </InputGroup>
+                  </FormGroup>
+
+                  {/* Add admins */}
+                  <FormGroup>
+                    <InputGroup className="input-group-alternative mb-3">
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="ni ni-badge" />
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input placeholder="Add Other Admins by UserID" type="text" value={addAdmin} onChange={(e) => handleaddAdmin(e.target.value)} />
+                    </InputGroup>
+                  </FormGroup>
+
+
+                  {registerButton === "Hospital" ? (
+                    /* HOSPITAL REGISTRATION */
+
+                    /* Patients */
                     <FormGroup>
                       <InputGroup className="input-group-alternative mb-3">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-hat-3" />
+                            <i className="ni ni-single-02" />
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input placeholder="Name" type="text" value={this.state.name} onChange={(e) => this.handleName(e)} />
+                        <Input placeholder="Number of Admitted Patients" type="number" value={patients} onChange={(e) => handlePatients(e.target.value)} />
                       </InputGroup>
                     </FormGroup>
 
+                  ) : null}
 
-                    {/* Address */}
+
+
+
+                  {registerButton === "DonationCenter" ? (
+                    /* DONATION CENTER REGISTRATION */
+
+                    /* Associated Blood Bank ID */
                     <FormGroup>
                       <InputGroup className="input-group-alternative mb-3">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-shop" />
+                            <i className="ni ni-favourite-28" />
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input placeholder="Address" type="text" value={this.state.address} onChange={(e) => this.handleAddress(e)} />
+                        <Input placeholder="Enter Associated Blood Bank ID" type="number" value={associatedbbid} onChange={(e) => handleassociatedbbid(e.target.value)} />
                       </InputGroup>
                     </FormGroup>
-
-                    {/* Pincode */}
-                    <FormGroup>
-                      <InputGroup className="input-group-alternative mb-3">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="ni ni-square-pin" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Pincode" type="number" value={this.state.pincode} onChange={(e) => this.handlePincode(e)} />
-                      </InputGroup>
-                    </FormGroup>
-
-                    {/* Add admins */}
-                    <FormGroup>
-                      <InputGroup className="input-group-alternative mb-3">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="ni ni-badge" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Add Other Admins by UserID" type="text" value={this.state.addAdmin} onChange={(e) => this.handleaddAdmin(e)} />
-                      </InputGroup>
-                    </FormGroup>
+                  ) : null}
 
 
-                    {this.state.registerButton === "Hospital" ? (
-                      /* HOSPITAL REGISTRATION */
-
-                      /* Patients */
+                  {registerButton === "BloodBank" ? (
+                    /* BLOOD BANK REGISTRATION */
+                    <>
+                      {/* Total Capacity */}
                       <FormGroup>
                         <InputGroup className="input-group-alternative mb-3">
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText>
-                              <i className="ni ni-single-02" />
+                              <i className="ni ni-ambulance" />
                             </InputGroupText>
                           </InputGroupAddon>
-                          <Input placeholder="Number of Admitted Patients" type="number" value={this.state.patients} onChange={(e) => this.handlePatients(e)} />
+                          <Input placeholder="Total Blood Capacity (in Litres)" type="number" value={totalcapacity} onChange={(e) => handletotalcapacity(e.target.value)} />
                         </InputGroup>
                       </FormGroup>
-
-                    ) : null}
-
-
-
-
-                    {this.state.registerButton === "DonationCenter" ? (
-                      /* DONATION CENTER REGISTRATION */
-
-                      /* Associated Blood Bank ID */
+                      {/* Capacity Left */}
                       <FormGroup>
                         <InputGroup className="input-group-alternative mb-3">
                           <InputGroupAddon addonType="prepend">
@@ -593,60 +598,31 @@ class Index extends React.Component {
                               <i className="ni ni-favourite-28" />
                             </InputGroupText>
                           </InputGroupAddon>
-                          <Input placeholder="Enter Associated Blood Bank ID" type="number" value={this.state.associatedbbid} onChange={(e) => this.handleassociatedbbid(e)} />
+                          <Input placeholder="Capacity Left (in Litres)" type="number" value={capacityleft} onChange={(e) => handlecapacityleft(e.target.value)} />
                         </InputGroup>
                       </FormGroup>
-                    ) : null}
+                    </>
+                  ) : null}
 
-
-                    {this.state.registerButton === "BloodBank" ? (
-                      /* BLOOD BANK REGISTRATION */
-                      <>
-                        {/* Total Capacity */}
-                        <FormGroup>
-                          <InputGroup className="input-group-alternative mb-3">
-                            <InputGroupAddon addonType="prepend">
-                              <InputGroupText>
-                                <i className="ni ni-ambulance" />
-                              </InputGroupText>
-                            </InputGroupAddon>
-                            <Input placeholder="Total Blood Capacity (in Litres)" type="number" value={this.state.totalcapacity} onChange={(e) => this.handletotalcapacity(e)} />
-                          </InputGroup>
-                        </FormGroup>
-                        {/* Capacity Left */}
-                        <FormGroup>
-                          <InputGroup className="input-group-alternative mb-3">
-                            <InputGroupAddon addonType="prepend">
-                              <InputGroupText>
-                                <i className="ni ni-favourite-28" />
-                              </InputGroupText>
-                            </InputGroupAddon>
-                            <Input placeholder="Capacity Left (in Litres)" type="number" value={this.state.capacityleft} onChange={(e) => this.handlecapacityleft(e)} />
-                          </InputGroup>
-                        </FormGroup>
-                      </>
-                    ) : null}
-
-                    {/* REGISTER BUTTON */}
-                    <div className="text-center">
-                      <Button className="my-4" color="primary" type="button">
-                        Register
+                  {/* REGISTER BUTTON */}
+                  <div className="text-center">
+                    <Button className="my-4" color="primary" type="button" onClick={registerOrganization}>
+                      Register
                   </Button>
-                    </div>
-                  </Form>
+                  </div>
+                </Form>
 
 
-                </CardBody>
-              </Card>
-            </Col>
-            <Col xl={2}></Col>
-          </Row>
+              </CardBody>
+            </Card>
+          </Col>
+          <Col xl={2}></Col>
+        </Row>
 
-        </Container>
+      </Container>
 
-      </>
-    );
-  }
+    </>
+  );
 }
 
 export default Index;

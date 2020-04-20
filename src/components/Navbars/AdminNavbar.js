@@ -40,12 +40,11 @@ class AdminNavbar extends React.Component {
   constructor(props) {
     super(props)
     let name = "Jessica Jones"
-
     if (localStorage.getItem("name")) {
       name = localStorage.getItem("name")
-      this.state = {
-        name: name
-      }
+    }
+    this.state = {
+      name: name
     }
   }
 
