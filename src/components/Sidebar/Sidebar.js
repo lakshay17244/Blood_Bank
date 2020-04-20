@@ -81,19 +81,25 @@ class Sidebar extends React.Component {
   // creates the links that appear in the left menu / Sidebar
   createLinks = routes => {
     return routes.map((prop, key) => {
-      return (
-        <NavItem key={key}>
-          <NavLink
-            to={prop.layout + prop.path}
-            tag={NavLinkRRD}
-            onClick={this.closeCollapse}
-            activeClassName="active"
-          >
-            <i className={prop.icon} />
-            {prop.name}
-          </NavLink>
-        </NavItem>
-      );
+      if (localStorage.getItem('isLoggedIn') === 'true' && (prop.name == "Login" || prop.name == "Register")) {
+        return null
+      }
+      // else if(localStorage.getItem('isLoggedIn') === 'false'&& (prop.name == "Login" || prop.name == "Register"))
+      else
+        return (
+          <NavItem key={key}>
+            <NavLink
+              to={prop.layout + prop.path}
+              tag={NavLinkRRD}
+              onClick={this.closeCollapse}
+              activeClassName="active"
+            >
+              <i className={prop.icon} />
+              {prop.name}
+            </NavLink>
+          </NavItem>
+        );
+
     });
   };
   render() {
@@ -203,10 +209,10 @@ class Sidebar extends React.Component {
                         <img alt={logo.imgAlt} src={logo.imgSrc} />
                       </Link>
                     ) : (
-                      <a href={logo.outterLink}>
-                        <img alt={logo.imgAlt} src={logo.imgSrc} />
-                      </a>
-                    )}
+                        <a href={logo.outterLink}>
+                          <img alt={logo.imgAlt} src={logo.imgSrc} />
+                        </a>
+                      )}
                   </Col>
                 ) : null}
                 <Col className="collapse-close" xs="6">

@@ -24,7 +24,7 @@ import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import AdminFooter from "components/Footers/AdminFooter.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import im from "../assets/img/brand/argon-react.png"
-
+import * as req from "../requests"
 import routes from "routes.js";
 
 class Admin extends React.Component {
@@ -32,6 +32,15 @@ class Admin extends React.Component {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
     this.refs.mainContent.scrollTop = 0;
+  }
+  componentDidMount() {
+    let userid = localStorage.getItem("userID")
+    
+    if (userid.length > 0) {
+      req.getUserDetails(userid).then(e => {
+        localStorage.setItem("name", e.Username)
+      })
+    }
   }
   getRoutes = routes => {
     return routes.map((prop, key) => {
@@ -80,7 +89,7 @@ class Admin extends React.Component {
           />
           <Switch>
             {this.getRoutes(routes)}
-            <Redirect from="*" to="/admin/index" />
+            <Redirect from="*" to="/auth/login" />
           </Switch>
           <Container fluid>
             <AdminFooter />

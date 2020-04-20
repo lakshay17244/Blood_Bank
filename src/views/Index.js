@@ -66,8 +66,11 @@ class Index extends React.Component {
       patients: '',
       address: '',
       pincode: '',
-      registerButton: '',
-      addAdmin: ''
+      registerButton: 'Hospital',
+      addAdmin: '',
+      totalcapacity: '',
+      capacityleft: '',
+      associatedbbid: ''
     };
     if (window.Chart) {
       parseOptions(Chart, chartOptions());
@@ -82,6 +85,21 @@ class Index extends React.Component {
     });
   };
 
+  handleassociatedbbid(e) {
+    this.setState({
+      associatedbbid: e.target.value
+    })
+  }
+  handletotalcapacity(e) {
+    this.setState({
+      totalcapacity: e.target.value
+    })
+  }
+  handlecapacityleft(e) {
+    this.setState({
+      capacityleft: e.target.value
+    })
+  }
 
   handleName(e) {
     this.setState({
@@ -495,7 +513,6 @@ class Index extends React.Component {
                   <Form role="form">
 
                     {/* Name */}
-
                     <FormGroup>
                       <InputGroup className="input-group-alternative mb-3">
                         <InputGroupAddon addonType="prepend">
@@ -509,7 +526,6 @@ class Index extends React.Component {
 
 
                     {/* Address */}
-
                     <FormGroup>
                       <InputGroup className="input-group-alternative mb-3">
                         <InputGroupAddon addonType="prepend">
@@ -522,7 +538,6 @@ class Index extends React.Component {
                     </FormGroup>
 
                     {/* Pincode */}
-
                     <FormGroup>
                       <InputGroup className="input-group-alternative mb-3">
                         <InputGroupAddon addonType="prepend">
@@ -534,21 +549,7 @@ class Index extends React.Component {
                       </InputGroup>
                     </FormGroup>
 
-                    {/* Patients */}
-
-                    <FormGroup>
-                      <InputGroup className="input-group-alternative mb-3">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="ni ni-single-02" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Number of Admitted Patients" type="number" value={this.state.patients} onChange={(e) => this.handlePatients(e)} />
-                      </InputGroup>
-                    </FormGroup>
-
                     {/* Add admins */}
-
                     <FormGroup>
                       <InputGroup className="input-group-alternative mb-3">
                         <InputGroupAddon addonType="prepend">
@@ -559,6 +560,74 @@ class Index extends React.Component {
                         <Input placeholder="Add Other Admins by UserID" type="text" value={this.state.addAdmin} onChange={(e) => this.handleaddAdmin(e)} />
                       </InputGroup>
                     </FormGroup>
+
+
+                    {this.state.registerButton === "Hospital" ? (
+                      /* HOSPITAL REGISTRATION */
+
+                      /* Patients */
+                      <FormGroup>
+                        <InputGroup className="input-group-alternative mb-3">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="ni ni-single-02" />
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input placeholder="Number of Admitted Patients" type="number" value={this.state.patients} onChange={(e) => this.handlePatients(e)} />
+                        </InputGroup>
+                      </FormGroup>
+
+                    ) : null}
+
+
+
+
+                    {this.state.registerButton === "DonationCenter" ? (
+                      /* DONATION CENTER REGISTRATION */
+
+                      /* Associated Blood Bank ID */
+                      <FormGroup>
+                        <InputGroup className="input-group-alternative mb-3">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="ni ni-favourite-28" />
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input placeholder="Enter Associated Blood Bank ID" type="number" value={this.state.associatedbbid} onChange={(e) => this.handleassociatedbbid(e)} />
+                        </InputGroup>
+                      </FormGroup>
+                    ) : null}
+
+
+                    {this.state.registerButton === "BloodBank" ? (
+                      /* BLOOD BANK REGISTRATION */
+                      <>
+                        {/* Total Capacity */}
+                        <FormGroup>
+                          <InputGroup className="input-group-alternative mb-3">
+                            <InputGroupAddon addonType="prepend">
+                              <InputGroupText>
+                                <i className="ni ni-ambulance" />
+                              </InputGroupText>
+                            </InputGroupAddon>
+                            <Input placeholder="Total Blood Capacity (in Litres)" type="number" value={this.state.totalcapacity} onChange={(e) => this.handletotalcapacity(e)} />
+                          </InputGroup>
+                        </FormGroup>
+                        {/* Capacity Left */}
+                        <FormGroup>
+                          <InputGroup className="input-group-alternative mb-3">
+                            <InputGroupAddon addonType="prepend">
+                              <InputGroupText>
+                                <i className="ni ni-favourite-28" />
+                              </InputGroupText>
+                            </InputGroupAddon>
+                            <Input placeholder="Capacity Left (in Litres)" type="number" value={this.state.capacityleft} onChange={(e) => this.handlecapacityleft(e)} />
+                          </InputGroup>
+                        </FormGroup>
+                      </>
+                    ) : null}
+
+                    {/* REGISTER BUTTON */}
                     <div className="text-center">
                       <Button className="my-4" color="primary" type="button">
                         Register

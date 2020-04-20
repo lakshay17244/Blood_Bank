@@ -34,8 +34,33 @@ import {
   Container,
   Media
 } from "reactstrap";
+import * as req from "../../requests"
 
 class AdminNavbar extends React.Component {
+  constructor(props) {
+    super(props)
+    let name = "Jessica Jones"
+
+    if (localStorage.getItem("name")) {
+      name = localStorage.getItem("name")
+      this.state = {
+        name: name
+      }
+    }
+  }
+
+  componentDidMount() {
+    let userid = localStorage.getItem("userID")
+    if (userid.length > 0) {
+      req.getUserDetails(userid).then(e => {
+        localStorage.setItem("name", e.Username)
+        this.setState({
+          name: e.Username
+        })
+      })
+    }
+  }
+
   render() {
     return (
       <>
@@ -71,7 +96,7 @@ class AdminNavbar extends React.Component {
                     </span>
                     <Media className="ml-2 d-none d-lg-block">
                       <span className="mb-0 text-sm font-weight-bold">
-                        Jessica Jones
+                        {this.state.name}
                       </span>
                     </Media>
                   </Media>
@@ -81,6 +106,7 @@ class AdminNavbar extends React.Component {
                     <h6 className="text-overflow m-0">Welcome!</h6>
                   </DropdownItem>
                   <DropdownItem to="/admin/user-profile" tag={Link}>
+                    {/* <DropdownItem to="/auth/login" tag={Link}> */}
                     <i className="ni ni-single-02" />
                     <span>My profile</span>
                   </DropdownItem>
@@ -97,10 +123,24 @@ class AdminNavbar extends React.Component {
                     <span>Support</span>
                   </DropdownItem> */}
                   <DropdownItem divider />
-                  <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>
+                  {/* <DropdownItem to="/auth/login" tag={Link} onClick={e => {
+                    // e.preventDefault()
+                    localStorage.setItem('isLoggedIn', false);
+                    localStorage.setItem('userID', '');
+                  }}>
+                    <i className="ni ni-single-02" />
+                    <span>Logout</span>
+                  </DropdownItem> */}
+                  <DropdownItem to="/auth/login" tag={Link} href="#pablo" onClick={e => {
+                    // e.preventDefault()
+                    localStorage.setItem('isLoggedIn', false);
+                    localStorage.setItem('userID', '');
+                    localStorage.setItem('name', 'Jessica');
+                  }}>
                     <i className="ni ni-user-run" />
                     <span>Logout</span>
                   </DropdownItem>
+
                 </DropdownMenu>
               </UncontrolledDropdown>
             </Nav>

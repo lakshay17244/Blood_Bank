@@ -40,7 +40,7 @@ class UserHeader extends React.Component {
           <Container className="d-flex align-items-center" fluid>
             <Row>
               <Col lg="7" md="10">
-                <h1 className="display-2 text-white">Hello Jesse</h1>
+                <h1 className="display-2 text-white">Hello {localStorage.getItem("name")}</h1>
                 <p className="text-white mt-0 mb-5">
                   You can see your details here and update them.
                   You can also add admins, register patients, etc.

@@ -15,8 +15,9 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useHistory } from "react-router-dom";
+
 // reactstrap components
 import {
   Button,
@@ -33,34 +34,42 @@ import {
   Col
 } from "reactstrap";
 
-class Login extends React.Component {
-  constructor(props){
-    super(props);
-    this.state={
-      password: '',
-      userID: ''
+import * as req from "../../requests"
+
+function Login() {
+
+  let history = useHistory();
+  const [password, setpassword] = useState("");
+  const [userID, setuserID] = useState("");
+  const [isLoggedIn, setisLoggedIn] = useState(false);
+  const [recievedMessage, setrecievedMessage] = useState("");
+
+  const sendLoginReq = () => {
+    console.log("Sending login")
+    req.loginAPI(parseInt(userID), password).then((e => {
+      console.log("LOG IN API RETURNED ", e)
+      setrecievedMessage(e.message)
+      setisLoggedIn(e.loggedIn)
+    }))
+  }
+
+  useEffect(() => {
+    if(localStorage.getItem('isLoggedIn')=="true"){
+      history.push("/admin/index");
     }
-  }
+    if (isLoggedIn == true) {
+      localStorage.setItem('isLoggedIn', isLoggedIn);
+      localStorage.setItem('userID', userID);
+      history.push("/admin/index");
+    }
+  })
 
-  handlepassword(e){
-    this.setState({
-      password:e.target.value
-    })
-  }
-
-  handleuserID(e){
-    this.setState({
-      userID:e.target.value
-    })
-  }
-
-  render() {
-    return (
-      <>
-        <Col lg="5" md="7">
-          <Card className="bg-secondary shadow border-0">
-            {/* <CardHeader className="bg-transparent pb-5"> */}
-            {/*<div className="text-muted text-center mt-2 mb-3">
+  return (
+    <>
+      <Col lg="5" md="7">
+        <Card className="bg-secondary shadow border-0">
+          {/* <CardHeader className="bg-transparent pb-5"> */}
+          {/*<div className="text-muted text-center mt-2 mb-3">
                 <small>Sign in with</small>
               </div>
               <div className="btn-wrapper text-center">
@@ -93,84 +102,88 @@ class Login extends React.Component {
                   <span className="btn-inner--text">Google</span>
                 </Button>
               </div>*/}
-            {/* <div className="text-center text-muted mb-4">
+          {/* <div className="text-center text-muted mb-4">
               <small>Or sign in with credentials</small>
             </div>
             </CardHeader> */}
-            <CardBody className="px-lg-5 py-lg-5">
-              <div className="text-center text-muted mb-4">
-                <small>Sign in with UserID</small>
+          <CardBody className="px-lg-5 py-lg-5">
+            <div className="text-center text-muted mb-4">
+              <small>Sign in with UserID</small>
+            </div>
+            <Form role="form">
+              <FormGroup className="mb-3">
+                <InputGroup className="input-group-alternative">
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>
+                      <i className="ni ni-single-02" />
+                    </InputGroupText>
+                  </InputGroupAddon>
+                  {/* <Input placeholder="UserID" type="number" value={this.state.userID} onChange={(e) => this.handleuserID(e)} /> */}
+                  <Input placeholder="UserID" type="number" value={userID} onChange={(e) => setuserID(e.target.value)} />
+                </InputGroup>
+              </FormGroup>
+              <FormGroup>
+                <InputGroup className="input-group-alternative">
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>
+                      <i className="ni ni-lock-circle-open" />
+                    </InputGroupText>
+                  </InputGroupAddon>
+                  {/* <Input placeholder="Password" type="password" autoComplete="new-password" value={this.state.password} onChange={(e) => this.handlepassword(e)} /> */}
+                  <Input placeholder="Password" type="password" autoComplete="new-password" value={password} onChange={(e) => setpassword(e.target.value)} />
+                </InputGroup>
+              </FormGroup>
+              <div className="text-center mb-4">
+                <small>{recievedMessage}</small>
               </div>
-              <Form role="form">
-                <FormGroup className="mb-3">
-                  <InputGroup className="input-group-alternative">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="ni ni-single-02" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input placeholder="UserID" type="number" value={this.state.userID} onChange={(e)=>this.handleuserID(e)}/>
-                  </InputGroup>
-                </FormGroup>
-                <FormGroup>
-                  <InputGroup className="input-group-alternative">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="ni ni-lock-circle-open" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input placeholder="Password" type="password" autoComplete="new-password" value={this.state.password} onChange={(e)=>this.handlepassword(e)}/>
-                  </InputGroup>
-                </FormGroup>
-                <div className="custom-control custom-control-alternative custom-checkbox">
-                  <input
-                    className="custom-control-input"
-                    id=" customCheckLogin"
-                    type="checkbox"
-                  />
-                  <label
-                    className="custom-control-label"
-                    htmlFor=" customCheckLogin"
-                  >
-                    <span className="text-muted">Remember me</span>
-                  </label>
-                </div>
-                <div className="text-center">
-                  <Button className="my-4" color="primary" type="button">
-                    Sign in
+              <div className="custom-control custom-control-alternative custom-checkbox">
+                <input
+                  className="custom-control-input"
+                  id=" customCheckLogin"
+                  type="checkbox"
+                />
+                <label
+                  className="custom-control-label"
+                  htmlFor=" customCheckLogin"
+                >
+                  <span className="text-muted">Remember me</span>
+                </label>
+              </div>
+              <div className="text-center">
+                <Button className="my-4" color="primary" type="button" onClick={() => sendLoginReq()}>
+                  Sign in
                   </Button>
-                </div>
-              </Form>
-            </CardBody>
-          </Card>
-          <Row className="mt-3">
-            {/* <Col xs="6"> */}
-            {/* <a
+              </div>
+            </Form>
+          </CardBody>
+        </Card>
+        <Row className="mt-3">
+          {/* <Col xs="6"> */}
+          {/* <a
               className="text-light"
               href="#pablo"
               onClick={e => e.preventDefault()}
             >
               <small>Forgot password?</small>
             </a> */}
-            {/* </Col> */}
-            <Col className="text-center">
-              <Link to="/auth/register">
-                {/* <a
+          {/* </Col> */}
+          <Col className="text-center">
+            <Link to="/auth/register">
+              {/* <a
                   className="text-light"
                   // href="#pablo"
                   onClick={e => {
                     e.preventDefault();
                   }}
                 > */}
-                  <small className="text-light">Create new account</small>
-                {/* </a> */}
-              </Link>
-            </Col>
-          </Row>
-        </Col>
-      </>
-    );
-  }
+              <small className="text-light">Create new account</small>
+              {/* </a> */}
+            </Link>
+          </Col>
+        </Row>
+      </Col>
+    </>
+  );
 }
 
 export default Login;

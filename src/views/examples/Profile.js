@@ -36,7 +36,35 @@ import {
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
 
+import * as req from "../../requests";
+
 class Profile extends React.Component {
+
+  componentDidMount() {
+    let userid = localStorage.getItem("userID")
+
+    if (userid.length > 0) {
+      req.getUserDetails(userid).then(e => {
+        console.log(e)
+        this.setState({
+          type: e.Type,
+          username: e.Username,
+          userid: e.UserID,
+          // name: '',
+          email: e.Email,
+          dob: e.Age,
+          // bloodgroup: '',
+          phone: e.Phone,
+          address: e.Address,
+          pincode: e.Pincode,
+          // oldpass: '',
+          // newpass: '',
+        })
+      })
+    }
+
+
+  }
 
   constructor(props) {
     super(props);
@@ -52,7 +80,8 @@ class Profile extends React.Component {
       userid: '1',
       name: '',
       email: '',
-      dob: '2000-01-01',
+      // dob: '2000-01-01',
+      dob: 0,
       bloodgroup: '',
       phone: '',
       address: '',
@@ -60,18 +89,6 @@ class Profile extends React.Component {
       oldpass: '',
       newpass: '',
     }
-  }
-
-  input = {
-    UserID: 2,
-   AdmissionDate: '2000-01-01',
-   BloodNeeded: 'AB+',
-   HID: 23
-  }
-
-  output={
-    status:200,
-    message: 'Success'
   }
 
   handleusername(e) {
@@ -115,7 +132,7 @@ class Profile extends React.Component {
       address: e.target.value
     })
   }
-  handleupincode(e) {
+  handlepincode(e) {
     this.setState({
       pincode: e.target.value
     })
@@ -270,7 +287,7 @@ class Profile extends React.Component {
                 <CardBody>
                   <Form>
                     <h6 className="heading-small text-muted mb-4">
-                      User information
+                      User information (<b>{this.state.type}</b>)
                     </h6>
 
                     <div className="pl-lg-4">
@@ -282,7 +299,7 @@ class Profile extends React.Component {
                               className="form-control-label"
                               htmlFor="input-username"
                             >
-                              Username
+                              Name
                             </label>
                             {/* <Input
                               className="form-control-alternative"
@@ -292,9 +309,10 @@ class Profile extends React.Component {
                               type="text"
                             /> */}
                             <Input
-                              readOnly
+                              // readOnly
                               className="form-control-alternative"
                               value={this.state.username}
+                              onChange={()=>{}}
                               id="input-username"
                               placeholder="Username"
                               type="text"
@@ -322,7 +340,7 @@ class Profile extends React.Component {
                         </Col>
 
                         {/* NAME */}
-                        <Col lg="6">
+                        {/* <Col lg="6">
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -339,7 +357,7 @@ class Profile extends React.Component {
                               type="text"
                             />
                           </FormGroup>
-                        </Col>
+                        </Col> */}
 
                         {/* EMAIL */}
                         <Col lg="6">
@@ -371,13 +389,21 @@ class Profile extends React.Component {
                               className="form-control-label"
                               htmlFor="input-last-name"
                             >
-                              DOB
+                              Age
                             </label>
-                            <Input
+                            {/* <Input
                               value={this.state.dob}
                               className="form-control-alternative"
                               id="input-dob"
                               type="date"
+                              onChange={(e) => this.handledob(e)}
+                              max={this.state.date}
+                            /> */}
+                            <Input
+                              value={this.state.dob}
+                              className="form-control-alternative"
+                              id="input-dob"
+                              type="number"
                               onChange={(e) => this.handledob(e)}
                               max={this.state.date}
                             />
@@ -441,10 +467,10 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="input-phont"
                               placeholder="Mobile Number"
-                              type="number"
+                              type="text"
                               value={this.state.phone}
                               onChange={(e) => this.handlephone(e)}
-                              max={999999999}
+                            // max={999999999}
                             />
                           </FormGroup>
                         </Col>
@@ -483,7 +509,9 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="input-postal-code"
                               placeholder="Postal code"
-                              type="number"
+                              type="text"
+                              value={this.state.pincode}
+                              onChange={(e) => this.handlepincode(e)}
                             />
                           </FormGroup>
                         </Col>
