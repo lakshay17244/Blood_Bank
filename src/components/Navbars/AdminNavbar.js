@@ -53,6 +53,7 @@ class AdminNavbar extends React.Component {
     if (userid.length > 0) {
       req.getUserDetails(userid).then(e => {
         localStorage.setItem("name", e.Username)
+        localStorage.setItem("type",e.Type)
         this.setState({
           name: e.Username
         })
@@ -71,7 +72,7 @@ class AdminNavbar extends React.Component {
             >
               {this.props.brandText}
             </Link>
-            <Form className="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
+            {/* <Form className="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
               <FormGroup className="mb-0">
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
@@ -82,7 +83,7 @@ class AdminNavbar extends React.Component {
                   <Input placeholder="Search" type="text" />
                 </InputGroup>
               </FormGroup>
-            </Form>
+            </Form> */}
             <Nav className="align-items-center d-none d-md-flex" navbar>
               <UncontrolledDropdown nav>
                 <DropdownToggle className="pr-0" nav>
@@ -132,9 +133,10 @@ class AdminNavbar extends React.Component {
                   </DropdownItem> */}
                   <DropdownItem to="/auth/login" tag={Link} href="#pablo" onClick={e => {
                     // e.preventDefault()
-                    localStorage.setItem('isLoggedIn', false);
-                    localStorage.setItem('userID', '');
-                    localStorage.setItem('name', 'Jessica');
+                    // localStorage.setItem('isLoggedIn', false);
+                    // localStorage.setItem('userID', '');
+                    // localStorage.setItem('name', 'Jessica');
+                    localStorage.clear();
                   }}>
                     <i className="ni ni-user-run" />
                     <span>Logout</span>

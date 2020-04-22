@@ -25,7 +25,7 @@ import AdminFooter from "components/Footers/AdminFooter.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import im from "../assets/img/brand/argon-react.png"
 import * as req from "../requests"
-import routes from "routes.js";
+import getallroutes from "routes.js";
 
 class Admin extends React.Component {
   componentDidUpdate(e) {
@@ -58,6 +58,7 @@ class Admin extends React.Component {
     });
   };
   getBrandText = path => {
+    let routes =getallroutes()
     for (let i = 0; i < routes.length; i++) {
       if (
         this.props.location.pathname.indexOf(
@@ -74,7 +75,7 @@ class Admin extends React.Component {
       <>
         <Sidebar
           {...this.props}
-          routes={routes}
+          routes={getallroutes()}
           logo={{
             innerLink: "/admin/index",
             // imgSrc: require("assets/img/brand/argon-react.png"),
@@ -88,7 +89,7 @@ class Admin extends React.Component {
             brandText={this.getBrandText(this.props.location.pathname)}
           />
           <Switch>
-            {this.getRoutes(routes)}
+            {this.getRoutes(getallroutes())}
             <Redirect from="*" to="/auth/login" />
           </Switch>
           <Container fluid>

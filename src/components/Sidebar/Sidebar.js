@@ -51,6 +51,7 @@ import {
   Row,
   Col
 } from "reactstrap";
+import getallroutes from "../../routes"
 
 var ps;
 
@@ -80,11 +81,10 @@ class Sidebar extends React.Component {
   };
   // creates the links that appear in the left menu / Sidebar
   createLinks = routes => {
-    return routes.map((prop, key) => {
+    return getallroutes().map((prop, key) => {
       if (localStorage.getItem('isLoggedIn') === 'true' && (prop.name == "Login" || prop.name == "Register")) {
         return null
       }
-      // else if(localStorage.getItem('isLoggedIn') === 'false'&& (prop.name == "Login" || prop.name == "Register"))
       else
         return (
           <NavItem key={key}>
@@ -132,6 +132,7 @@ class Sidebar extends React.Component {
             <span className="navbar-toggler-icon" />
           </button>
           {/* Brand */}
+          
           {logo ? (
             <NavbarBrand className="pt-0" {...navbarBrandProps}>
               <img
@@ -141,6 +142,10 @@ class Sidebar extends React.Component {
               />
             </NavbarBrand>
           ) : null}
+          {localStorage.getItem("type") && localStorage.getItem("type").length > 0 && 
+          
+          <h3 className="text-center text-primary">{localStorage.getItem("type")}</h3>
+          }
           {/* User */}
           <Nav className="align-items-center d-md-none">
             <UncontrolledDropdown nav>

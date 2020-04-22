@@ -24,7 +24,7 @@ import { Container, Row, Col } from "reactstrap";
 import AuthNavbar from "components/Navbars/AuthNavbar.js";
 import AuthFooter from "components/Footers/AuthFooter.js";
 
-import routes from "routes.js";
+import getallroutes from "routes.js";
 
 class Auth extends React.Component {
   componentDidMount() {
@@ -57,12 +57,14 @@ class Auth extends React.Component {
             <Container>
               <div className="header-body text-center mb-7">
                 <Row className="justify-content-center">
-                  <Col lg="5" md="6">
-                    <h1 className="text-white">Sign up today!</h1>
-                    <p className="text-lead text-light">
-                      Register here as a donor or an admin.
+                  {window.location.pathname === "/auth/register" &&
+                    <Col lg="5" md="6">
+                      <h1 className="text-white">Sign up today!</h1>
+                      <p className="text-lead text-light">
+                        Register here as a donor or an admin.
                     </p>
-                  </Col>
+                    </Col>}
+
                 </Row>
               </div>
             </Container>
@@ -86,7 +88,7 @@ class Auth extends React.Component {
           <Container className="mt--8 pb-5">
             <Row className="justify-content-center">
               <Switch>
-                {this.getRoutes(routes)}
+                {this.getRoutes(getallroutes())}
                 <Redirect from="*" to="/auth/login" />
               </Switch>
             </Row>

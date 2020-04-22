@@ -358,6 +358,9 @@ class Register extends React.Component {
 									<div className="text-center">
 										<Button className="mt-4" color="primary" type="button" onClick={this.registerUser}>Create account</Button>
 									</div>
+									<Link to="/auth/login">
+										<h4 className="text-muted text-center mt-4">Already have an account?</h4>
+									</Link>
 								</Form>
 							</CardBody>
 						</Card>

@@ -35,23 +35,22 @@ class UserHeader extends React.Component {
           }}
         >
           {/* Mask */}
-          <span className="mask bg-gradient-default opacity-8" />
+          <span className="mask bg-gradient-default opacity-5" />
           {/* Header container */}
           <Container className="d-flex align-items-center" fluid>
             <Row>
               <Col lg="7" md="10">
                 <h1 className="display-2 text-white">Hello {localStorage.getItem("name")}</h1>
                 <p className="text-white mt-0 mb-5">
-                  You can see your details here and update them.
-                  You can also add admins, register patients, etc.
+                You can see your details here and update them.
                 </p>
-                <Button
+                {/* <Button
                   color="info"
                   href="#pablo"
                   onClick={e => e.preventDefault()}
                 >
                   Edit profile
-                </Button>
+                </Button> */}
               </Col>
             </Row>
           </Container>

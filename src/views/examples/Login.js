@@ -54,13 +54,17 @@ function Login() {
   }
 
   useEffect(() => {
-    if(localStorage.getItem('isLoggedIn')=="true"){
+    if (localStorage.getItem('isLoggedIn') == "true") {
       history.push("/admin/index");
     }
     if (isLoggedIn == true) {
       localStorage.setItem('isLoggedIn', isLoggedIn);
       localStorage.setItem('userID', userID);
-      history.push("/admin/index");
+      req.getUserDetails(userID).then(r => {
+        localStorage.setItem("type", r.Type)
+        localStorage.setItem("name", r.Username)
+        history.push("/admin/index");
+      })
     }
   })
 

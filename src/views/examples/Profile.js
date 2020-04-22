@@ -33,7 +33,7 @@ import {
   InputGroupAddon,
   InputGroupText
 } from "reactstrap";
-// core components
+
 import UserHeader from "components/Headers/UserHeader.js";
 
 import * as req from "../../requests";
@@ -42,7 +42,6 @@ class Profile extends React.Component {
 
   componentDidMount() {
     let userid = localStorage.getItem("userID")
-
     if (userid.length > 0) {
       req.getUserDetails(userid).then(e => {
         console.log(e)
@@ -52,15 +51,14 @@ class Profile extends React.Component {
           userid: e.UserID,
           email: e.Email,
           dob: e.Age,
-          // bloodgroup: '',
+          bloodgroup: e.BloodGroup,
           phone: e.Phone,
           address: e.Address,
           pincode: e.Pincode,
+          WTD: e.WillingToDonate
         })
       })
     }
-
-
   }
 
   constructor(props) {
@@ -77,7 +75,6 @@ class Profile extends React.Component {
       userid: '1',
       name: '',
       email: '',
-      // dob: '2000-01-01',
       dob: 0,
       bloodgroup: '',
       phone: '',
@@ -85,9 +82,40 @@ class Profile extends React.Component {
       pincode: '',
       oldpass: '',
       newpass: '',
+      UserUpdated: false,
+      WTD: false,
+      editable: true
     }
   }
+  updateUser = () => {
+    let toSend = {
+      "UserID": localStorage.getItem("userID"),
+      "user": {
+        "Type": this.state.type,
+        "Username": this.state.username,
+        "Email": this.state.email,
+        "Age": this.state.dob,
+        "Bloodgroup": this.state.bloodgroup,
+        "Phone": this.state.phone,
+        "Address": this.state.address,
+        "Pincode": this.state.pincode,
+        "Password": this.state.newpass,
+        "WTD": this.state.WTD
+      }
+    }
 
+    req.updateUser(toSend).then(e => {
+      console.log("CREATE USER RETURNED - ", e);
+      if (e.status == 200) {
+        this.setState({
+          UserUpdated: true,
+          editable: false
+        })
+
+        setTimeout(()=>{this.setState({editable: true})},1000)
+      }
+    })
+  }
   handleusername(e) {
     this.setState({
       username: e.target.value
@@ -270,14 +298,21 @@ class Profile extends React.Component {
                       <h3 className="mb-0">My account</h3>
                     </Col>
                     <Col className="text-right" xs="4">
+
                       <Button
+                        disabled={!this.state.editable}
                         color="primary"
                         href="#pablo"
-                        onClick={e => e.preventDefault()}
+                        onClick={
+                          e => {
+                            e.preventDefault()
+                            this.updateUser()
+                          }}
                         size="sm"
                       >
-                        Save
+                        {this.state.editable ? "Save" : "Saved!"}
                       </Button>
+
                     </Col>
                   </Row>
                 </CardHeader>
@@ -309,7 +344,7 @@ class Profile extends React.Component {
                               // readOnly
                               className="form-control-alternative"
                               value={this.state.username}
-                              onChange={()=>{}}
+                              onChange={() => { }}
                               id="input-username"
                               placeholder="Username"
                               type="text"

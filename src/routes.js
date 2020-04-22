@@ -22,56 +22,135 @@ import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import Tables from "views/examples/Tables.js";
 import Icons from "views/examples/Icons.js";
+import WhereCanIDonate from "views/examples/WhereCanIDonate";
+import EmergencyBloodRequirements from "views/examples/EmergencyBloodRequirements";
+import PledgeOrgans from "views/examples/PledgeOrgans";
 
-var routes = [
-  {
-    path: "/index",
-    name: "Dashboard",
-    icon: "ni ni-tv-2 text-primary",
-    component: Index,
-    layout: "/admin"
-  },
-  // {
-  //   path: "/icons",
-  //   name: "Icons",
-  //   icon: "ni ni-planet text-blue",
-  //   component: Icons,
-  //   layout: "/admin"
-  // },
-  // {
-  //   path: "/maps",
-  //   name: "Maps",
-  //   icon: "ni ni-pin-3 text-orange",
-  //   component: Maps,
-  //   layout: "/admin"
-  // },
-  {
-    path: "/user-profile",
-    name: "User Profile",
-    icon: "ni ni-single-02 text-yellow",
-    component: Profile,
-    layout: "/admin"
-  },
-  // {
-  //   path: "/tables",
-  //   name: "Tables",
-  //   icon: "ni ni-bullet-list-67 text-red",
-  //   component: Tables,
-  //   layout: "/admin"
-  // },
-  {
-    path: "/login",
-    name: "Login",
-    icon: "ni ni-key-25 text-info",
-    component: Login,
-    layout: "/auth"
-  },
-  {
-    path: "/register",
-    name: "Register",
-    icon: "ni ni-circle-08 text-pink",
-    component: Register,
-    layout: "/auth"
+// var routes = [
+//   {
+//     path: "/index",
+//     name: "Dashboard",
+//     icon: "ni ni-tv-2 text-primary",
+//     component: Index,
+//     layout: "/admin"
+//   },{
+//     path: "/EBR",
+//     name: "Emergency Blood Requirements",
+//     icon: "ni ni-ambulance text-red",
+//     component: EmergencyBloodRequirements,
+//     layout: "/admin"
+//   },
+//   {
+//     path: "/WCID",
+//     name: "Where Can I Donate",
+//     icon: "ni ni-square-pin text-green",
+//     component: WhereCanIDonate,
+//     layout: "/admin"
+//   },
+//   // {
+//   //   path: "/icons",
+//   //   name: "Icons",
+//   //   icon: "ni ni-planet text-blue",
+//   //   component: Icons,
+//   //   layout: "/admin"
+//   // },
+//   // {
+//   //   path: "/maps",
+//   //   name: "Maps",
+//   //   icon: "ni ni-pin-3 text-orange",
+//   //   component: Maps,
+//   //   layout: "/admin"
+//   // },
+//   {
+//     path: "/user-profile",
+//     name: "User Profile",
+//     icon: "ni ni-single-02 text-yellow",
+//     component: Profile,
+//     layout: "/admin"
+//   },
+//   // {
+//   //   path: "/tables",
+//   //   name: "Tables",
+//   //   icon: "ni ni-bullet-list-67 text-red",
+//   //   component: Tables,
+//   //   layout: "/admin"
+//   // },
+//   {
+//     path: "/login",
+//     name: "Login",
+//     icon: "ni ni-key-25 text-info",
+//     component: Login,
+//     layout: "/auth"
+//   },
+//   {
+//     path: "/register",
+//     name: "Register",
+//     icon: "ni ni-circle-08 text-pink",
+//     component: Register,
+//     layout: "/auth"
+//   }
+// ];
+
+
+const getallroutes = () => {
+
+  let Routes = [
+    {
+      path: "/index",
+      name: "Dashboard",
+      icon: "ni ni-tv-2 text-primary",
+      component: Index,
+      layout: "/admin"
+    },
+    {
+      path: "/user-profile",
+      name: "User Profile",
+      icon: "ni ni-single-02 text-yellow",
+      component: Profile,
+      layout: "/admin"
+    },
+    {
+      path: "/login",
+      name: "Login",
+      icon: "ni ni-key-25 text-info",
+      component: Login,
+      layout: "/auth"
+    },
+    {
+      path: "/register",
+      name: "Register",
+      icon: "ni ni-circle-08 text-pink",
+      component: Register,
+      layout: "/auth"
+    }
+  ];
+
+  if (localStorage.getItem("type") === "Donor") {
+    Routes.push({
+      path: "/EBR",
+      name: "Emergency Blood Requirements",
+      icon: "ni ni-ambulance text-red",
+      component: EmergencyBloodRequirements,
+      layout: "/admin"
+    })
+    Routes.push(
+      {
+        path: "/WCID",
+        name: "Where Can I Donate",
+        icon: "ni ni-square-pin text-green",
+        component: WhereCanIDonate,
+        layout: "/admin"
+      })
+    Routes.push(
+      {
+        path: "/OrganPledge",
+        name: "Pledge Organs",
+        icon: "ni ni-active-40 text-green",
+        component: PledgeOrgans,
+        layout: "/admin"
+      })
   }
-];
-export default routes;
+  return Routes
+}
+
+export default getallroutes;
