@@ -25,6 +25,9 @@ import Icons from "views/examples/Icons.js";
 import WhereCanIDonate from "views/examples/WhereCanIDonate";
 import EmergencyBloodRequirements from "views/examples/EmergencyBloodRequirements";
 import PledgeOrgans from "views/examples/PledgeOrgans";
+import BloodBank from "views/examples/BloodBank";
+import Hospital from "views/examples/Hospital";
+import DonationCenter from "views/examples/DonationCenter";
 
 // var routes = [
 //   {
@@ -145,8 +148,34 @@ const getallroutes = () => {
       {
         path: "/OrganPledge",
         name: "Pledge Organs",
-        icon: "ni ni-active-40 text-green",
+        icon: "ni ni-active-40 text-purple",
         component: PledgeOrgans,
+        layout: "/admin"
+      })
+  }
+
+  if (localStorage.getItem("type") === "Admin") {
+    Routes.push({
+      path: "/BB",
+      name: "BloodBank",
+      icon: "ni ni-ambulance text-red",
+      component: BloodBank,
+      layout: "/admin"
+    })
+    Routes.push(
+      {
+        path: "/Hospital",
+        name: "Hospital",
+        icon: "ni ni-square-pin text-green",
+        component: Hospital,
+        layout: "/admin"
+      })
+    Routes.push(
+      {
+        path: "/DonationCenter",
+        name: "Donation Center",
+        icon: "ni ni-active-40 text-purple",
+        component: DonationCenter,
         layout: "/admin"
       })
   }

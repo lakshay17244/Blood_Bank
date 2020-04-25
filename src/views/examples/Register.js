@@ -82,6 +82,7 @@ class Register extends React.Component {
 		req.createUser(toSend).then(e => {
 			console.log("CREATE USER RETURNED - ", e);
 			if (e.status == 200) {
+				localStorage.setItem("UserMade",1)
 				this.setState({
 					UserMade: true,
 					UserIdMade: e.userid

@@ -5,6 +5,97 @@ import axios from 'axios';
 
 const URL = "http://127.0.0.1:5000/"
 
+export const getDonatedBlood = async (UserID) => {
+    const details = "Couldn't Do the request";
+    await axios.get(URL + `getDonatedBlood/` + UserID)
+        .then(res => {
+            details = res.data;
+            console.log(details);
+        }).catch(e => {
+            details = e
+            console.log("ERROR")
+        });
+    return details;
+}
+
+
+export const addEmployee = async (toSend) => {
+    const details = "Couldn't Do the request";
+
+    await axios({
+        method: 'post',
+        url: URL + "addemployee",
+        headers: { 'Content-Type': 'application/json' },
+        data: toSend
+    }).then(res => {
+        console.log(res)
+        details = res.data
+    }).catch(e => {
+        console.log("ERROR | " + e)
+        details = e
+    });
+    return details
+}
+
+export const removeEmployee = async (toSend) => {
+    const details = "Couldn't Do the request";
+
+    await axios({
+        method: 'post',
+        url: URL + "rmvemployee",
+        headers: { 'Content-Type': 'application/json' },
+        data: toSend
+    }).then(res => {
+        console.log(res)
+        details = res.data
+    }).catch(e => {
+        console.log("ERROR | " + e)
+        details = e
+    });
+    return details
+}
+
+export const getAdmins = async (type, UserID) => {
+    const details = "Couldn't Do the request";
+
+    let path = "";
+
+    switch (type) {
+        case "BB":
+            path = "getbbemployees/"
+            break;
+        case "DC":
+            path = "getdcemployees/"
+            break;
+        case "H":
+            path = "gethsemployees/"
+            break;
+    }
+    await axios.get(URL + path + UserID)
+        .then(res => {
+            details = res.data;
+            // console.log(details);
+        }).catch(e => {
+            details = e
+            console.log("ERROR")
+        });
+    return details;
+}
+
+
+export const getAdminOrganization = async (UserId) => {
+    const details = "Couldn't Do the request";
+    await axios.get(URL + `getAdminOrganization/` + UserId)
+        .then(res => {
+            details = res.data;
+            // console.log(details);
+        }).catch(e => {
+            details = e
+            console.log("ERROR")
+        });
+    return details;
+}
+
 
 export const getemergencyrequirements = async (UserId) => {
     const details = "Couldn't Do the request";
@@ -18,6 +109,7 @@ export const getemergencyrequirements = async (UserId) => {
         });
     return details;
 }
+
 
 export const getnearbyhospitals = async (UserId) => {
     const details = "Couldn't Do the request";
@@ -45,7 +137,6 @@ export const getallhospitals = async () => {
         });
     return details;
 }
-
 
 
 export const getnearbydc = async (UserId) => {
@@ -76,22 +167,22 @@ export const getalldc = async () => {
 }
 
 
-export const registerOrganization = async (organization,toSend) => {
+export const registerOrganization = async (organization, toSend) => {
     const details = "Couldn't Do the request";
     console.log("Registering this -> ", organization)
-    let path =""
+    let path = ""
 
     switch (organization) {
         case "Hospital":
-            path="addhospital"
+            path = "addhospital"
             break;
 
         case "BloodBank":
-            path="addbloodbank"
+            path = "addbloodbank"
             break;
 
         case "DonationCenter":
-            path="adddonationcenter"
+            path = "adddonationcenter"
             break;
 
         default: return "ERROR"
@@ -146,6 +237,7 @@ export const donateBlood = async (donationDetails) => {
     return details
 }
 
+
 export const updateUser = async (userDetails) => {
     const details = "Couldn't Do the request";
     console.log("Updating user", userDetails)
@@ -170,6 +262,8 @@ export const updateUser = async (userDetails) => {
     // return dummy
 
 }
+
+
 export const createUser = async (userDetails) => {
     const details = "Couldn't Do the request";
     console.log("Creating user", userDetails)
@@ -232,6 +326,7 @@ export const loginAPI = async (UserId, Password) => {
     // }
     // return dummy
 }
+
 
 export const getUserDetails = async (UserId) => {
     const details = "Couldn't Do the request";

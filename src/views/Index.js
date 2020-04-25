@@ -59,6 +59,7 @@ import {
 
 import Header from "components/Headers/Header.js";
 import * as req from "../requests"
+import AddRemoveAdmins from "../components/AddRemoveAdmins"
 
 
 const Index = () => {
@@ -86,7 +87,8 @@ const Index = () => {
   const [donatedBloodUserID, setdonatedBloodUserID] = useState('')
   const [showDonationDate, setshowDonationDate] = useState(true)
   const [donations, setDonations] = useState('')
-  const [requestCompleted, setrequestCompleted] = useState(false);
+  const [requestCompleted, setrequestCompleted] = useState(false)
+  const [requestCompleted1, setrequestCompleted1] = useState(false)
 
   // Register Organization
   const [registerOrganizationMessage, setregisterOrganizationMessage] = useState('')
@@ -101,6 +103,15 @@ const Index = () => {
       req.getPastDonations(localStorage.getItem('userID')).then((donations) => {
         setDonations(donations)
         setrequestCompleted(true)
+      })
+    }
+
+
+    if (!requestCompleted1) {
+      req.getAdminOrganization(localStorage.getItem('userID')).then((result) => {
+        console.log("====", result)
+        sethasOrganization(result)
+        setrequestCompleted1(true)
       })
     }
 
@@ -272,7 +283,53 @@ const Index = () => {
 
           // ----------------------------------------- ADMIN PAGE -----------------------------------------
           <>
-            {hasOrganization ?
+            {(hasOrganization["BBE"] == 1 || hasOrganization["DCE"] == 1 || hasOrganization["HE"] == 1) ?
+              <>
+
+                <Row >
+                  <Col xl={4} l={4} m={4}></Col>
+                  <Col xl={4} l={4} m={4}>
+                    <Card className="bg-secondary shadow border-0">
+                      <CardHeader className="bg-gradient-info shadow border-0">
+                        <h2 className="text-white text-center mb-0">Your Organizations</h2>
+                      </CardHeader>
+                      <CardBody className="text-center">
+
+                        <Row className="text-center">
+                          <Col>
+
+                            {hasOrganization["DCE"]===1 &&
+                              <Link to="/admin/DonationCenter">
+                                <Button className="my-2 mx-2" color="primary" type="button" onClick={() => { }}>Donation Center</Button>
+                              </Link>}
+
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col>
+
+                            {hasOrganization["BBE"]===1 &&
+                              <Link to="/admin/BB">
+                                <Button className="my-2 mx-2" color="primary" type="button" onClick={() => { }}>Blood Bank</Button>
+                              </Link>}
+
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col>
+                            {hasOrganization["HE"]===1 &&
+                              <Link to="/admin/Hospital">
+                                <Button className="my-2 mx-2" color="primary" type="button" onClick={() => { }}>Hospital</Button>
+                              </Link>}
+                          </Col>
+                        </Row>
+                      </CardBody>
+                    </Card>
+                  </Col>
+                  <Col xl={4} l={4} m={4}></Col>
+                </Row>
+              </>
+              :
               /* NO ORGANIZATION */
               <Row >
                 <Col xl={4} l={4} m={4}></Col>
@@ -285,18 +342,8 @@ const Index = () => {
                 </Col>
                 <Col xl={4} l={4} m={4}></Col>
               </Row>
-              :
-              <>
-                <Row>
-                  <Col className="mb-5 mb-xl-0" xl={8}></Col>
-                  <Col xl={4}></Col>
-                </Row>
 
-                <Row className="mt-5">
-                  <Col className="mb-5 mb-xl-0" xl={8}></Col>
-                  <Col xl={4}></Col>
-                </Row>
-              </>}
+            }
 
 
             <Row className="mt-5">
