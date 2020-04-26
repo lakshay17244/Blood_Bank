@@ -157,7 +157,7 @@ const getallroutes = () => {
   if (localStorage.getItem("type") === "Admin") {
     Routes.push({
       path: "/BB",
-      name: "BloodBank",
+      name: "Blood Bank",
       icon: "ni ni-ambulance text-red",
       component: BloodBank,
       layout: "/admin"

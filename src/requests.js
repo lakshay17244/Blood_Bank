@@ -1,12 +1,120 @@
-import React from 'react';
-
 import axios from 'axios';
 
 
 const URL = "http://127.0.0.1:5000/"
 
+
+export const getAssociatedDonationCenter = async (UserID) => {
+    let details = "Couldn't Do the request";
+    await axios.get(URL + `getAssociatedDonationCenter/` + UserID)
+        .then(res => {
+            details = res.data;
+            // console.log(details);
+        }).catch(e => {
+            details = e
+            console.log("ERROR")
+        });
+    return details;
+}
+
+
+export const sendBloodToBloodBank = async (toSend) => {
+    let details = "Couldn't Do the request";
+    // console.log("Updating DC", toSend)
+    await axios({
+        method: 'post',
+        url: URL + "sendBloodToBloodBank",
+        headers: { 'Content-Type': 'application/json' },
+        data: toSend
+    }).then(res => {
+        details = res.data
+    }).catch(e => {
+        console.log("ERROR | " + e)
+        details = e
+    });
+    return details
+
+}
+
+export const getBBDetails = async (UserID) => {
+    let details = "Couldn't Do the request";
+    await axios.get(URL + `getBBDetails/` + UserID)
+        .then(res => {
+            details = res.data;
+            // console.log(details);
+        }).catch(e => {
+            details = e
+            console.log("ERROR")
+        });
+    return details;
+}
+
+export const getDCDetails = async (UserID) => {
+    let details = "Couldn't Do the request";
+    await axios.get(URL + `getDCDetails/` + UserID)
+        .then(res => {
+            details = res.data;
+            // console.log(details);
+        }).catch(e => {
+            details = e
+            console.log("ERROR")
+        });
+    return details;
+}
+
+export const updateBB = async (toSend) => {
+    let details = "Couldn't Do the request";
+    // console.log("Updating DC", toSend)
+    await axios({
+        method: 'post',
+        url: URL + "updateBB",
+        headers: { 'Content-Type': 'application/json' },
+        data: toSend
+    }).then(res => {
+        details = res.data
+    }).catch(e => {
+        console.log("ERROR | " + e)
+        details = e
+    });
+    return details
+
+}
+
+export const updateDC = async (toSend) => {
+    let details = "Couldn't Do the request";
+    // console.log("Updating DC", toSend)
+    await axios({
+        method: 'post',
+        url: URL + "updateDC",
+        headers: { 'Content-Type': 'application/json' },
+        data: toSend
+    }).then(res => {
+        details = res.data
+    }).catch(e => {
+        console.log("ERROR | " + e)
+        details = e
+    });
+    return details
+
+}
+
+export const getAssociatedBloodBank = async (UserID) => {
+    let details = "Couldn't Do the request";
+    await axios.get(URL + `getAssociatedBloodBank/` + UserID)
+        .then(res => {
+            details = res.data;
+            // console.log(details);
+        }).catch(e => {
+            details = e
+            console.log("ERROR")
+        });
+    return details;
+}
+
+
+
 export const getDonatedBlood = async (UserID) => {
-    const details = "Couldn't Do the request";
+    let details = "Couldn't Do the request";
     await axios.get(URL + `getDonatedBlood/` + UserID)
         .then(res => {
             details = res.data;
@@ -20,7 +128,7 @@ export const getDonatedBlood = async (UserID) => {
 
 
 export const addEmployee = async (toSend) => {
-    const details = "Couldn't Do the request";
+    let details = "Couldn't Do the request";
 
     await axios({
         method: 'post',
@@ -38,7 +146,7 @@ export const addEmployee = async (toSend) => {
 }
 
 export const removeEmployee = async (toSend) => {
-    const details = "Couldn't Do the request";
+    let details = "Couldn't Do the request";
 
     await axios({
         method: 'post',
@@ -56,7 +164,7 @@ export const removeEmployee = async (toSend) => {
 }
 
 export const getAdmins = async (type, UserID) => {
-    const details = "Couldn't Do the request";
+    let details = "Couldn't Do the request";
 
     let path = "";
 
@@ -84,7 +192,7 @@ export const getAdmins = async (type, UserID) => {
 
 
 export const getAdminOrganization = async (UserId) => {
-    const details = "Couldn't Do the request";
+    let details = "Couldn't Do the request";
     await axios.get(URL + `getAdminOrganization/` + UserId)
         .then(res => {
             details = res.data;
@@ -98,7 +206,7 @@ export const getAdminOrganization = async (UserId) => {
 
 
 export const getemergencyrequirements = async (UserId) => {
-    const details = "Couldn't Do the request";
+    let details = "Couldn't Do the request";
     await axios.get(URL + `getemergencyrequirements/` + UserId)
         .then(res => {
             details = res.data;
@@ -112,7 +220,7 @@ export const getemergencyrequirements = async (UserId) => {
 
 
 export const getnearbyhospitals = async (UserId) => {
-    const details = "Couldn't Do the request";
+    let details = "Couldn't Do the request";
     await axios.get(URL + `getnearbyhospitals/` + UserId)
         .then(res => {
             details = res.data;
@@ -126,7 +234,7 @@ export const getnearbyhospitals = async (UserId) => {
 
 
 export const getallhospitals = async () => {
-    const details = "Couldn't Do the request";
+    let details = "Couldn't Do the request";
     await axios.get(URL + `getallhospitals`)
         .then(res => {
             details = res.data;
@@ -140,7 +248,7 @@ export const getallhospitals = async () => {
 
 
 export const getnearbydc = async (UserId) => {
-    const details = "Couldn't Do the request";
+    let details = "Couldn't Do the request";
     await axios.get(URL + `getnearbydc/` + UserId)
         .then(res => {
             details = res.data;
@@ -154,7 +262,7 @@ export const getnearbydc = async (UserId) => {
 
 
 export const getalldc = async () => {
-    const details = "Couldn't Do the request";
+    let details = "Couldn't Do the request";
     await axios.get(URL + `getalldc`)
         .then(res => {
             details = res.data;
@@ -168,7 +276,7 @@ export const getalldc = async () => {
 
 
 export const registerOrganization = async (organization, toSend) => {
-    const details = "Couldn't Do the request";
+    let details = "Couldn't Do the request";
     console.log("Registering this -> ", organization)
     let path = ""
 
@@ -205,7 +313,7 @@ export const registerOrganization = async (organization, toSend) => {
 
 
 export const getPastDonations = async (UserId) => {
-    const details = "Couldn't Do the request";
+    let details = "Couldn't Do the request";
     let send = URL + `getpastdonations/` + UserId
     await axios.get(URL + `getpastdonations/` + UserId)
         .then(res => {
@@ -220,7 +328,7 @@ export const getPastDonations = async (UserId) => {
 
 
 export const donateBlood = async (donationDetails) => {
-    const details = "Couldn't Do the request";
+    let details = "Couldn't Do the request";
     console.log("Donating this -> ", donationDetails)
     await axios({
         method: 'post',
@@ -239,7 +347,7 @@ export const donateBlood = async (donationDetails) => {
 
 
 export const updateUser = async (userDetails) => {
-    const details = "Couldn't Do the request";
+    let details = "Couldn't Do the request";
     console.log("Updating user", userDetails)
     await axios({
         method: 'post',
@@ -265,7 +373,7 @@ export const updateUser = async (userDetails) => {
 
 
 export const createUser = async (userDetails) => {
-    const details = "Couldn't Do the request";
+    let details = "Couldn't Do the request";
     console.log("Creating user", userDetails)
     await axios({
         method: 'post',
@@ -329,7 +437,7 @@ export const loginAPI = async (UserId, Password) => {
 
 
 export const getUserDetails = async (UserId) => {
-    const details = "Couldn't Do the request";
+    let details = "Couldn't Do the request";
 
     await axios.get(URL + `showprofile/` + UserId)
         .then(res => {

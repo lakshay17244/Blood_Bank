@@ -64,11 +64,32 @@ import AddRemoveAdmins from "../../components/AddRemoveAdmins"
 const DonationCenter = () => {
 
   const [hasOrganization, sethasOrganization] = useState(true)
+
+  const [requestCompleted3, setrequestCompleted3] = useState(false)
+  const [requestCompleted2, setrequestCompleted2] = useState(false)
   const [requestCompleted1, setrequestCompleted1] = useState(false)
   const [requestCompleted, setrequestCompleted] = useState(false)
+
+
+
   const [donatedBlood, setdonatedBlood] = useState([])
+  const [BBDetails, setBBDetails] = useState([])
+
+  const [DCDetails, setDCDetails] = useState([])
+
+  const [DCID, setDCID] = useState('')
+  const [DCName, setDCName] = useState('')
+  const [DCAddress, setDCAddress] = useState('')
+  const [Pincode, setPincode] = useState('')
+
+  const [saved, setsaved] = useState(false)
+  const [bloodsent, setbloodsent] = useState(false)
 
   useEffect(() => {
+
+    if (!requestCompleted) {
+      getDonatedBlood()
+    }
     if (!requestCompleted1) {
       req.getAdminOrganization(localStorage.getItem('userID')).then((result) => {
         // console.log(result)
@@ -76,15 +97,72 @@ const DonationCenter = () => {
         setrequestCompleted1(true)
       })
     }
-    if (!requestCompleted) {
-      req.getDonatedBlood(localStorage.getItem('userID')).then((result) => {
-        console.log("====",result)
-        setdonatedBlood(result)
-        setrequestCompleted(true)
+    if (!requestCompleted2) {
+      req.getAssociatedBloodBank(localStorage.getItem('userID')).then((result) => {
+        // console.log(result)
+        setBBDetails(result)
+        setrequestCompleted2(true)
       })
     }
+
+    if (!requestCompleted3) {
+      getDCDetails()
+    }
+
   })
 
+  const getDonatedBlood = () => {
+    req.getDonatedBlood(localStorage.getItem('userID')).then((result) => {
+      setdonatedBlood(result)
+      setrequestCompleted(true)
+    })
+  }
+
+  const getDCDetails = () => {
+    req.getDCDetails(localStorage.getItem('userID')).then((result) => {
+      console.log(result)
+      setDCDetails(result)
+      if (result && result.length > 0) {
+        let DC = result[0]
+        setDCName(DC.Name)
+        setDCAddress(DC.Address)
+        setDCID(DC.DCID)
+        setPincode(DC.Pincode)
+      }
+      setrequestCompleted3(true)
+    })
+  }
+
+  const updateDCDetails = () => {
+    let toSend = {
+      "DCID": DCID,
+      "Name": DCName,
+      "Address": DCAddress,
+      "Pincode": Pincode
+    }
+    req.updateDC(toSend).then(e => {
+      // console.log("UPDATE DC DETAILS - ", e)
+      if (e.status == 200) {
+        getDCDetails()
+        setsaved(true)
+        setTimeout(() => { setsaved(false) }, 1000)
+      }
+    })
+  }
+
+  const sendBloodToBloodBank = () => {
+    let toSend = {
+      "DCID": DCID
+    }
+    req.sendBloodToBloodBank(toSend).then(e => {
+      console.log("SEND BLOOD TO BLOOD BANK - ", e)
+      if (e.status == 200) {
+        getDonatedBlood()
+        setbloodsent(true)
+        setTimeout(() => { setbloodsent(false) }, 2000)
+      }
+    })
+  }
 
   return (
     <>
@@ -98,38 +176,149 @@ const DonationCenter = () => {
 
 
         <Row className="mt-6">
-          <Col xl={2} l={2} m={2}></Col>
-          <Col xl={8} l={8} m={8}>
-            {donatedBlood && donatedBlood.length > 0 ?
-              <div className='scrollspy-example-2'>
-                <Card className="shadow" >
-                  <CardHeader className="border-0 text-center">
-                    <h3 className="mb-0">Blood Donation Records</h3>
+          <Col xl={6} l={6} m={6}>
+            {BBDetails.length > 0 ?
+              <Card className=" bg-secondary shadow border-0 mt-4">
+                <CardHeader className="bg-transparent py-4">
+                  <h2 className="text-center my-0">Associated Blood Bank</h2>
+                </CardHeader>
+                <CardBody>
+                  <FormGroup><label className="form-control-label">BBID <h2>{BBDetails[0].BBID}</h2></label></FormGroup>
+                  <FormGroup><label className="form-control-label">Name <h2>{BBDetails[0].Name}</h2></label></FormGroup>
+                  <FormGroup><label className="form-control-label">Address <h2>{BBDetails[0].Address}</h2></label></FormGroup>
+                  <FormGroup><label className="form-control-label">Pincode <h2>{BBDetails[0].Pincode}</h2></label></FormGroup>
+                </CardBody>
+              </Card> :
+              <Card className=" bg-secondary shadow border-0 mt-4">
+                <CardHeader className="bg-transparent py-4">
+                  <h2 className="text-center my-0">Associated Blood Bank</h2>
+                </CardHeader>
+                <CardBody className="text-center">
+                  <h3> No associated Blood Bank found with this Donation Center</h3>
+                </CardBody>
+              </Card>
+            }
 
-                  </CardHeader>
-                  <Table className="align-items-center table-flush mb-4" responsive>
-                    <thead className="thead-light">
-                      <tr>
-                        <th scope="col">UserID</th>
-                        <th scope="col">Blood Group</th>
-                        <th scope="col">Date Recieved</th>
-                        <th scope="col">Sent To Blood Bank</th>
-                        <th scope="col" />
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {donatedBlood.map((res, index) => {
-                        return <tr key={index}>
-                          <td> {res.UserID} </td>
-                          <td> {res.BloodGroup} </td>
-                          <td> {res.DateRecieved} </td>
-                          <td> {res.Available} </td>
+
+            <Card className="bg-secondary shadow border-0 mt-5">
+              <CardHeader className="bg-transparent pb-5">
+                <h2 className="text-center mb-0">Donation Center Settings</h2>
+              </CardHeader>
+              <CardBody>
+                <Form role="form">
+
+                  {/* DCID */}
+                  <FormGroup>
+                    <label
+                      className="form-control-label"
+                      htmlFor="input-userid"
+                    > DCID </label>
+                    <Input
+                      readOnly
+                      value={DCID}
+                      className="form-control-alternative"
+                      placeholder="DCID"
+                      type="text"
+                    />
+                  </FormGroup>
+
+                  {/* Name */}
+                  <FormGroup>
+                    <label
+                      className="form-control-label"
+                      htmlFor="input-userid"
+                    > Name </label>
+                    <Input
+                      value={DCName}
+                      className="form-control-alternative"
+                      placeholder="Name"
+                      onChange={(e) => setDCName(e.target.value)}
+                      type="text"
+                    />
+                  </FormGroup>
+
+
+                  {/* Address */}
+                  <FormGroup>
+                    <label
+                      className="form-control-label"
+                      htmlFor="input-userid"
+                    > Address </label>
+                    <Input
+                      value={DCAddress}
+                      className="form-control-alternative"
+                      placeholder="Address"
+                      onChange={(e) => setDCAddress(e.target.value)}
+                      type="text"
+                    />
+                  </FormGroup>
+
+                  {/* Pincode */}
+
+                  <FormGroup>
+                    <label
+                      className="form-control-label"
+                      htmlFor="input-userid"
+                    > Pincode </label>
+                    <Input
+                      value={Pincode}
+                      className="form-control-alternative"
+                      placeholder="Pincode"
+                      onChange={(e) => setPincode(e.target.value)}
+                      type="text"
+                    />
+                  </FormGroup>
+
+                  <div className="text-center">
+                    <Button className="my-4" disabled={saved} color="primary" type="button" onClick={updateDCDetails}>{saved ? "Saved!" : "Save"}</Button>
+                  </div>
+                </Form>
+              </CardBody>
+            </Card>
+
+          </Col>
+          <Col xl={6} l={6} m={6}>
+            {donatedBlood && donatedBlood.length > 0 ?
+              <>
+                <div className='scrollspy-example-2 mt-4'>
+                  <Card className="shadow" >
+                    <CardHeader className="border-0 text-center">
+                      <h3 className="mb-0">Blood Donation Records</h3>
+
+                    </CardHeader>
+                    <Table className="align-items-center table-flush mb-4" responsive>
+                      <thead className="thead-light">
+                        <tr>
+                          <th scope="col">UserID</th>
+                          <th scope="col">Blood Group</th>
+                          <th scope="col">Date Recieved</th>
+                          <th scope="col">Sent To Blood Bank</th>
+                          <th scope="col" />
                         </tr>
-                      })}
-                    </tbody>
-                  </Table>
+                      </thead>
+                      <tbody>
+                        {donatedBlood.map((res, index) => {
+                          return <tr key={index}>
+                            <td> {res.UserID} </td>
+                            <td> {res.BloodGroup} </td>
+                            <td> {res.DateRecieved} </td>
+                            <td> {res.Available == 0 ? "No" : "Yes"} </td>
+                          </tr>
+                        })}
+                      </tbody>
+                    </Table>
+                  </Card >
+                </div>
+                <Card className="shadow mt-4" >
+                  <CardHeader className="border-0 text-center">
+                    <h3 className="mb-0">Send Blood To Blood Bank</h3>
+                  </CardHeader>
+                  <CardBody className="text-center">
+                    <p>Send the collected blood stored with your donation center to the blood bank</p>
+                    <Button className="mt-3" disabled={bloodsent} color="primary" type="button" onClick={sendBloodToBloodBank}>{bloodsent ? "SENT!" : "SEND"}</Button>
+                  </CardBody>
                 </Card >
-              </div>
+              </>
               :
               <Card className="shadow mb-5" >
                 <CardBody>
@@ -137,10 +326,15 @@ const DonationCenter = () => {
                 </CardBody>
               </Card >}
           </Col>
-          <Col xl={2} l={2} m={2}></Col>
+
         </Row>
 
+        <Row className="mt-6">
 
+          <Col xl={6}>
+          </Col>
+          <Col xl={6}></Col>
+        </Row>
 
       </Container>
 
