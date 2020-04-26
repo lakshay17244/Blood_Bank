@@ -138,7 +138,7 @@ const Index = () => {
       'UserID': donatedBloodUserID.split(","),
       'DateRecieved': dateToday,
       'AdminID': localStorage.getItem("userID"),
-      'Amount': donatedBloodAmount.split(","),
+      // 'Amount': donatedBloodAmount.split(","),
       // 'DCID': donatedBloodDCID,
       // 'Available': 1,
     }
@@ -178,6 +178,8 @@ const Index = () => {
   const registerOrganization = () => {
     setregisterOrganizationMessage("")
     let toSend = {}
+    let otherAdmins = addAdmin.split(',')
+    let myID = localStorage.getItem("userID")
     switch (registerButton) {
 
       case "Hospital":
@@ -185,13 +187,13 @@ const Index = () => {
           'Name': name,
           'Address': address,
           'Pincode': pincode,
-          'UserID': addAdmin.split(','), //Comma separated user IDs array
+          'UserID': addAdmin.length > 0 ? [...otherAdmins, myID] : [myID], //Comma separated user IDs array
           'AdmittedPatients': patients
         }
         req.registerOrganization("Hospital", toSend).then(r => {
           setregisterOrganizationMessage(r)
         })
-        // console.log(toSend)
+        console.log(toSend)
         break;
 
       case "BloodBank":
@@ -199,7 +201,7 @@ const Index = () => {
           'Name': name,
           'Address': address,
           'Pincode': pincode,
-          'UserID': addAdmin.split(','), //Comma separated user IDs array
+          'UserID': addAdmin.length > 0 ? [...otherAdmins, myID] : [myID], //Comma separated user IDs array
           'TotalCapacity': totalcapacity,
           'CapacityLeft': capacityleft
         }
@@ -214,7 +216,7 @@ const Index = () => {
           'Name': name,
           'Address': address,
           'Pincode': pincode,
-          'UserID': addAdmin.split(','), //Comma separated user IDs array
+          'UserID': otherAdmins.length > 0 ? [...otherAdmins, myID] : [myID], //Comma separated user IDs array
           'BBID': associatedbbid
         }
         // console.log(toSend)
@@ -298,7 +300,7 @@ const Index = () => {
                         <Row className="text-center">
                           <Col>
 
-                            {hasOrganization["DCE"]===1 &&
+                            {hasOrganization["DCE"] === 1 &&
                               <Link to="/admin/DonationCenter">
                                 <Button className="my-2 mx-2" color="primary" type="button" onClick={() => { }}>Donation Center</Button>
                               </Link>}
@@ -308,7 +310,7 @@ const Index = () => {
                         <Row>
                           <Col>
 
-                            {hasOrganization["BBE"]===1 &&
+                            {hasOrganization["BBE"] === 1 &&
                               <Link to="/admin/BB">
                                 <Button className="my-2 mx-2" color="primary" type="button" onClick={() => { }}>Blood Bank</Button>
                               </Link>}
@@ -317,7 +319,7 @@ const Index = () => {
                         </Row>
                         <Row>
                           <Col>
-                            {hasOrganization["HE"]===1 &&
+                            {hasOrganization["HE"] === 1 &&
                               <Link to="/admin/Hospital">
                                 <Button className="my-2 mx-2" color="primary" type="button" onClick={() => { }}>Hospital</Button>
                               </Link>}
@@ -369,7 +371,7 @@ const Index = () => {
                       </FormGroup>
 
                       {/* Amount */}
-                      <FormGroup>
+                      {/* <FormGroup>
                         <InputGroup className="input-group-alternative mb-3">
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText>
@@ -378,7 +380,7 @@ const Index = () => {
                           </InputGroupAddon>
                           <Input placeholder="Amounts (Comma Separated)" type="text" value={donatedBloodAmount} onChange={(e) => setdonatedBloodAmount(e.target.value)} />
                         </InputGroup>
-                      </FormGroup>
+                      </FormGroup> */}
 
                       <div className="text-center">
                         <Button className="my-4" color="primary" type="button" onClick={donateBlood}>Submit</Button>

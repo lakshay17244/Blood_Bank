@@ -68,6 +68,7 @@ const BloodBank = () => {
   const [requestCompleted, setrequestCompleted] = useState(false)
   const [requestCompleted1, setrequestCompleted1] = useState(false)
   const [requestCompleted2, setrequestCompleted2] = useState(false)
+  const [requestCompleted3, setrequestCompleted3] = useState(false)
 
   const [associatedDCs, setassociatedDCs] = useState(true)
 
@@ -80,6 +81,8 @@ const BloodBank = () => {
   const [saved, setsaved] = useState(false)
 
   const [BBDetails, setBBDetails] = useState([])
+
+  const [BBStoredBlood, setBBStoredBlood] = useState([])
 
   const updateBBDetails = () => {
     let toSend = {
@@ -102,7 +105,6 @@ const BloodBank = () => {
 
   const getBBDetails = () => {
     req.getBBDetails(localStorage.getItem('userID')).then((result) => {
-      console.log(result)
       setBBDetails(result)
       if (result && result.length > 0) {
         let BB = result[0]
@@ -116,9 +118,28 @@ const BloodBank = () => {
     })
   }
 
+  const getBBStoredBlood = () => {
+    req.getBBStoredBlood(localStorage.getItem('userID')).then((result) => {
+      setBBStoredBlood(result)
+      setrequestCompleted3(true)
+    })
+  }
+
+  const sumTotalStoredBlood = () => {
+    let total = 0
+    BBStoredBlood && BBStoredBlood.map(res => {
+      total = total + res.Amount
+    })
+    return total
+  }
+
   useEffect(() => {
-    if (!requestCompleted2) {
+    if (!requestCompleted3) {
       getBBDetails()
+    }
+
+    if (!requestCompleted2) {
+      getBBStoredBlood()
     }
 
     if (!requestCompleted1) {
@@ -149,106 +170,119 @@ const BloodBank = () => {
         {/* ----------------------------------------- BLOOD BANK PAGE ----------------------------------------- */}
 
         <AddRemoveAdmins hasOrganization={hasOrganization} BB={true} HS={false} DC={false} />
+        {hasOrganization && hasOrganization.BBE === 1 ?
 
-
-        <Row className="mt-6">
-          <Col xl={6} l={6} m={6}>
-            <Card className="bg-secondary shadow border-0 mt-4">
-              <CardHeader className="bg-transparent pb-5">
-                <h2 className="text-center mb-0">Blood Bank Details</h2>
-              </CardHeader>
-              <CardBody>
-                <Form role="form">
-
-                  {/* BBID */}
-                  <FormGroup>
-                    <label
-                      className="form-control-label"
-                      htmlFor="input-userid"
-                    > BBID </label>
-                    <Input
-                      readOnly
-                      value={BBID}
-                      className="form-control-alternative"
-                      placeholder="BBID"
-                      type="text"
-                    />
-                  </FormGroup>
-
-                  {/* Name */}
-                  <FormGroup>
-                    <label
-                      className="form-control-label"
-                      htmlFor="input-userid"
-                    > Name </label>
-                    <Input
-                      value={BBName}
-                      className="form-control-alternative"
-                      placeholder="Name"
-                      onChange={(e) => setBBName(e.target.value)}
-                      type="text"
-                    />
-                  </FormGroup>
-
-
-                  {/* Address */}
-                  <FormGroup>
-                    <label
-                      className="form-control-label"
-                      htmlFor="input-userid"
-                    > Address </label>
-                    <Input
-                      value={BBAddress}
-                      className="form-control-alternative"
-                      placeholder="Address"
-                      onChange={(e) => setBBAddress(e.target.value)}
-                      type="text"
-                    />
-                  </FormGroup>
-
-                  {/* Pincode */}
-
-                  <FormGroup>
-                    <label
-                      className="form-control-label"
-                      htmlFor="input-userid"
-                    > Pincode </label>
-                    <Input
-                      value={BBPincode}
-                      className="form-control-alternative"
-                      placeholder="Pincode"
-                      onChange={(e) => setBBPincode(e.target.value)}
-                      type="text"
-                    />
-                  </FormGroup>
-
-                  {/* Total Capacity */}
-
-                  <FormGroup>
-                    <label
-                      className="form-control-label"
-                      htmlFor="input-userid"
-                    > Total Capacity </label>
-                    <Input
-                      value={BBCapacity}
-                      className="form-control-alternative"
-                      placeholder="Total Capacity"
-                      onChange={(e) => setBBCapacity(e.target.value)}
-                      type="text"
-                    />
-                  </FormGroup>
-
-                  <div className="text-center">
-                    <Button className="my-4" disabled={saved} color="primary" type="button" onClick={updateBBDetails}>{saved ? "Saved!" : "Save"}</Button>
-                  </div>
-                </Form>
-              </CardBody>
-            </Card>
-
-          </Col>
-          {associatedDCs && associatedDCs.length > 0 ?
+          <Row className="mt-6">
             <Col xl={6} l={6} m={6}>
-              <div className='scrollspy-example-2 mt-4'>
+
+              {BBDetails && BBDetails.length > 0 ?
+                <Card className="bg-secondary shadow border-0 mt-4">
+                  <CardHeader className="bg-transparent pb-5">
+                    <h2 className="text-center mb-0">Blood Bank Details</h2>
+                  </CardHeader>
+                  <CardBody>
+                    <Form role="form">
+
+                      {/* BBID */}
+                      <FormGroup>
+                        <label
+                          className="form-control-label"
+                          htmlFor="input-userid"
+                        > BBID </label>
+                        <Input
+                          readOnly
+                          value={BBID}
+                          className="form-control-alternative"
+                          placeholder="BBID"
+                          type="text"
+                        />
+                      </FormGroup>
+
+                      {/* Name */}
+                      <FormGroup>
+                        <label
+                          className="form-control-label"
+                          htmlFor="input-userid"
+                        > Name </label>
+                        <Input
+                          value={BBName}
+                          className="form-control-alternative"
+                          placeholder="Name"
+                          onChange={(e) => setBBName(e.target.value)}
+                          type="text"
+                        />
+                      </FormGroup>
+
+
+                      {/* Address */}
+                      <FormGroup>
+                        <label
+                          className="form-control-label"
+                          htmlFor="input-userid"
+                        > Address </label>
+                        <Input
+                          value={BBAddress}
+                          className="form-control-alternative"
+                          placeholder="Address"
+                          onChange={(e) => setBBAddress(e.target.value)}
+                          type="text"
+                        />
+                      </FormGroup>
+
+                      {/* Pincode */}
+
+                      <FormGroup>
+                        <label
+                          className="form-control-label"
+                          htmlFor="input-userid"
+                        > Pincode </label>
+                        <Input
+                          value={BBPincode}
+                          className="form-control-alternative"
+                          placeholder="Pincode"
+                          onChange={(e) => setBBPincode(e.target.value)}
+                          type="text"
+                        />
+                      </FormGroup>
+
+                      {/* Total Capacity */}
+
+                      <FormGroup>
+                        <label
+                          className="form-control-label"
+                          htmlFor="input-userid"
+                        > Total Capacity </label>
+                        <Input
+                          value={BBCapacity}
+                          className="form-control-alternative"
+                          placeholder="Total Capacity"
+                          onChange={(e) => setBBCapacity(e.target.value)}
+                          type="text"
+                        />
+                      </FormGroup>
+
+                      <div className="text-center">
+                        <Button className="my-4" disabled={saved} color="primary" type="button" onClick={updateBBDetails}>{saved ? "Saved!" : "Save"}</Button>
+                      </div>
+                    </Form>
+                  </CardBody>
+                </Card>
+                :
+                <Card className="bg-secondary shadow border-0 mt-4">
+                  <CardHeader className="bg-transparent pb-5">
+                    <h2 className="text-center mb-0">Blood Bank Details</h2>
+                  </CardHeader>
+                  <CardBody>
+                    <h2 className="text-center">Sorry, can't Find your blood bank details</h2>
+                  </CardBody>
+                </Card>
+              }
+
+
+            </Col>
+            <Col xl={6} l={6} m={6}>
+              {associatedDCs && associatedDCs.length > 0 ?
+                // <div className='scrollspy-example-2 mt-4'>
                 <Card className="shadow" >
                   <CardHeader className="border-0 text-center">
                     <h3 className="mb-0">Associated Donation Centers</h3>
@@ -276,21 +310,59 @@ const BloodBank = () => {
                     </tbody>
                   </Table>
                 </Card >
-              </div>
-            </Col>
-            :
-            <Col xl={6} l={6} m={6}>
-              <Card className="shadow my-4" >
-                <CardBody>
-                  <h3 className="mb-0 text-center">There are no donation centers associated with your blood bank yet.</h3>
-                </CardBody>
-              </Card >
-            </Col>
-          }
-          <Col xl={2} l={2} m={2}></Col>
-        </Row>
+                // </div>
+                :
+                <Card className="shadow mt-4" >
+                  <CardBody>
+                    <h3 className="mb-0 text-center">There are no donation centers associated with your blood bank yet.</h3>
+                  </CardBody>
+                </Card >
+              }
 
+              {
+                BBStoredBlood && BBStoredBlood.length > 0 ?
+                  // <div className='scrollspy-example-2'>
+                  <Card className="shadow mt-4" >
+                    <CardHeader className="border-0 text-center">
+                      <h3 className="mb-0">Stored Blood</h3>
 
+                    </CardHeader>
+                    <Table className="align-items-center table-flush mb-4" responsive>
+                      <thead className="thead-light">
+                        <tr>
+                          <th scope="col">Blood Group</th>
+                          <th scope="col">Amount</th>
+                          <th scope="col" />
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {BBStoredBlood.map((res, index) => {
+                          return <tr key={index}>
+                            <td> {res.BloodGroup} </td>
+                            <td> {res.Amount} </td>
+                          </tr>
+                        })}
+                      </tbody>
+                    </Table>
+                    <CardFooter>
+                      {sumTotalStoredBlood() > 0 && <h3 className="text-center">Total Amount of Stored Blood = {sumTotalStoredBlood()}</h3>}
+                      <h3 className="text-center"> Capacity Left = {BBCapacity - sumTotalStoredBlood()} units</h3>
+                    </CardFooter>
+                  </Card >
+                  // </div>
+                  :
+                  <Card className="shadow my-4" >
+                    <CardBody>
+                      <h3 className="mb-0 text-center">There is no stored blood in your blood bank</h3>
+                    </CardBody>
+                  </Card >
+
+              }
+            </Col>
+
+          </Row>
+
+          : null}
 
       </Container>
 

@@ -53,7 +53,7 @@ class AdminNavbar extends React.Component {
     if (userid.length > 0) {
       req.getUserDetails(userid).then(e => {
         localStorage.setItem("name", e.Username)
-        localStorage.setItem("type",e.Type)
+        localStorage.setItem("type", e.Type)
         this.setState({
           name: e.Username
         })
@@ -66,12 +66,13 @@ class AdminNavbar extends React.Component {
       <>
         <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
           <Container fluid>
-            <Link
+            {/* <Link
               className="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block"
               to={this.props.location.pathname}
-            >
-              {this.props.brandText}
-            </Link>
+            > */}
+              <img className="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block" alt="..." src={require("assets/img/brand/argon-react-white.png")} />
+              {/* {this.props.brandText} */}
+            {/* </Link> */}
             {/* <Form className="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
               <FormGroup className="mb-0">
                 <InputGroup className="input-group-alternative">

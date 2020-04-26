@@ -3,6 +3,19 @@ import axios from 'axios';
 
 const URL = "http://127.0.0.1:5000/"
 
+export const getHDetails = async (UserID) => {
+    let details = "Couldn't Do the request";
+    await axios.get(URL + `getHDetails/` + UserID)
+        .then(res => {
+            details = res.data;
+            // console.log(details);
+        }).catch(e => {
+            details = e
+            console.log("ERROR")
+        });
+    return details;
+}
+
 
 export const getAssociatedDonationCenter = async (UserID) => {
     let details = "Couldn't Do the request";
@@ -34,6 +47,19 @@ export const sendBloodToBloodBank = async (toSend) => {
     });
     return details
 
+}
+
+
+export const getBBStoredBlood = async (UserID) => {
+    let details = "Couldn't Do the request";
+    await axios.get(URL + `getBBStoredBlood/` + UserID)
+        .then(res => {
+            details = res.data;
+        }).catch(e => {
+            details = e
+            console.log("ERROR")
+        });
+    return details;
 }
 
 export const getBBDetails = async (UserID) => {
@@ -86,6 +112,24 @@ export const updateDC = async (toSend) => {
     await axios({
         method: 'post',
         url: URL + "updateDC",
+        headers: { 'Content-Type': 'application/json' },
+        data: toSend
+    }).then(res => {
+        details = res.data
+    }).catch(e => {
+        console.log("ERROR | " + e)
+        details = e
+    });
+    return details
+
+}
+
+export const updateH = async (toSend) => {
+    let details = "Couldn't Do the request";
+    // console.log("Updating H", toSend)
+    await axios({
+        method: 'post',
+        url: URL + "updateH",
         headers: { 'Content-Type': 'application/json' },
         data: toSend
     }).then(res => {

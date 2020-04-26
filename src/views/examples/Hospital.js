@@ -65,6 +65,48 @@ const Hospital = () => {
 
   const [hasOrganization, sethasOrganization] = useState(true)
   const [requestCompleted1, setrequestCompleted1] = useState(false)
+  const [requestCompleted2, setrequestCompleted2] = useState(false)
+
+  // Hospital Details
+
+  const [HID, setHID] = useState('')
+  const [HName, setHName] = useState('')
+  const [HAddress, setHAddress] = useState('')
+  const [HPincode, setHPincode] = useState('')
+  const [saved, setsaved] = useState(false)
+
+  const [HDetails, setHDetails] = useState([])
+
+  const getHDetails = () => {
+    req.getHDetails(localStorage.getItem('userID')).then((result) => {
+      setHDetails(result)
+      if (result && result.length > 0) {
+        let H = result[0]
+        setHName(H.Name)
+        setHAddress(H.Address)
+        setHID(H.HID)
+        setHPincode(H.Pincode)
+      }
+      setrequestCompleted2(true)
+    })
+  }
+
+  const updateHDetails = () => {
+    let toSend = {
+      "HID": HID,
+      "Name": HName,
+      "Address": HAddress,
+      "Pincode": HPincode
+    }
+
+    req.updateH(toSend).then(e => {
+      if (e.status == 200) {
+        getHDetails()
+        setsaved(true)
+        setTimeout(() => { setsaved(false) }, 2000)
+      }
+    })
+  }
 
   useEffect(() => {
     if (!requestCompleted1) {
@@ -73,6 +115,10 @@ const Hospital = () => {
         sethasOrganization(result)
         setrequestCompleted1(true)
       })
+    }
+
+    if (!requestCompleted2) {
+      getHDetails()
     }
   })
 
@@ -88,16 +134,102 @@ const Hospital = () => {
         <AddRemoveAdmins hasOrganization={hasOrganization} BB={false} HS={true} DC={false} />
 
 
-        <Row className="mt-6">
-          <Col xl={2} l={2} m={2}></Col>
-          <Col xl={8} l={8} m={8}>
+        {hasOrganization && hasOrganization.H === 1 ?
 
-          </Col>
-          <Col xl={2} l={2} m={2}></Col>
-        </Row>
+          <Row>
+            <Col xl={6} l={6} m={6}>
+              {HDetails && HDetails.length > 0 ?
+                <Card className="bg-secondary shadow border-0 mt-4">
+                  <CardHeader className="bg-transparent pb-5">
+                    <h2 className="text-center mb-0">Hospital Details</h2>
+                  </CardHeader>
+                  <CardBody>
+                    <Form role="form">
+
+                      {/* HID */}
+                      <FormGroup>
+                        <label
+                          className="form-control-label"
+                          htmlFor="input-userid"
+                        > HID </label>
+                        <Input
+                          readOnly
+                          value={HID}
+                          className="form-control-alternative"
+                          placeholder="BBID"
+                          type="text"
+                        />
+                      </FormGroup>
+
+                      {/* Name */}
+                      <FormGroup>
+                        <label
+                          className="form-control-label"
+                          htmlFor="input-userid"
+                        > Name </label>
+                        <Input
+                          value={HName}
+                          className="form-control-alternative"
+                          placeholder="Name"
+                          onChange={(e) => setHName(e.target.value)}
+                          type="text"
+                        />
+                      </FormGroup>
 
 
+                      {/* Address */}
+                      <FormGroup>
+                        <label
+                          className="form-control-label"
+                          htmlFor="input-userid"
+                        > Address </label>
+                        <Input
+                          value={HAddress}
+                          className="form-control-alternative"
+                          placeholder="Address"
+                          onChange={(e) => setHAddress(e.target.value)}
+                          type="text"
+                        />
+                      </FormGroup>
 
+                      {/* Pincode */}
+
+                      <FormGroup>
+                        <label
+                          className="form-control-label"
+                          htmlFor="input-userid"
+                        > Pincode </label>
+                        <Input
+                          value={HPincode}
+                          className="form-control-alternative"
+                          placeholder="Pincode"
+                          onChange={(e) => setHPincode(e.target.value)}
+                          type="text"
+                        />
+                      </FormGroup>
+
+                      <div className="text-center">
+                        <Button className="my-4" disabled={saved} color="primary" type="button" onClick={updateHDetails}>{saved ? "Saved!" : "Save"}</Button>
+                      </div>
+                    </Form>
+                  </CardBody>
+                </Card>
+                :
+                <Card className="bg-secondary shadow border-0 mt-4">
+                  <CardHeader className="bg-transparent pb-5">
+                    <h2 className="text-center mb-0">Hospital Details</h2>
+                  </CardHeader>
+                  <CardBody>
+                    <h2 className="text-center">Sorry, can't find your hospital details</h2>
+                  </CardBody>
+                </Card>
+              }
+            </Col>
+            <Col xl={6} l={6} m={6}>
+
+            </Col>
+          </Row>
+          : null}
       </Container>
 
     </>
