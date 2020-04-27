@@ -66,6 +66,7 @@ const Hospital = () => {
   const [hasOrganization, sethasOrganization] = useState(true)
   const [requestCompleted1, setrequestCompleted1] = useState(false)
   const [requestCompleted2, setrequestCompleted2] = useState(false)
+  const [requestCompleted3, setrequestCompleted3] = useState(false)
 
   // Hospital Details
 
@@ -74,8 +75,29 @@ const Hospital = () => {
   const [HAddress, setHAddress] = useState('')
   const [HPincode, setHPincode] = useState('')
   const [saved, setsaved] = useState(false)
-
+  const [PatientDetails, setPatientDetails] = useState([])
   const [HDetails, setHDetails] = useState([])
+  const [RemovePatientID, setRemovePatientID] = useState('')
+  const [AddPatiendBG, setAddPatiendBG] = useState('B+')
+
+  const removePatient = () => {
+    req.removePatient(RemovePatientID).then((result) => {
+      getPatientDetails()
+    })
+  }
+
+  const addPatient = () => {
+    let toSend = {
+      "BloodGroup": AddPatiendBG,
+      "AdmissionDate": Moment(new Date()).format('YYYY-MM-DD'),
+      "UserID": localStorage.getItem('userID'),
+      "HID": HID
+    }
+    console.log(toSend)
+    req.addPatient(toSend).then((result) => {
+      getPatientDetails()
+    })
+  }
 
   const getHDetails = () => {
     req.getHDetails(localStorage.getItem('userID')).then((result) => {
@@ -108,6 +130,14 @@ const Hospital = () => {
     })
   }
 
+  const getPatientDetails = () => {
+    req.getPatientDetails(localStorage.getItem('userID')).then((result) => {
+      console.log("=====", result)
+      setPatientDetails(result)
+      setrequestCompleted3(true)
+    })
+  }
+
   useEffect(() => {
     if (!requestCompleted1) {
       req.getAdminOrganization(localStorage.getItem('userID')).then((result) => {
@@ -119,6 +149,10 @@ const Hospital = () => {
 
     if (!requestCompleted2) {
       getHDetails()
+    }
+
+    if (!requestCompleted3) {
+      getPatientDetails()
     }
   })
 
@@ -134,7 +168,7 @@ const Hospital = () => {
         <AddRemoveAdmins hasOrganization={hasOrganization} BB={false} HS={true} DC={false} />
 
 
-        {hasOrganization && hasOrganization.H === 1 ?
+        {hasOrganization && hasOrganization.HE === 1 ?
 
           <Row>
             <Col xl={6} l={6} m={6}>
@@ -226,6 +260,87 @@ const Hospital = () => {
               }
             </Col>
             <Col xl={6} l={6} m={6}>
+
+              {PatientDetails && PatientDetails.length > 0 ?
+                // <div className='scrollspy-example-2 mt-4'>
+                <>
+                  <Card className="shadow mt-4" >
+                    <CardHeader className="border-0 text-center">
+                      <h3 className="mb-0">Record of Admitted Patients</h3>
+
+                    </CardHeader>
+                    <Table className="align-items-center table-flush mb-4" responsive>
+                      <thead className="thead-light">
+                        <tr>
+                          <th scope="col">Patient ID</th>
+                          <th scope="col">Blood Needed</th>
+                          <th scope="col">Admission Date</th>
+                          <th scope="col">Doctor UserID</th>
+                          <th scope="col" />
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {PatientDetails.map((res, index) => {
+                          return <tr key={index}>
+                            <td> {res.PID} </td>
+                            <td> {res.BloodNeeded} </td>
+                            <td> {res.AdmissionDate} </td>
+                            <td> {res.UserID} </td>
+                          </tr>
+                        })}
+                      </tbody>
+                    </Table>
+                  </Card >
+
+                </>
+                // </div>
+                :
+                <Card className="shadow mt-4" >
+                  <CardBody>
+                    <h3 className="mb-0 text-center">There are no admitted patients in your hospital yet.</h3>
+                  </CardBody>
+                </Card >
+              }
+
+              <Row>
+                <Col xl={6}>
+                  <div className="mt-4 mx-2 text-center">
+                    <h5>Add Patient</h5>
+                    {/* <FormGroup> */}
+                    <InputGroup className="input-group-alternative mb-3">
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="ni ni-favourite-28 mr-2" />
+													Blood Group
+												</InputGroupText>
+                      </InputGroupAddon>
+                      <select className="mt-1" value={AddPatiendBG} onChange={(e) => setAddPatiendBG(e.target.value)}>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                      </select>
+                    </InputGroup>
+                    {/* </FormGroup> */}
+                    <Button className=" mb-2" color="primary" type="button" onClick={addPatient}>Add</Button>
+                  </div>
+                </Col>
+
+
+                <Col xl={6}>
+                  {PatientDetails && PatientDetails.length > 0 ?
+                    <div className="mt-4 mx-2 text-center">
+                      <h5>Remove Patient</h5>
+                      <Input type="number" placeholder="PatientID" value={RemovePatientID} onChange={e => setRemovePatientID(e.target.value)} />
+                      <Button className="mt-3 mb-2" color="primary" type="button" onClick={removePatient}>Remove</Button>
+                    </div> : null}
+                </Col>
+
+              </Row>
 
             </Col>
           </Row>

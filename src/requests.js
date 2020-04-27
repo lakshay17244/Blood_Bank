@@ -3,6 +3,61 @@ import axios from 'axios';
 
 const URL = "http://127.0.0.1:5000/"
 
+export const addPatient = async (toSend) => {
+    let details = "Couldn't Do the request";
+
+    console.log("add patient sending - ", toSend)
+    console.log("URL = ",URL + "addPatient" )
+    await axios({
+        method: 'post',
+        url: URL + "addPatient",
+        headers: { 'Content-Type': 'application/json' },
+        data: toSend
+    }).then(res => {
+        details = res.data
+    }).catch(e => {
+        console.log("ERROR | " + e)
+        details = e
+    });
+    return details
+}
+
+
+
+export const removePatient = async (PID) => {
+    let details = "Couldn't Do the request";
+    let toSend = {
+        "PID": PID
+    }
+    // console.log("Updating DC", toSend)
+    await axios({
+        method: 'post',
+        url: URL + "removePatient",
+        headers: { 'Content-Type': 'application/json' },
+        data: toSend
+    }).then(res => {
+        details = res.data
+    }).catch(e => {
+        console.log("ERROR | " + e)
+        details = e
+    });
+    return details
+}
+
+
+export const getPatientDetails = async (UserID) => {
+    let details = "Couldn't Do the request";
+    await axios.get(URL + `getPatientDetails/` + UserID)
+        .then(res => {
+            details = res.data;
+            // console.log(details);
+        }).catch(e => {
+            details = e
+            console.log("ERROR")
+        });
+    return details;
+}
+
 export const getHDetails = async (UserID) => {
     let details = "Couldn't Do the request";
     await axios.get(URL + `getHDetails/` + UserID)
