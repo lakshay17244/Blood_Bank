@@ -85,6 +85,41 @@ const WhereCanIDonate = () => {
       "UserID": localStorage.getItem("userID"),
       "Date": AppointmentDate
     }
+    
+    const mailjet = require('node-mailjet')
+      .connect('b5ca5c4487b925b91d5e11531fb55d06', '326ff998ee00341782bac4beb2f94861')
+    const request = mailjet
+      .post("send", { 'version': 'v3.1' })
+      .request({
+        "Messages": [
+          {
+            "From": {
+              "Email": "lakshay.sharma10@gmail.com",
+              "Name": "Lakshay"
+            },
+            "To": [
+              {
+                "Email": "lakshay.sharma10@gmail.com",
+                "Name": "Lakshay"
+              }
+            ],
+            "Subject": "Greetings from Team Life.Connect!",
+            "TextPart": "Your appointment has been confirmed with Donation Center ID" + AppointmentDCID,
+            "HTMLPart": "<h3>Dear passenger 1, welcome to <a href='https://www.mailjet.com/'>Mailjet</a>!</h3><br />May the delivery force be with you!",
+            "CustomID": "AppGettingStartedTest"
+          }
+        ]
+      })
+    request
+      .then((result) => {
+        console.log(result.body)
+      })
+      .catch((err) => {
+        console.log(err.statusCode)
+      })
+
+
+
 
     req.bookAppointment(toSend).then(r => {
       if (r.status === 200) {

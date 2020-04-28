@@ -261,49 +261,50 @@ const EmergencyBloodRequirements = () => {
 
           <Col xl={6} l={6} m={6}>
 
-            {nearbydc && nearbydc.length > 0 ?
-              <Card className="shadow my-4">
-                <CardHeader className="border-0 text-center">
-                  <h3 className="mb-0">Nearby Hospitals</h3>
-                </CardHeader>
-                <div className={ nearbydc.length > 6 ? 'scrollspy-example-2' : ''}>
-                  <Table className="align-items-center table-flush" responsive>
-                    <thead className="thead-light">
-                      <tr>
-                        {/* <th onClick={e => onSort(e, 'Date')} scope="col">Date</th> */}
-                        <th scope="col">Hospital ID</th>
-                        <th scope="col">Hospital Name</th>
-                        <th scope="col">Address</th>
-                        <th scope="col">Pincode</th>
-                        <th scope="col" />
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {nearbydc && nearbydc.map((res, index) => {
-                        return <tr key={index}>
-                          <td> {res.HID} </td>
-                          <td> {res.Name} </td>
-                          <td> {res.Address} </td>
-                          <td> {res.Pincode} </td>
-                        </tr>
-                      })}
-                    </tbody>
-                  </Table>
-                </div>
-                <CardFooter className="py-4 text-center">
-                </CardFooter>
-              </Card>
-              :
-              <Card className="bg-secondary shadow">
-                <CardHeader className="border-0 bg-secondary text-center">
-                  <h3 className="mb-0">No Nearby Hospitals Found!</h3>
-                </CardHeader>
-                <CardBody className=' text-center'>
-                  <h2>We tried searching near your address, but could not find any nearby hospitals</h2>
-                  <div className="text-center">
-                  </div>
-                </CardBody>
-              </Card>
+            {
+            // nearbydc && nearbydc.length > 0 ?
+              // <Card className="shadow my-4">
+              //   <CardHeader className="border-0 text-center">
+              //     <h3 className="mb-0">Nearby Hospitals</h3>
+              //   </CardHeader>
+              //   <div className={ nearbydc.length > 6 ? 'scrollspy-example-2' : ''}>
+              //     <Table className="align-items-center table-flush" responsive>
+              //       <thead className="thead-light">
+              //         <tr>
+              //           {/* <th onClick={e => onSort(e, 'Date')} scope="col">Date</th> */}
+              //           <th scope="col">Hospital ID</th>
+              //           <th scope="col">Hospital Name</th>
+              //           <th scope="col">Address</th>
+              //           <th scope="col">Pincode</th>
+              //           <th scope="col" />
+              //         </tr>
+              //       </thead>
+              //       <tbody>
+              //         {nearbydc && nearbydc.map((res, index) => {
+              //           return <tr key={index}>
+              //             <td> {res.HID} </td>
+              //             <td> {res.Name} </td>
+              //             <td> {res.Address} </td>
+              //             <td> {res.Pincode} </td>
+              //           </tr>
+              //         })}
+              //       </tbody>
+              //     </Table>
+              //   </div>
+              //   <CardFooter className="py-4 text-center">
+              //   </CardFooter>
+              // </Card>
+              // :
+              // <Card className="bg-secondary shadow">
+              //   <CardHeader className="border-0 bg-secondary text-center">
+              //     <h3 className="mb-0">No Nearby Hospitals Found!</h3>
+              //   </CardHeader>
+              //   <CardBody className=' text-center'>
+              //     <h2>We tried searching near your address, but could not find any nearby hospitals</h2>
+              //     <div className="text-center">
+              //     </div>
+              //   </CardBody>
+              // </Card>
 
 
             }

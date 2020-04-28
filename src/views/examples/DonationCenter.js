@@ -373,7 +373,19 @@ const DonationCenter = () => {
 
                     <h3 className="text-center">Your donation center has {Appointments.length} appointments today!</h3>
                   </CardFooter>
-                </Card > : null}
+                </Card > :
+                <Card className="shadow my-4" >
+                  <CardHeader className="border-0 text-center">
+                    <h3 className="mb-0">Appointments</h3>
+
+                  </CardHeader>
+                  <CardBody>There aren't any appointments with your Donation Center yet.</CardBody>
+                  <CardFooter>
+
+                   
+                  </CardFooter>
+                </Card >
+              }
             </Col>
 
           </Row>

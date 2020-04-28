@@ -606,10 +606,10 @@ const Index = () => {
                           Date</th>
                         <th scope="col">Donation Center ID</th>
                         <th scope="col">Donation Center Name</th>
-                        <th onClick={e => onSort(e, 'Amount')} scope="col">
+                        {/* <th onClick={e => onSort(e, 'Amount')} scope="col">
                           {currHead === 'Amount' && sortAsc ? <i className='ni ni-bold-down mr-2'></i> : null}
                           {currHead === 'Amount' && !sortAsc ? <i className='ni ni-bold-up mr-2'></i> : null}
-                          Amount</th>
+                          Amount</th> */}
                         <th scope="col" />
                       </tr>
                     </thead>
@@ -619,7 +619,7 @@ const Index = () => {
                           <td> {res.DateRecieved} </td>
                           <td> {res.DCID} </td>
                           <td> {res.Name} </td>
-                          <td> {res.Amount} </td>
+                          {/* <td> {res.Amount} </td> */}
                         </tr>
                       })}
                     </tbody>
