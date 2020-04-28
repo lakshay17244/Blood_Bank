@@ -85,23 +85,26 @@ const DonationCenter = () => {
   const [saved, setsaved] = useState(false)
   const [bloodsent, setbloodsent] = useState(false)
 
+  const [Appointments, setAppointments] = useState([])
+
   useEffect(() => {
 
     if (!requestCompleted) {
       getDonatedBlood()
+      getAppointment()
     }
     if (!requestCompleted1) {
+      setrequestCompleted1(true)
       req.getAdminOrganization(localStorage.getItem('userID')).then((result) => {
         // console.log(result)
         sethasOrganization(result)
-        setrequestCompleted1(true)
       })
     }
     if (!requestCompleted2) {
+      setrequestCompleted2(true)
       req.getAssociatedBloodBank(localStorage.getItem('userID')).then((result) => {
         // console.log(result)
         setBBDetails(result)
-        setrequestCompleted2(true)
       })
     }
 
@@ -111,14 +114,25 @@ const DonationCenter = () => {
 
   })
 
+  const getAppointment = () => {
+    let toSend = {
+      "UserID": localStorage.getItem("userID")
+    }
+    req.getAppointment(toSend).then((result) => {
+      console.log(result)
+      setAppointments(result)
+    })
+  }
+
   const getDonatedBlood = () => {
+    setrequestCompleted(true)
     req.getDonatedBlood(localStorage.getItem('userID')).then((result) => {
       setdonatedBlood(result)
-      setrequestCompleted(true)
     })
   }
 
   const getDCDetails = () => {
+    setrequestCompleted3(true)
     req.getDCDetails(localStorage.getItem('userID')).then((result) => {
       console.log(result)
       setDCDetails(result)
@@ -129,7 +143,6 @@ const DonationCenter = () => {
         setDCID(DC.DCID)
         setPincode(DC.Pincode)
       }
-      setrequestCompleted3(true)
     })
   }
 
@@ -325,6 +338,42 @@ const DonationCenter = () => {
                     <h3 className="mb-0 text-center">There have not been any blood donations to your donation center yet.</h3>
                   </CardBody>
                 </Card >}
+
+
+              {Appointments && Appointments.length > 0 ?
+                <Card className="shadow my-4" >
+                  <CardHeader className="border-0 text-center">
+                    <h3 className="mb-0">Appointments</h3>
+
+                  </CardHeader>
+                  <Table className="align-items-center table-flush mb-4" responsive>
+                    <thead className="thead-light">
+                      <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">UserID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Blood Group</th>
+                        <th scope="col" />
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Appointments.map((res, index) => {
+                        return <tr key={index}>
+                          <td> {Moment(res.Date).format('LL')} </td>
+                          <td> {res.UserID} </td>
+                          <td> {res.Name} </td>
+                          <td> {res.Phone} </td>
+                          <td> {res.BloodGroup} </td>
+                        </tr>
+                      })}
+                    </tbody>
+                  </Table>
+                  <CardFooter>
+
+                    <h3 className="text-center">Your donation center has {Appointments.length} appointments today!</h3>
+                  </CardFooter>
+                </Card > : null}
             </Col>
 
           </Row>

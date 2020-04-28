@@ -104,6 +104,7 @@ const BloodBank = () => {
   }
 
   const getBBDetails = () => {
+    setrequestCompleted2(true)
     req.getBBDetails(localStorage.getItem('userID')).then((result) => {
       setBBDetails(result)
       if (result && result.length > 0) {
@@ -114,14 +115,13 @@ const BloodBank = () => {
         setBBPincode(BB.Pincode)
         setBBCapacity(BB.TotalCapacity)
       }
-      setrequestCompleted2(true)
     })
   }
 
   const getBBStoredBlood = () => {
+    setrequestCompleted3(true)
     req.getBBStoredBlood(localStorage.getItem('userID')).then((result) => {
       setBBStoredBlood(result)
-      setrequestCompleted3(true)
     })
   }
 
@@ -143,18 +143,18 @@ const BloodBank = () => {
     }
 
     if (!requestCompleted1) {
+      setrequestCompleted1(true)
       req.getAdminOrganization(localStorage.getItem('userID')).then((result) => {
         // console.log(result)
         sethasOrganization(result)
-        setrequestCompleted1(true)
       })
     }
 
     if (!requestCompleted) {
+      setrequestCompleted(true)
       req.getAssociatedDonationCenter(localStorage.getItem('userID')).then((result) => {
         console.log(result)
         setassociatedDCs(result)
-        setrequestCompleted(true)
       })
     }
 

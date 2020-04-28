@@ -3,11 +3,123 @@ import axios from 'axios';
 
 const URL = "http://127.0.0.1:5000/"
 
+export const getDonorAppointments = async (UserID) => {
+    let details = "Couldn't Do the request";
+    await axios.get(URL + `getDonorAppointments/` + UserID)
+        .then(res => {
+            details = res.data;
+            // console.log(details);
+        }).catch(e => {
+            details = e
+            console.log("ERROR")
+        });
+    return details;
+}
+
+
+export const bookAppointment = async (toSend) => {
+    let details = "Couldn't Do the request";
+    await axios({
+        method: 'post',
+        url: URL + "makeAppointment",
+        headers: { 'Content-Type': 'application/json' },
+        data: toSend
+    }).then(res => {
+        details = res.data
+    }).catch(e => {
+        console.log("ERROR | " + e)
+        details = e
+    });
+    return details
+}
+
+
+export const getAppointment = async (toSend) => {
+    let details = "Couldn't Do the request";
+    await axios({
+        method: 'post',
+        url: URL + "getAppointment",
+        headers: { 'Content-Type': 'application/json' },
+        data: toSend
+    }).then(res => {
+        details = res.data
+    }).catch(e => {
+        console.log("ERROR | " + e)
+        details = e
+    });
+    return details
+}
+
+
+export const addemergencyrequirement = async (toSend) => {
+
+    let details = "Couldn't Do the request";
+    // console.log("addemergencyrequirement sending - ", toSend)
+    await axios({
+        method: 'post',
+        url: URL + "addemergencyrequirement",
+        headers: { 'Content-Type': 'application/json' },
+        data: toSend
+    }).then(res => {
+        details = res.data
+    }).catch(e => {
+        console.log("ERROR | " + e)
+        details = e
+    });
+    return details
+}
+
+
+export const withdrawBlood = async (toSend) => {
+    let details = "Couldn't Do the request";
+
+    console.log("withdrawBlood sending - ", toSend)
+    await axios({
+        method: 'post',
+        url: URL + "withdrawBlood",
+        headers: { 'Content-Type': 'application/json' },
+        data: toSend
+    }).then(res => {
+        details = res.data
+    }).catch(e => {
+        console.log("ERROR | " + e)
+        details = e
+    });
+    return details
+}
+
+
+export const checkBloodAvailabilityNearby = async (BG, UserID) => {
+    let details = "Couldn't Do the request";
+    await axios.get(URL + `checkBloodAvailabilityNearby/` + BG + "/" + UserID)
+        .then(res => {
+            details = res.data;
+            // console.log(details);
+        }).catch(e => {
+            details = e
+            console.log("ERROR")
+        });
+    return details;
+}
+
+export const checkBloodAvailability = async (BG) => {
+    let details = "Couldn't Do the request";
+    await axios.get(URL + `checkBloodAvailability/` + BG)
+        .then(res => {
+            details = res.data;
+            // console.log(details);
+        }).catch(e => {
+            details = e
+            console.log("ERROR")
+        });
+    return details;
+}
+
 export const addPatient = async (toSend) => {
     let details = "Couldn't Do the request";
 
     console.log("add patient sending - ", toSend)
-    console.log("URL = ",URL + "addPatient" )
+    console.log("URL = ", URL + "addPatient")
     await axios({
         method: 'post',
         url: URL + "addPatient",
@@ -316,6 +428,34 @@ export const getemergencyrequirements = async (UserId) => {
         });
     return details;
 }
+
+export const getDonorERNearby = async (UserId) => {
+    let details = "Couldn't Do the request";
+    await axios.get(URL + `getDonorERNearby/` + UserId)
+        .then(res => {
+            details = res.data;
+            console.log(details);
+        }).catch(e => {
+            details = e
+            console.log("ERROR")
+        });
+    return details;
+}
+
+
+export const getDonorERAll = async (UserId) => {
+    let details = "Couldn't Do the request";
+    await axios.get(URL + `getDonorERAll/` + UserId)
+        .then(res => {
+            details = res.data;
+            console.log(details);
+        }).catch(e => {
+            details = e
+            console.log("ERROR")
+        });
+    return details;
+}
+
 
 
 export const getnearbyhospitals = async (UserId) => {

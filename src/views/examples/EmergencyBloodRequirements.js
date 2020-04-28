@@ -78,29 +78,31 @@ const EmergencyBloodRequirements = () => {
   const [request1Completed, setrequest1Completed] = useState(false);
   const [request2Completed, setrequest2Completed] = useState(false);
 
-  const [emergencyrequirements, setemergencyrequirements] = useState([])
-
-
+  const [ERNearby, setERNearby] = useState([])
+  const [ERAll, setERAll] = useState([])
 
 
   useEffect(() => {
     if (!requestCompleted) {
+      setrequestCompleted(true)
       req.getnearbyhospitals(localStorage.getItem('userID')).then((nearbydc) => {
         setnearbydc(nearbydc)
-        setrequestCompleted(true)
       })
     }
     if (!request1Completed) {
+      setrequest1Completed(true)
       req.getallhospitals(localStorage.getItem('userID')).then((alldc) => {
         setalldc(alldc)
-        setrequest1Completed(true)
       })
     }
 
     if (!request2Completed) {
-      req.getemergencyrequirements(localStorage.getItem('userID')).then((emergencyrequirements) => {
-        setemergencyrequirements(emergencyrequirements)
-        setrequest2Completed(true)
+      setrequest2Completed(true)
+      req.getDonorERNearby(localStorage.getItem('userID')).then((ER) => {
+        setERNearby(ER)
+      })
+      req.getDonorERAll(localStorage.getItem('userID')).then(ER => {
+        setERAll(ER)
       })
     }
     // Set Type to admin or donor with delay added for user request
@@ -128,12 +130,12 @@ const EmergencyBloodRequirements = () => {
         <Row >
           <Col xl={1} l={1} m={1}></Col>
           <Col xl={10} l={10} m={10}>
-            {emergencyrequirements && emergencyrequirements.length > 0 ?
+            {ERNearby && ERNearby.length > 0 ?
               <Card className="shadow">
                 <CardHeader className="border-0 text-center">
-                  <h3 className="mb-0">Emergency Blood Requirements</h3>
+                  <h3 className="mb-0">Emergency Blood Requirements Near You</h3>
                 </CardHeader>
-                <div className='scrollspy-example-2'>
+                <div className={ ERNearby.length > 6 ? 'scrollspy-example-2' : ''}>
                   <Table className="align-items-center table-flush" responsive>
                     <thead className="thead-light">
                       <tr>
@@ -141,13 +143,13 @@ const EmergencyBloodRequirements = () => {
                         <th scope="col">Blood Needed</th>
                         <th scope="col">Hospital ID</th>
                         <th scope="col">Hospital Name</th>
-                        <th scope="col">Address</th>
+                        <th scope="col">Hospital Address</th>
                         <th scope="col">Pincode</th>
                         <th scope="col" />
                       </tr>
                     </thead>
                     <tbody>
-                      {emergencyrequirements && emergencyrequirements.map((res, index) => {
+                      {ERNearby && ERNearby.map((res, index) => {
                         return <tr key={index}>
                           <td> {res.BloodNeeded} </td>
                           <td> {res.HID} </td>
@@ -163,7 +165,51 @@ const EmergencyBloodRequirements = () => {
                 </CardFooter>
               </Card>
               :
-              <Card className="shadow">
+              <Card className="shadow my-4">
+                <CardHeader className="border-0 text-center">
+                  <h3 className="mb-0">There are no emergency requirements near you for your blood group.</h3>
+                </CardHeader>
+              </Card>
+
+            }
+
+
+            {ERAll && ERAll.length > 0 ?
+              <Card className="shadow my-4">
+                <CardHeader className="border-0 text-center">
+                  <h3 className="mb-0">All Emergency Blood Requirements</h3>
+                </CardHeader>
+                <div className={ ERAll.length > 6 ? 'scrollspy-example-2' : ''}>
+                  <Table className="align-items-center table-flush" responsive>
+                    <thead className="thead-light">
+                      <tr>
+                        {/* <th onClick={e => onSort(e, 'Date')} scope="col">Date</th> */}
+                        <th scope="col">Blood Needed</th>
+                        <th scope="col">Hospital ID</th>
+                        <th scope="col">Hospital Name</th>
+                        <th scope="col">Hospital Address</th>
+                        <th scope="col">Pincode</th>
+                        <th scope="col" />
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {ERAll && ERAll.map((res, index) => {
+                        return <tr key={index}>
+                          <td> {res.BloodNeeded} </td>
+                          <td> {res.HID} </td>
+                          <td> {res.Name} </td>
+                          <td> {res.Address} </td>
+                          <td> {res.Pincode} </td>
+                        </tr>
+                      })}
+                    </tbody>
+                  </Table>
+                </div>
+                <CardFooter className="py-4 text-center">
+                </CardFooter>
+              </Card>
+              :
+              <Card className="shadow my-4">
                 <CardHeader className="border-0 text-center">
                   <h3 className="mb-0">There are no emergency requirements for your blood group.</h3>
                 </CardHeader>
@@ -178,11 +224,11 @@ const EmergencyBloodRequirements = () => {
           <Col xl={6} l={6} m={6}>
 
             {alldc && alldc.length > 0 ?
-              <Card className="shadow">
+              <Card className="shadow my-4">
                 <CardHeader className="border-0 text-center">
                   <h3 className="mb-0">All Hospitals</h3>
                 </CardHeader>
-                <div className='scrollspy-example-2'>
+                <div className={ alldc.length > 6 ? 'scrollspy-example-2' : ''}>
                   <Table className="align-items-center table-flush" responsive>
                     <thead className="thead-light">
                       <tr>
@@ -216,11 +262,11 @@ const EmergencyBloodRequirements = () => {
           <Col xl={6} l={6} m={6}>
 
             {nearbydc && nearbydc.length > 0 ?
-              <Card className="shadow">
+              <Card className="shadow my-4">
                 <CardHeader className="border-0 text-center">
                   <h3 className="mb-0">Nearby Hospitals</h3>
                 </CardHeader>
-                <div className='scrollspy-example-2'>
+                <div className={ nearbydc.length > 6 ? 'scrollspy-example-2' : ''}>
                   <Table className="align-items-center table-flush" responsive>
                     <thead className="thead-light">
                       <tr>

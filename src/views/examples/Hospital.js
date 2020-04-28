@@ -67,6 +67,7 @@ const Hospital = () => {
   const [requestCompleted1, setrequestCompleted1] = useState(false)
   const [requestCompleted2, setrequestCompleted2] = useState(false)
   const [requestCompleted3, setrequestCompleted3] = useState(false)
+  const [requestCompleted4, setrequestCompleted4] = useState(false)
 
   // Hospital Details
 
@@ -79,6 +80,85 @@ const Hospital = () => {
   const [HDetails, setHDetails] = useState([])
   const [RemovePatientID, setRemovePatientID] = useState('')
   const [AddPatiendBG, setAddPatiendBG] = useState('B+')
+
+  const [CheckBGAvailibility, setCheckBGAvailibility] = useState([])
+  const [CheckBGAvailibilityNearby, setCheckBGAvailibilityNearby] = useState([])
+
+  const [CheckBGInput, setCheckBGInput] = useState('B+')
+  const [hasCheckedBG, sethasCheckedBG] = useState(false)
+
+  const [withdrawBBID, setwithdrawBBID] = useState('')
+  const [bloodWithdrawn, setbloodWithdrawn] = useState(false)
+
+  const [emergencyRequirements, setemergencyRequirements] = useState([])
+  const [emergencyBGInput, setemergencyBGInput] = useState('B+')
+  const [emergencyBGAdded, setemergencyBGAdded] = useState(false)
+
+  const withdrawBlood = () => {
+    let toSend = {
+      "BBID": withdrawBBID,
+      "BloodGroup": CheckBGInput
+    }
+    req.withdrawBlood(toSend).then(r => {
+      if (r.status === 200) {
+        setbloodWithdrawn(true)
+        setTimeout(() => { setbloodWithdrawn(false) }, 2000)
+      }
+      getAvailableBlood()
+    })
+  }
+
+  const getemergencyrequirements = () => {
+    setrequestCompleted4(true)
+
+    // Clear previous results
+    setemergencyRequirements([])
+    req.getemergencyrequirements(localStorage.getItem("userID")).then((result) => {
+      console.log("emer=?", result)
+      if (result && result.length > 0) {
+        setemergencyRequirements(result)
+      }
+    })
+  }
+
+  const addemergencyrequirement = () => {
+    let toSend = {
+      "BloodNeeded": emergencyBGInput,
+      "DateRecieved": Moment(new Date()).format('YYYY-MM-DD'),
+      "DoctorID": localStorage.getItem("userID")
+    }
+    req.addemergencyrequirement(toSend).then(r => {
+      if (r.status === 200) {
+        getemergencyrequirements()
+        setemergencyBGAdded(true)
+        setTimeout(() => { setemergencyBGAdded(false) }, 2000)
+      }
+    })
+  }
+
+
+  const getAvailableBlood = () => {
+    sethasCheckedBG(true)
+
+    // Clear the previous results if any!
+    setCheckBGAvailibility([])
+    setCheckBGAvailibilityNearby([])
+
+    req.checkBloodAvailability(CheckBGInput).then((result) => {
+      console.log(result)
+      if (result && result.length > 0) {
+        setCheckBGAvailibility(result)
+      }
+    })
+
+    req.checkBloodAvailabilityNearby(CheckBGInput, localStorage.getItem("userID")).then((result) => {
+      console.log(result)
+      if (result && result.length > 0) {
+        setCheckBGAvailibilityNearby(result)
+      }
+    })
+  }
+
 
   const removePatient = () => {
     req.removePatient(RemovePatientID).then((result) => {
@@ -100,6 +180,7 @@ const Hospital = () => {
   }
 
   const getHDetails = () => {
+    setrequestCompleted2(true)
     req.getHDetails(localStorage.getItem('userID')).then((result) => {
       setHDetails(result)
       if (result && result.length > 0) {
@@ -109,7 +190,6 @@ const Hospital = () => {
         setHID(H.HID)
         setHPincode(H.Pincode)
       }
-      setrequestCompleted2(true)
     })
   }
 
@@ -131,19 +211,19 @@ const Hospital = () => {
   }
 
   const getPatientDetails = () => {
+    setrequestCompleted3(true)
     req.getPatientDetails(localStorage.getItem('userID')).then((result) => {
       console.log("=====", result)
       setPatientDetails(result)
-      setrequestCompleted3(true)
     })
   }
 
   useEffect(() => {
     if (!requestCompleted1) {
+      setrequestCompleted1(true)
       req.getAdminOrganization(localStorage.getItem('userID')).then((result) => {
         // console.log(result)
         sethasOrganization(result)
-        setrequestCompleted1(true)
       })
     }
 
@@ -153,6 +233,10 @@ const Hospital = () => {
 
     if (!requestCompleted3) {
       getPatientDetails()
+    }
+
+    if (!requestCompleted4) {
+      getemergencyrequirements()
     }
   })
 
@@ -169,152 +253,193 @@ const Hospital = () => {
 
 
         {hasOrganization && hasOrganization.HE === 1 ?
-
-          <Row>
-            <Col xl={6} l={6} m={6}>
-              {HDetails && HDetails.length > 0 ?
-                <Card className="bg-secondary shadow border-0 mt-4">
-                  <CardHeader className="bg-transparent pb-5">
-                    <h2 className="text-center mb-0">Hospital Details</h2>
-                  </CardHeader>
-                  <CardBody>
-                    <Form role="form">
-
-                      {/* HID */}
-                      <FormGroup>
-                        <label
-                          className="form-control-label"
-                          htmlFor="input-userid"
-                        > HID </label>
-                        <Input
-                          readOnly
-                          value={HID}
-                          className="form-control-alternative"
-                          placeholder="BBID"
-                          type="text"
-                        />
-                      </FormGroup>
-
-                      {/* Name */}
-                      <FormGroup>
-                        <label
-                          className="form-control-label"
-                          htmlFor="input-userid"
-                        > Name </label>
-                        <Input
-                          value={HName}
-                          className="form-control-alternative"
-                          placeholder="Name"
-                          onChange={(e) => setHName(e.target.value)}
-                          type="text"
-                        />
-                      </FormGroup>
-
-
-                      {/* Address */}
-                      <FormGroup>
-                        <label
-                          className="form-control-label"
-                          htmlFor="input-userid"
-                        > Address </label>
-                        <Input
-                          value={HAddress}
-                          className="form-control-alternative"
-                          placeholder="Address"
-                          onChange={(e) => setHAddress(e.target.value)}
-                          type="text"
-                        />
-                      </FormGroup>
-
-                      {/* Pincode */}
-
-                      <FormGroup>
-                        <label
-                          className="form-control-label"
-                          htmlFor="input-userid"
-                        > Pincode </label>
-                        <Input
-                          value={HPincode}
-                          className="form-control-alternative"
-                          placeholder="Pincode"
-                          onChange={(e) => setHPincode(e.target.value)}
-                          type="text"
-                        />
-                      </FormGroup>
-
-                      <div className="text-center">
-                        <Button className="my-4" disabled={saved} color="primary" type="button" onClick={updateHDetails}>{saved ? "Saved!" : "Save"}</Button>
-                      </div>
-                    </Form>
-                  </CardBody>
-                </Card>
-                :
-                <Card className="bg-secondary shadow border-0 mt-4">
-                  <CardHeader className="bg-transparent pb-5">
-                    <h2 className="text-center mb-0">Hospital Details</h2>
-                  </CardHeader>
-                  <CardBody>
-                    <h2 className="text-center">Sorry, can't find your hospital details</h2>
-                  </CardBody>
-                </Card>
-              }
-            </Col>
-            <Col xl={6} l={6} m={6}>
-
-              {PatientDetails && PatientDetails.length > 0 ?
-                // <div className='scrollspy-example-2 mt-4'>
-                <>
-                  <Card className="shadow mt-4" >
-                    <CardHeader className="border-0 text-center">
-                      <h3 className="mb-0">Record of Admitted Patients</h3>
-
+          <>
+            <Row>
+              <Col xl={6} l={6} m={6}>
+                {HDetails && HDetails.length > 0 ?
+                  <Card className="bg-secondary shadow border-0 mt-4">
+                    <CardHeader className="bg-transparent pb-5">
+                      <h2 className="text-center mb-0">Hospital Details</h2>
                     </CardHeader>
-                    <Table className="align-items-center table-flush mb-4" responsive>
-                      <thead className="thead-light">
-                        <tr>
-                          <th scope="col">Patient ID</th>
-                          <th scope="col">Blood Needed</th>
-                          <th scope="col">Admission Date</th>
-                          <th scope="col">Doctor UserID</th>
-                          <th scope="col" />
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {PatientDetails.map((res, index) => {
-                          return <tr key={index}>
-                            <td> {res.PID} </td>
-                            <td> {res.BloodNeeded} </td>
-                            <td> {res.AdmissionDate} </td>
-                            <td> {res.UserID} </td>
+                    <CardBody>
+                      <Form role="form">
+
+                        {/* HID */}
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-userid"
+                          > HID </label>
+                          <Input
+                            readOnly
+                            value={HID}
+                            className="form-control-alternative"
+                            placeholder="BBID"
+                            type="text"
+                          />
+                        </FormGroup>
+
+                        {/* Name */}
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-userid"
+                          > Name </label>
+                          <Input
+                            value={HName}
+                            className="form-control-alternative"
+                            placeholder="Name"
+                            onChange={(e) => setHName(e.target.value)}
+                            type="text"
+                          />
+                        </FormGroup>
+
+
+                        {/* Address */}
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-userid"
+                          > Address </label>
+                          <Input
+                            value={HAddress}
+                            className="form-control-alternative"
+                            placeholder="Address"
+                            onChange={(e) => setHAddress(e.target.value)}
+                            type="text"
+                          />
+                        </FormGroup>
+
+                        {/* Pincode */}
+
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-userid"
+                          > Pincode </label>
+                          <Input
+                            value={HPincode}
+                            className="form-control-alternative"
+                            placeholder="Pincode"
+                            onChange={(e) => setHPincode(e.target.value)}
+                            type="text"
+                          />
+                        </FormGroup>
+
+                        <div className="text-center">
+                          <Button className="my-4" disabled={saved} color="primary" type="button" onClick={updateHDetails}>{saved ? "Saved!" : "Save"}</Button>
+                        </div>
+                      </Form>
+                    </CardBody>
+                  </Card>
+                  :
+                  <Card className="bg-secondary shadow border-0 mt-4">
+                    <CardHeader className="bg-transparent pb-5">
+                      <h2 className="text-center mb-0">Hospital Details</h2>
+                    </CardHeader>
+                    <CardBody>
+                      <h2 className="text-center">Sorry, can't find your hospital details</h2>
+                    </CardBody>
+                  </Card>
+                }
+
+              </Col>
+              <Col xl={6} l={6} m={6}>
+
+                {PatientDetails && PatientDetails.length > 0 ?
+                  // <div className='scrollspy-example-2 mt-4'>
+                  <>
+                    <Card className="shadow mt-4" >
+                      <CardHeader className="border-0 text-center">
+                        <h3 className="mb-0">Record of Admitted Patients</h3>
+
+                      </CardHeader>
+                      <Table className="align-items-center table-flush mb-4" responsive>
+                        <thead className="thead-light">
+                          <tr>
+                            <th scope="col">Patient ID</th>
+                            <th scope="col">Blood Needed</th>
+                            <th scope="col">Admission Date</th>
+                            <th scope="col">Doctor UserID</th>
+                            <th scope="col" />
                           </tr>
-                        })}
-                      </tbody>
-                    </Table>
+                        </thead>
+                        <tbody>
+                          {PatientDetails.map((res, index) => {
+                            return <tr key={index}>
+                              <td> {res.PID} </td>
+                              <td> {res.BloodNeeded} </td>
+                              <td> {Moment(res.AdmissionDate).format('LL')} </td>
+                              <td> {res.UserID} </td>
+                            </tr>
+                          })}
+                        </tbody>
+                      </Table>
+                    </Card >
+
+                  </>
+                  // </div>
+                  :
+                  <Card className="shadow mt-4" >
+                    <CardBody>
+                      <h3 className="mb-0 text-center">There are no admitted patients in your hospital yet.</h3>
+                    </CardBody>
                   </Card >
+                }
+                <Row>
+                  <Col xl={6}>
+                    <div className="mt-4 mx-2 text-center">
+                      <h5>Add Patient</h5>
+                      <InputGroup className="input-group-alternative mb-3">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-favourite-28 mr-2" />
+													Blood Group
+												</InputGroupText>
+                        </InputGroupAddon>
+                        <select className="mt-1" value={AddPatiendBG} onChange={(e) => setAddPatiendBG(e.target.value)}>
+                          <option value="A+">A+</option>
+                          <option value="A-">A-</option>
+                          <option value="B+">B+</option>
+                          <option value="B-">B-</option>
+                          <option value="AB+">AB+</option>
+                          <option value="AB-">AB-</option>
+                          <option value="O+">O+</option>
+                          <option value="O-">O-</option>
+                        </select>
+                      </InputGroup>
+                      <Button className=" mb-2" color="primary" type="button" onClick={addPatient}>Add</Button>
+                    </div>
+                  </Col>
 
-                </>
-                // </div>
-                :
-                <Card className="shadow mt-4" >
-                  <CardBody>
-                    <h3 className="mb-0 text-center">There are no admitted patients in your hospital yet.</h3>
-                  </CardBody>
-                </Card >
-              }
 
-              <Row>
-                <Col xl={6}>
-                  <div className="mt-4 mx-2 text-center">
-                    <h5>Add Patient</h5>
-                    {/* <FormGroup> */}
+                  <Col xl={6}>
+                    {PatientDetails && PatientDetails.length > 0 ?
+                      <div className="mt-4 mx-2 text-center">
+                        <h5>Remove Patient</h5>
+                        <Input type="number" placeholder="PatientID" value={RemovePatientID} onChange={e => setRemovePatientID(e.target.value)} />
+                        <Button className="mt-3 mb-2" color="primary" type="button" onClick={removePatient}>Remove</Button>
+                      </div> : null}
+                  </Col>
+
+                </Row>
+              </Col>
+            </Row>
+            <Row className="my-4">
+              <Col>
+                <Card className="shadow mt-4 mb-2">
+                  <CardHeader>
+                    <h2 className="text-center">Check Blood Availablity</h2>
+                  </CardHeader>
+                  <CardBody className="text-center">
                     <InputGroup className="input-group-alternative mb-3">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
                           <i className="ni ni-favourite-28 mr-2" />
-													Blood Group
+													Enter Blood Group
 												</InputGroupText>
                       </InputGroupAddon>
-                      <select className="mt-1" value={AddPatiendBG} onChange={(e) => setAddPatiendBG(e.target.value)}>
+                      <select className="mt-1" value={CheckBGInput} onChange={(e) => setCheckBGInput(e.target.value)}>
                         <option value="A+">A+</option>
                         <option value="A-">A-</option>
                         <option value="B+">B+</option>
@@ -325,25 +450,192 @@ const Hospital = () => {
                         <option value="O-">O-</option>
                       </select>
                     </InputGroup>
-                    {/* </FormGroup> */}
-                    <Button className=" mb-2" color="primary" type="button" onClick={addPatient}>Add</Button>
-                  </div>
-                </Col>
+                    <Button className=" mb-2" color="primary" type="button" onClick={getAvailableBlood}>Check</Button>
+                  </CardBody>
+                </Card>
 
 
-                <Col xl={6}>
-                  {PatientDetails && PatientDetails.length > 0 ?
-                    <div className="mt-4 mx-2 text-center">
-                      <h5>Remove Patient</h5>
-                      <Input type="number" placeholder="PatientID" value={RemovePatientID} onChange={e => setRemovePatientID(e.target.value)} />
-                      <Button className="mt-3 mb-2" color="primary" type="button" onClick={removePatient}>Remove</Button>
-                    </div> : null}
-                </Col>
+                {hasCheckedBG ?
+                  <Card className="shadow mt-4 mb-2">
+                    <CardHeader>
+                      <h2 className="text-center">Withdraw From Blood Bank</h2>
+                    </CardHeader>
+                    <CardBody className="text-center">
+                      <Form role="form">
+                        {/* BBID */}
+                        <FormGroup>
+                          <InputGroup className="input-group-alternative mb-3">
+                            <InputGroupAddon addonType="prepend">
+                              <InputGroupText>
+                                <i className="ni ni-building" />
+                              </InputGroupText>
+                            </InputGroupAddon>
+                            <Input placeholder="BBID" type="text" value={withdrawBBID} onChange={(e) => setwithdrawBBID(e.target.value)} />
+                          </InputGroup>
+                        </FormGroup>
+                      </Form>
 
-              </Row>
+                      <Button className=" mb-2" color="primary" type="button" disabled={bloodWithdrawn} onClick={withdrawBlood}> {bloodWithdrawn ? "Done!" : "Withdraw"}</Button>
+                    </CardBody>
+                  </Card>
+                  : null}
 
-            </Col>
-          </Row>
+              </Col>
+              <Col>
+                {
+
+
+                  hasCheckedBG ?
+
+
+                    (
+                      <>
+                        {CheckBGAvailibilityNearby && CheckBGAvailibilityNearby.length > 0 ?
+                          <Card className="shadow mt-4" >
+                            <CardHeader className="border-0 text-center">
+                              <h3 className="mb-0">Blood Banks Nearby Containing Your Selected Blood Group</h3>
+
+                            </CardHeader>
+                            <Table className="align-items-center table-flush mb-4" responsive>
+                              <thead className="thead-light">
+                                <tr>
+                                  <th scope="col">BBID</th>
+                                  <th scope="col">Name</th>
+                                  <th scope="col">Address</th>
+                                  <th scope="col">Pincode</th>
+                                  <th scope="col">Amount</th>
+                                  <th scope="col" />
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {CheckBGAvailibilityNearby.map((res, index) => {
+                                  return <tr key={index}>
+                                    <td> {res.BBID} </td>
+                                    <td> {res.Name} </td>
+                                    <td> {res.Address} </td>
+                                    <td> {res.Pincode} </td>
+                                    <td> {res.Amount} </td>
+                                  </tr>
+                                })}
+                              </tbody>
+                            </Table>
+                          </Card >
+                          : <Card className="shadow mt-4" >
+                            <CardHeader className="border-0 text-center">
+                              <h2 className="mb-0">Blood Banks Nearby Containing Your Selected Blood Group</h2>
+
+                            </CardHeader>
+                            <CardBody className="text-center">
+                              <h3>No nearby blood banks found!</h3>
+                            </CardBody>
+                          </Card >}
+
+                        {CheckBGAvailibility && CheckBGAvailibility.length > 0 ?
+                          <Card className="shadow mt-4" >
+                            <CardHeader className="border-0 text-center">
+                              <h3 className="mb-0">All Blood Banks Containing Your Selected Blood Group</h3>
+                            </CardHeader>
+                            <Table className="align-items-center table-flush mb-4" responsive>
+                              <thead className="thead-light">
+                                <tr>
+                                  <th scope="col">BBID</th>
+                                  <th scope="col">Name</th>
+                                  <th scope="col">Address</th>
+                                  <th scope="col">Pincode</th>
+                                  <th scope="col">Amount</th>
+                                  <th scope="col" />
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {CheckBGAvailibility.map((res, index) => {
+                                  return <tr key={index}>
+                                    <td> {res.BBID} </td>
+                                    <td> {res.Name} </td>
+                                    <td> {res.Address} </td>
+                                    <td> {res.Pincode} </td>
+                                    <td> {res.Amount} </td>
+                                  </tr>
+                                })}
+                              </tbody>
+                            </Table>
+                          </Card >
+                          : <Card className="shadow mt-4" >
+                            <CardHeader className="border-0 text-center">
+                              <h2 className="mb-0">All Blood Banks Containing Your Selected Blood Group</h2>
+
+                            </CardHeader>
+                            <CardBody className="text-center">
+                              <h3>No blood banks found!</h3>
+                            </CardBody>
+                          </Card >}
+
+                      </>)
+                    : null
+                }
+              </Col>
+            </Row>
+
+            <Row className="my-4">
+              <Col>
+                <Card className="shadow mt-4 mb-2">
+                  <CardHeader>
+                    <h2 className="text-center">Emergency Requirement of Blood</h2>
+                  </CardHeader>
+                  <CardBody className="text-center">
+
+                    <Row>
+                      <Table className="align-items-center table-flush mb-4" responsive>
+                        <thead className="thead-light">
+                          <tr>
+                            <th scope="col">Blood Needed</th>
+                            <th scope="col">Date Posted</th>
+                            <th scope="col">Doctor's UserID</th>
+                            <th scope="col" />
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {emergencyRequirements.map((res, index) => {
+                            return <tr key={index}>
+                              <td> {res.BloodNeeded} </td>
+                              <td> {Moment(res.DateRecieved).format('LL')} </td>
+                              <td> {res.DoctorID} </td>
+                            </tr>
+                          })}
+                        </tbody>
+                      </Table>
+                    </Row>
+
+
+                    <Row>
+                      <Col xl={3}></Col>
+                      <Col xl={6}>
+                        <h3>Post Requirement</h3>
+                        <InputGroup className="input-group-alternative mb-3">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="ni ni-favourite-28 mr-2" />Enter Blood Group
+												    </InputGroupText>
+                          </InputGroupAddon>
+                          <select className="mt-1" value={emergencyBGInput} onChange={(e) => setemergencyBGInput(e.target.value)}>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                          </select>
+                        </InputGroup>
+                        <Button className=" mb-2" color="primary" type="button" disabled={emergencyBGAdded} onClick={addemergencyrequirement}> {emergencyBGAdded ? "Added!" : "Add"}</Button>
+                      </Col>
+                      <Col xl={3}></Col>
+                    </Row>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+          </>
           : null}
       </Container>
 

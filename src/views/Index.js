@@ -100,18 +100,17 @@ const Index = () => {
 
   useEffect(() => {
     if (!requestCompleted) {
+      setrequestCompleted(true)
       req.getPastDonations(localStorage.getItem('userID')).then((donations) => {
         setDonations(donations)
-        setrequestCompleted(true)
       })
     }
 
 
     if (!requestCompleted1) {
+      setrequestCompleted1(true)
       req.getAdminOrganization(localStorage.getItem('userID')).then((result) => {
-        console.log("====", result)
         sethasOrganization(result)
-        setrequestCompleted1(true)
       })
     }
 
@@ -132,7 +131,7 @@ const Index = () => {
     let today = new Date()
     let month = (today.getMonth() + 1) >= 10 ? today.getMonth() + 1 : '0' + (today.getMonth() + 1);
     let day = today.getDate() >= 10 ? today.getDate() : '0' + today.getDate();
-    let dateToday = today.getFullYear() + '-' + month + '-' + (day + 4)
+    let dateToday = today.getFullYear() + '-' + month + '-' + (day)
 
     let toSend = {
       'UserID': donatedBloodUserID.split(","),

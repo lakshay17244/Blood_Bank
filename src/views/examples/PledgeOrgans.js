@@ -79,15 +79,15 @@ const PledgeOrgans = () => {
 
   useEffect(() => {
     if (!requestCompleted) {
+      setrequestCompleted(true)
       req.getnearbydc(localStorage.getItem('userID')).then((nearbydc) => {
         setnearbydc(nearbydc)
-        setrequestCompleted(true)
       })
     }
     if (!request1Completed) {
+      setrequest1Completed(true)
       req.getalldc(localStorage.getItem('userID')).then((alldc) => {
         setalldc(alldc)
-        setrequest1Completed(true)
       })
     }
     // Set Type to admin or donor with delay added for user request

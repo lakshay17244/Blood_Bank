@@ -162,33 +162,33 @@ const AddRemoveAdmins = (props) => {
 
         if (hasOrganization && hasOrganization["BBE"] === 1) {
             if (!requestCompleted2) {
+                setrequestCompleted2(true)
                 req.getAdmins("BB", localStorage.getItem("userID")).then((res) => {
                     setBBAdmins(res)
-                    setrequestCompleted2(true)
                 })
             }
         }
         if (hasOrganization && hasOrganization["DCE"] === 1) {
             if (!requestCompleted2) {
+                setrequestCompleted2(true)
                 req.getAdmins("DC", localStorage.getItem("userID")).then((res) => {
                     setDCAdmins(res)
-                    setrequestCompleted2(true)
                 })
             }
         }
         if (hasOrganization && hasOrganization["HE"] === 1) {
             if (!requestCompleted3) {
+                setrequestCompleted3(true)
                 req.getAdmins("H", localStorage.getItem("userID")).then((res) => {
                     setHAdmins(res)
-                    setrequestCompleted3(true)
                 })
             }
         }
 
         if (!requestCompleted) {
+            setrequestCompleted(true)
             req.getPastDonations(localStorage.getItem('userID')).then((donations) => {
                 setDonations(donations)
-                setrequestCompleted(true)
             })
         }
     })

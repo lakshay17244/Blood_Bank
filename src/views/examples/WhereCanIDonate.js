@@ -58,7 +58,7 @@ import {
 
 import Header from "components/Headers/Header.js";
 import * as req from "../../requests"
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const WhereCanIDonate = () => {
 
@@ -67,27 +67,54 @@ const WhereCanIDonate = () => {
   const [bloodGroup, setbloodGroup] = useState('B+')
 
   // Donate Blood
-  const [donatedBloodAmount, setdonatedBloodAmount] = useState('')
-  const [donatedBloodDCID, setdonatedBloodDCID] = useState('')
-  const [donateBloodMessage, setDonateBloodMessage] = useState('')
-  const [donatedBloodUserID, setdonatedBloodUserID] = useState('')
+  const [AppointmentDate, setAppointmentDate] = useState('')
+  const [AppointmentDCID, setAppointmentDCID] = useState('')
+  const [booked, setbooked] = useState('')
+
+
+  const [donorAppointments, setdonorAppointments] = useState([])
 
   const [nearbydc, setnearbydc] = useState('')
   const [alldc, setalldc] = useState('')
   const [requestCompleted, setrequestCompleted] = useState(false);
   const [request1Completed, setrequest1Completed] = useState(false);
 
+  const bookAppointment = () => {
+    let toSend = {
+      "DCID": AppointmentDCID,
+      "UserID": localStorage.getItem("userID"),
+      "Date": AppointmentDate
+    }
+
+    req.bookAppointment(toSend).then(r => {
+      if (r.status === 200) {
+        setbooked(true)
+        getDonorAppointments()
+      }
+    })
+  }
+
+  const getDonorAppointments = () => {
+    req.getDonorAppointments(localStorage.getItem("userID")).then(r => {
+      if (r && r.length > 0) {
+        setdonorAppointments(r)
+      }
+    })
+  }
+
+
   useEffect(() => {
     if (!requestCompleted) {
+      setrequestCompleted(true)
+      getDonorAppointments()
       req.getnearbydc(localStorage.getItem('userID')).then((nearbydc) => {
         setnearbydc(nearbydc)
-        setrequestCompleted(true)
       })
     }
     if (!request1Completed) {
+      setrequest1Completed(true)
       req.getalldc(localStorage.getItem('userID')).then((alldc) => {
         setalldc(alldc)
-        setrequest1Completed(true)
       })
     }
     // Set Type to admin or donor with delay added for user request
@@ -113,8 +140,7 @@ const WhereCanIDonate = () => {
         {/* ----------------------------------------- DONOR PAGE ----------------------------------------- */}
 
         <Row >
-          <Col xl={2} l={2} m={2}></Col>
-          <Col xl={8} l={8} m={8}>
+          <Col xl={6} l={6} m={6}>
 
             {nearbydc && nearbydc.length > 0 ?
               <Card className="shadow">
@@ -167,13 +193,7 @@ const WhereCanIDonate = () => {
 
             }
           </Col>
-          <Col xl={2} l={2} m={2}></Col>
-        </Row>
-
-        <Row className="mt-6">
-          <Col xl={2} l={2} m={2}></Col>
-          <Col xl={8} l={8} m={8}>
-
+          <Col xl={6} l={6} m={6}>
             {alldc && alldc.length > 0 ?
               <Card className="shadow">
                 <CardHeader className="border-0 text-center">
@@ -207,6 +227,59 @@ const WhereCanIDonate = () => {
                 </CardFooter>
               </Card>
               : null}
+          </Col>
+        </Row>
+
+        <Row className="mt-6">
+          <Col xl={2} l={2} m={2}></Col>
+          <Col xl={8} l={8} m={8}>
+            <Card className="shadow my-4">
+              <CardHeader className="border-0 text-center">
+                <h2 className="mb-0">Appointments</h2>
+              </CardHeader>
+              <CardBody>
+                {donorAppointments && donorAppointments.length > 0 ?
+                  <h3>You have an appointment at <b>{donorAppointments[0].Name}</b>, <b>{donorAppointments[0].Address}</b> on <b>{Moment(donorAppointments[0].Date).format('YYYY-MM-DD')}</b></h3>
+                  :
+                  <>
+                    <h4 className="text-center">Select any donation center from above</h4>
+                    <Form role="form">
+
+                      {/* DCID */}
+                      <FormGroup>
+                        <Input
+                          value={AppointmentDCID}
+                          onChange={e => setAppointmentDCID(e.target.value)}
+                          className="form-control-alternative"
+                          placeholder="DCID"
+                          type="text"
+                        />
+                      </FormGroup>
+
+                      {/* Date */}
+                      <FormGroup>
+                        <InputGroup className="input-group-alternative mb-3">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="ni ni-calendar-grid-58 mr-2" /> Date Of Appointment
+                      </InputGroupText>
+                          </InputGroupAddon>
+                          <Input type="date" pattern="[0-9]*" value={AppointmentDate} onChange={(e) => setAppointmentDate(e.target.value)} min={Moment(new Date()).format('YYYY-MM-DD')} />
+                        </InputGroup>
+                      </FormGroup>
+
+                      <div className="text-center">
+                        <Button className="my-4" disabled={booked} color="primary" type="button" onClick={bookAppointment}>{booked ? "Booked!" : "Book"}</Button>
+                      </div>
+                    </Form>
+
+                  </>
+                }
+              </CardBody>
+              <CardFooter className="py-4 text-center">
+              </CardFooter>
+            </Card>
+
           </Col>
           <Col xl={2} l={2} m={2}></Col>
         </Row>
