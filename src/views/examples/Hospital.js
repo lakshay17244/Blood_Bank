@@ -77,6 +77,8 @@ const Hospital = () => {
   const [HPincode, setHPincode] = useState('')
   const [saved, setsaved] = useState(false)
   const [PatientDetails, setPatientDetails] = useState([])
+  const [PatientDetailsUnderYou, setPatientDetailsUnderYou] = useState([])
+
   const [HDetails, setHDetails] = useState([])
   const [RemovePatientID, setRemovePatientID] = useState('')
   const [AddPatiendBG, setAddPatiendBG] = useState('B+')
@@ -93,6 +95,11 @@ const Hospital = () => {
   const [emergencyRequirements, setemergencyRequirements] = useState([])
   const [emergencyBGInput, setemergencyBGInput] = useState('B+')
   const [emergencyBGAdded, setemergencyBGAdded] = useState(false)
+
+  const [emergencyEIDInput, setemergencyEIDInput] = useState('')
+  const [emergencyEIDRemoved, setemergencyEIDRemoved] = useState(false)
+
+  const [ERMessage, setERMessage] = useState('')
 
   const withdrawBlood = () => {
     let toSend = {
@@ -122,16 +129,37 @@ const Hospital = () => {
   }
 
   const addemergencyrequirement = () => {
+    setERMessage('')
     let toSend = {
       "BloodNeeded": emergencyBGInput,
       "DateRecieved": Moment(new Date()).format('YYYY-MM-DD'),
       "DoctorID": localStorage.getItem("userID")
     }
     req.addemergencyrequirement(toSend).then(r => {
+      console.log(r)
+      setERMessage(r.message)
       if (r.status === 200) {
         getemergencyrequirements()
         setemergencyBGAdded(true)
         setTimeout(() => { setemergencyBGAdded(false) }, 2000)
+      }
+    })
+  }
+
+  const removeemergencyrequirement = () => {
+    setERMessage('')
+    let toSend = {
+      "EID": emergencyEIDInput,
+      "UserID": localStorage.getItem("userID")
+    }
+    console.log(toSend)
+    req.removeemergencyrequirement(toSend).then(r => {
+      console.log(r)
+      setERMessage(r.message)
+      if (r.status === 200) {
+        getemergencyrequirements()
+        setemergencyEIDRemoved(true)
+        setTimeout(() => { setemergencyEIDRemoved(false) }, 2000)
       }
     })
   }
@@ -215,6 +243,10 @@ const Hospital = () => {
     req.getPatientDetails(localStorage.getItem('userID')).then((result) => {
       console.log("=====", result)
       setPatientDetails(result)
+    })
+
+    req.getPatientDetailsUnderYou(localStorage.getItem('userID')).then((result) => {
+      setPatientDetailsUnderYou(result)
     })
   }
 
@@ -346,12 +378,40 @@ const Hospital = () => {
               </Col>
               <Col xl={6} l={6} m={6}>
 
-                {PatientDetails && PatientDetails.length > 0 ?
+                {PatientDetailsUnderYou && PatientDetailsUnderYou.length > 0 ?
                   // <div className='scrollspy-example-2 mt-4'>
                   <>
                     <Card className="shadow mt-4" >
                       <CardHeader className="border-0 text-center">
-                        <h3 className="mb-0">Record of Admitted Patients</h3>
+                        <h3 className="mb-0">Record of Admitted Patients Under You</h3>
+
+                      </CardHeader>
+                      <Table className="align-items-center table-flush mb-4" responsive>
+                        <thead className="thead-light">
+                          <tr>
+                            <th scope="col">Patient ID</th>
+                            <th scope="col">Blood Needed</th>
+                            <th scope="col">Admission Date</th>
+                            <th scope="col">Doctor UserID</th>
+                            <th scope="col" />
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {PatientDetailsUnderYou.map((res, index) => {
+                            return <tr key={index}>
+                              <td> {res.PID} </td>
+                              <td> {res.BloodNeeded} </td>
+                              <td> {Moment(res.AdmissionDate).format('LL')} </td>
+                              <td> {res.UserID} </td>
+                            </tr>
+                          })}
+                        </tbody>
+                      </Table>
+                    </Card >
+
+                    <Card className="shadow mt-4" >
+                      <CardHeader className="border-0 text-center">
+                        <h3 className="mb-0">Record of All Admitted Patients</h3>
 
                       </CardHeader>
                       <Table className="align-items-center table-flush mb-4" responsive>
@@ -394,7 +454,7 @@ const Hospital = () => {
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
                             <i className="ni ni-favourite-28 mr-2" />
-													Blood Group
+                            Blood Group
 												</InputGroupText>
                         </InputGroupAddon>
                         <select className="mt-1" value={AddPatiendBG} onChange={(e) => setAddPatiendBG(e.target.value)}>
@@ -436,7 +496,7 @@ const Hospital = () => {
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
                           <i className="ni ni-favourite-28 mr-2" />
-													Enter Blood Group
+                          Enter Blood Group
 												</InputGroupText>
                       </InputGroupAddon>
                       <select className="mt-1" value={CheckBGInput} onChange={(e) => setCheckBGInput(e.target.value)}>
@@ -455,7 +515,7 @@ const Hospital = () => {
                 </Card>
 
 
-                {hasCheckedBG ?
+                {hasCheckedBG && CheckBGAvailibilityNearby && CheckBGAvailibilityNearby.length > 0 && CheckBGAvailibility && CheckBGAvailibility.length > 0 ?
                   <Card className="shadow mt-4 mb-2">
                     <CardHeader>
                       <h2 className="text-center">Withdraw From Blood Bank</h2>
@@ -587,6 +647,7 @@ const Hospital = () => {
                       <Table className="align-items-center table-flush mb-4" responsive>
                         <thead className="thead-light">
                           <tr>
+                            <th scope="col">EID</th>
                             <th scope="col">Blood Needed</th>
                             <th scope="col">Date Posted</th>
                             <th scope="col">Doctor's UserID</th>
@@ -596,6 +657,7 @@ const Hospital = () => {
                         <tbody>
                           {emergencyRequirements.map((res, index) => {
                             return <tr key={index}>
+                              <td> {res.EID} </td>
                               <td> {res.BloodNeeded} </td>
                               <td> {Moment(res.DateRecieved).format('LL')} </td>
                               <td> {res.DoctorID} </td>
@@ -607,8 +669,8 @@ const Hospital = () => {
 
 
                     <Row>
-                      <Col xl={3}></Col>
-                      <Col xl={6}>
+                      <Col xl={2}></Col>
+                      <Col xl={4}>
                         <h3>Post Requirement</h3>
                         <InputGroup className="input-group-alternative mb-3">
                           <InputGroupAddon addonType="prepend">
@@ -629,7 +691,25 @@ const Hospital = () => {
                         </InputGroup>
                         <Button className=" mb-2" color="primary" type="button" disabled={emergencyBGAdded} onClick={addemergencyrequirement}> {emergencyBGAdded ? "Added!" : "Add"}</Button>
                       </Col>
-                      <Col xl={3}></Col>
+                      <Col xl={4}>
+                        <h3>Remove Requirement</h3>
+                        <InputGroup className="input-group-alternative mb-3">
+                          {/* <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              Enter EID
+												    </InputGroupText>
+                          </InputGroupAddon> */}
+                          <Input type="number" placeholder="Enter EID" value={emergencyEIDInput} onChange={(e) => setemergencyEIDInput(e.target.value)}></Input>
+                        </InputGroup>
+                        <Button className=" mb-2" color="primary" type="button" disabled={emergencyEIDRemoved} onClick={removeemergencyrequirement}> {emergencyEIDRemoved ? "Removed!" : "Remove"}</Button>
+
+                      </Col>
+                      <Col xl={2}></Col>
+                    </Row>
+                    <Row className="text-center">
+                      <Col xl={4}></Col>
+                      <Col xl={4}> <h2 className="text-center">{ERMessage}</h2></Col>
+                      <Col xl={4}></Col>
                     </Row>
                   </CardBody>
                 </Card>

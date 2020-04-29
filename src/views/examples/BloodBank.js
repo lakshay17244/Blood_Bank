@@ -282,35 +282,35 @@ const BloodBank = () => {
             </Col>
             <Col xl={6} l={6} m={6}>
               {associatedDCs && associatedDCs.length > 0 ?
-                // <div className='scrollspy-example-2 mt-4'>
-                <Card className="shadow" >
-                  <CardHeader className="border-0 text-center">
-                    <h3 className="mb-0">Associated Donation Centers</h3>
+                <div className={associatedDCs.length > 6 ? 'scrollspy-example-2' : ''}>
+                  <Card className="shadow" >
+                    <CardHeader className="border-0 text-center">
+                      <h3 className="mb-0">Associated Donation Centers</h3>
 
-                  </CardHeader>
-                  <Table className="align-items-center table-flush mb-4" responsive>
-                    <thead className="thead-light">
-                      <tr>
-                        <th scope="col">DCID</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Address</th>
-                        <th scope="col">Pincode</th>
-                        <th scope="col" />
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {associatedDCs.map((res, index) => {
-                        return <tr key={index}>
-                          <td> {res.DCID} </td>
-                          <td> {res.Name} </td>
-                          <td> {res.Address} </td>
-                          <td> {res.Pincode} </td>
+                    </CardHeader>
+                    <Table className="align-items-center table-flush mb-4" responsive>
+                      <thead className="thead-light">
+                        <tr>
+                          <th scope="col">DCID</th>
+                          <th scope="col">Name</th>
+                          <th scope="col">Address</th>
+                          <th scope="col">Pincode</th>
+                          <th scope="col" />
                         </tr>
-                      })}
-                    </tbody>
-                  </Table>
-                </Card >
-                // </div>
+                      </thead>
+                      <tbody>
+                        {associatedDCs.map((res, index) => {
+                          return <tr key={index}>
+                            <td> {res.DCID} </td>
+                            <td> {res.Name} </td>
+                            <td> {res.Address} </td>
+                            <td> {res.Pincode} </td>
+                          </tr>
+                        })}
+                      </tbody>
+                    </Table>
+                  </Card >
+                </div>
                 :
                 <Card className="shadow mt-4" >
                   <CardBody>
@@ -321,35 +321,35 @@ const BloodBank = () => {
 
               {
                 BBStoredBlood && BBStoredBlood.length > 0 ?
-                  // <div className='scrollspy-example-2'>
-                  <Card className="shadow mt-4" >
-                    <CardHeader className="border-0 text-center">
-                      <h3 className="mb-0">Stored Blood</h3>
+                  <div className={BBStoredBlood.length > 6 ? 'scrollspy-example-2' : ''}>
+                    <Card className="shadow mt-4" >
+                      <CardHeader className="border-0 text-center">
+                        <h3 className="mb-0">Stored Blood</h3>
 
-                    </CardHeader>
-                    <Table className="align-items-center table-flush mb-4" responsive>
-                      <thead className="thead-light">
-                        <tr>
-                          <th scope="col">Blood Group</th>
-                          <th scope="col">Amount</th>
-                          <th scope="col" />
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {BBStoredBlood.map((res, index) => {
-                          return <tr key={index}>
-                            <td> {res.BloodGroup} </td>
-                            <td> {res.Amount} </td>
+                      </CardHeader>
+                      <Table className="align-items-center table-flush mb-4" responsive>
+                        <thead className="thead-light">
+                          <tr>
+                            <th scope="col">Blood Group</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col" />
                           </tr>
-                        })}
-                      </tbody>
-                    </Table>
-                    <CardFooter>
-                      {sumTotalStoredBlood() > 0 && <h3 className="text-center">Total Amount of Stored Blood = {sumTotalStoredBlood()}</h3>}
-                      <h3 className="text-center"> Capacity Left = {BBCapacity - sumTotalStoredBlood()} units</h3>
-                    </CardFooter>
-                  </Card >
-                  // </div>
+                        </thead>
+                        <tbody>
+                          {BBStoredBlood.map((res, index) => {
+                            return <tr key={index}>
+                              <td> {res.BloodGroup} </td>
+                              <td> {res.Amount} </td>
+                            </tr>
+                          })}
+                        </tbody>
+                      </Table>
+                      <CardFooter>
+                        {sumTotalStoredBlood() > 0 && <h3 className="text-center">Total Amount of Stored Blood = {sumTotalStoredBlood()}</h3>}
+                        <h3 className="text-center"> Capacity Left = {BBCapacity - sumTotalStoredBlood()} units</h3>
+                      </CardFooter>
+                    </Card >
+                  </div>
                   :
                   <Card className="shadow my-4" >
                     <CardBody>

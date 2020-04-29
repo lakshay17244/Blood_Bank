@@ -69,6 +69,24 @@ export const addemergencyrequirement = async (toSend) => {
     return details
 }
 
+export const removeemergencyrequirement = async (toSend) => {
+
+    let details = "Couldn't Do the request";
+    // console.log("removeemergencyrequirement sending - ", toSend)
+    await axios({
+        method: 'post',
+        url: URL + "removeemergencyrequirement",
+        headers: { 'Content-Type': 'application/json' },
+        data: toSend
+    }).then(res => {
+        details = res.data
+    }).catch(e => {
+        console.log("ERROR | " + e)
+        details = e
+    });
+    return details
+}
+
 
 export const withdrawBlood = async (toSend) => {
     let details = "Couldn't Do the request";
@@ -156,6 +174,18 @@ export const removePatient = async (PID) => {
     return details
 }
 
+export const getPatientDetailsUnderYou = async (UserID) => {
+    let details = "Couldn't Do the request";
+    await axios.get(URL + `getPatientDetailsUnderYou/` + UserID)
+        .then(res => {
+            details = res.data;
+            // console.log(details);
+        }).catch(e => {
+            details = e
+            console.log("ERROR")
+        });
+    return details;
+}
 
 export const getPatientDetails = async (UserID) => {
     let details = "Couldn't Do the request";
