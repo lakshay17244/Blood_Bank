@@ -83,8 +83,7 @@ const Index = () => {
   // Donate Blood
   const [donatedBloodAmount, setdonatedBloodAmount] = useState('')
   const [donatedBloodDCID, setdonatedBloodDCID] = useState('')
-  const [donateBloodMessage, setDonateBloodMessage] = useState('')
-  const [donatedBloodUserID, setdonatedBloodUserID] = useState('')
+
   const [showDonationDate, setshowDonationDate] = useState(true)
   const [donations, setDonations] = useState('')
   const [requestCompleted, setrequestCompleted] = useState(false)
@@ -97,7 +96,11 @@ const Index = () => {
   const [currHead, setcurrHead] = useState('')
 
 
-
+  const getAdminOrganization = () => {
+    req.getAdminOrganization(localStorage.getItem('userID')).then((result) => {
+      sethasOrganization(result)
+    })
+  }
   useEffect(() => {
     if (!requestCompleted) {
       setrequestCompleted(true)
@@ -109,9 +112,7 @@ const Index = () => {
 
     if (!requestCompleted1) {
       setrequestCompleted1(true)
-      req.getAdminOrganization(localStorage.getItem('userID')).then((result) => {
-        sethasOrganization(result)
-      })
+      getAdminOrganization()
     }
 
     // Set Type to admin or donor with delay added for user request
@@ -127,30 +128,6 @@ const Index = () => {
 
   })
 
-  const donateBlood = () => {
-    let today = new Date()
-    let month = (today.getMonth() + 1) >= 10 ? today.getMonth() + 1 : '0' + (today.getMonth() + 1);
-    let day = today.getDate() >= 10 ? today.getDate() : '0' + today.getDate();
-    let dateToday = today.getFullYear() + '-' + month + '-' + (day)
-
-    let toSend = {
-      'UserID': donatedBloodUserID.split(","),
-      'DateRecieved': dateToday,
-      'AdminID': localStorage.getItem("userID"),
-      // 'Amount': donatedBloodAmount.split(","),
-      // 'DCID': donatedBloodDCID,
-      // 'Available': 1,
-    }
-    console.log("To send = ", toSend)
-    req.donateBlood(toSend).then((res) => {
-      // console.log("donateBlood Returned", res)
-      if (res.status === 200)
-        setDonateBloodMessage(res.message)
-      else
-        setDonateBloodMessage("Error in SQL - " + res.message)
-    })
-
-  }
 
   const getNextDonationDate = () => {
     const data = donations;
@@ -191,6 +168,7 @@ const Index = () => {
         }
         req.registerOrganization("Hospital", toSend).then(r => {
           setregisterOrganizationMessage(r)
+          getAdminOrganization()
         })
         console.log(toSend)
         break;
@@ -206,6 +184,7 @@ const Index = () => {
         }
         req.registerOrganization("BloodBank", toSend).then(r => {
           setregisterOrganizationMessage(r)
+          getAdminOrganization()
         })
         console.log(toSend)
         break;
@@ -215,12 +194,13 @@ const Index = () => {
           'Name': name,
           'Address': address,
           'Pincode': pincode,
-          'UserID': otherAdmins.length > 0 ? [...otherAdmins, myID] : [myID], //Comma separated user IDs array
+          'UserID': addAdmin.length > 0 ? [...otherAdmins, myID] : [myID], //Comma separated user IDs array
           'BBID': associatedbbid
         }
-        // console.log(toSend)
+        console.log(toSend)
         req.registerOrganization("DonationCenter", toSend).then(r => {
           setregisterOrganizationMessage(r)
+          getAdminOrganization()
         })
         break;
 
@@ -346,214 +326,150 @@ const Index = () => {
 
             }
 
-
-            <Row className="mt-5">
-              <Col xl={4}>
-
-                <Card className="bg-secondary shadow border-0">
-                  <CardHeader className="bg-transparent pb-5">
-                    <h2 className="text-center mb-0">Add Donation Record</h2>
-                  </CardHeader>
-                  <CardBody>
-                    <Form role="form">
-
-                      {/* User ID's */}
-                      <FormGroup>
-                        <InputGroup className="input-group-alternative mb-3">
-                          <InputGroupAddon addonType="prepend">
-                            <InputGroupText>
-                              <i className="ni ni-badge" />
-                            </InputGroupText>
-                          </InputGroupAddon>
-                          <Input placeholder="UserID's" type="text" value={donatedBloodUserID} onChange={(e) => setdonatedBloodUserID(e.target.value)} />
-                        </InputGroup>
-                      </FormGroup>
-
-                      {/* Amount */}
-                      {/* <FormGroup>
-                        <InputGroup className="input-group-alternative mb-3">
-                          <InputGroupAddon addonType="prepend">
-                            <InputGroupText>
-                              <i className="ni ni-chart-bar-32" />
-                            </InputGroupText>
-                          </InputGroupAddon>
-                          <Input placeholder="Amounts (Comma Separated)" type="text" value={donatedBloodAmount} onChange={(e) => setdonatedBloodAmount(e.target.value)} />
-                        </InputGroup>
-                      </FormGroup> */}
-
-                      <div className="text-center">
-                        <Button className="my-4" color="primary" type="button" onClick={donateBlood}>Submit</Button>
-                      </div>
-                    </Form>
-                    <h2 className='text-center'>{donateBloodMessage}</h2>
-                  </CardBody>
-                </Card>
-
-              </Col>
-              <Col xl={8}>
-                <Card className="bg-secondary shadow border-0">
-                  <CardHeader className="bg-transparent pb-5">
-                    <h6 className="text-uppercase text-muted ls-1 mb-1">
-                      Only Admins Can Do this
+            {(hasOrganization["BBE"] != 1 || hasOrganization["DCE"] != 1 || hasOrganization["HE"] != 1) &&
+              <Row className="mt-5">
+                <Col xl={2}></Col>
+                <Col xl={8}>
+                  <Card className="bg-secondary shadow border-0">
+                    <CardHeader className="bg-transparent pb-5">
+                      <h6 className="text-uppercase text-muted ls-1 mb-1">
+                        Only Admins Can Do this
                       </h6>
-                    <h2 className="mb-0">Add new Organization</h2>
-                    <div className="text-muted text-center mt-2 mb-3">
-                      <small>Register a</small>
-                    </div>
+                      <h2 className="mb-0">Add new Organization</h2>
+                      <div className="text-muted text-center mt-2 mb-3">
+                        <small>Register a</small>
+                      </div>
 
-                    <Row className="btn-wrapper text-center">
-                      <Col>
-                        <Button
-                          className="btn-neutral btn-icon"
-                          color="default"
-                          href="#pablo"
-                          onClick={e => {
-                            e.preventDefault()
-                            handleRegister("Hospital")
-                          }}
-                          active={registerButton === "Hospital"}
-                        >
-                          <span className="btn-inner--text">Hospital</span>
-                        </Button>
-                      </Col>
-                      <Col>
-                        <Button
-                          className="btn-neutral btn-icon"
-                          color="default"
-                          href="#pablo"
-                          onClick={e => {
-                            e.preventDefault()
-                            handleRegister("BloodBank")
-                          }}
-                          active={registerButton === "BloodBank"}
-                        >
-                          <span className="btn-inner--text">Blood Bank</span>
-                        </Button>
-                      </Col>
-                      <Col>
-                        <Button
-                          className="btn-neutral btn-icon mt-0 mt-4 mt-sm-0"
-                          color="default"
-                          href="#pablo"
-                          onClick={e => {
-                            e.preventDefault()
-                            handleRegister("DonationCenter")
-                          }}
-                          active={registerButton === "DonationCenter"}
-                        >
-                          <span className="btn-inner--text">Donation Center</span>
-                        </Button>
-                      </Col>
-                    </Row>
-                    {/* </CardHeader> */}
-                  </CardHeader>
-                  <CardBody>
+                      <Row className="btn-wrapper text-center">
+                        {hasOrganization["HE"] !== 1 &&
+                          <Col>
 
+                            <Button
+                              className="btn-neutral btn-icon"
+                              color="default"
+                              href="#pablo"
+                              onClick={e => {
+                                e.preventDefault()
+                                handleRegister("Hospital")
+                              }}
+                              active={registerButton === "Hospital"}
+                            >
+                              <span className="btn-inner--text">Hospital</span>
+                            </Button>
+                          </Col>}
 
-                    <Form role="form">
-
-                      {/* Name */}
-                      <FormGroup>
-                        <InputGroup className="input-group-alternative mb-3">
-                          <InputGroupAddon addonType="prepend">
-                            <InputGroupText>
-                              <i className="ni ni-hat-3" />
-                            </InputGroupText>
-                          </InputGroupAddon>
-                          <Input placeholder="Name" type="text" value={name} onChange={(e) => handleName(e.target.value)} />
-                        </InputGroup>
-                      </FormGroup>
+                        {hasOrganization["BBE"] !== 1 &&
+                          <Col>
+                            <Button
+                              className="btn-neutral btn-icon"
+                              color="default"
+                              href="#pablo"
+                              onClick={e => {
+                                e.preventDefault()
+                                handleRegister("BloodBank")
+                              }}
+                              active={registerButton === "BloodBank"}
+                            >
+                              <span className="btn-inner--text">Blood Bank</span>
+                            </Button>
+                          </Col>}
+                        {hasOrganization["DCE"] !== 1 &&
+                          <Col>
+                            <Button
+                              className="btn-neutral btn-icon mt-0 mt-4 mt-sm-0"
+                              color="default"
+                              href="#pablo"
+                              onClick={e => {
+                                e.preventDefault()
+                                handleRegister("DonationCenter")
+                              }}
+                              active={registerButton === "DonationCenter"}
+                            >
+                              <span className="btn-inner--text">Donation Center</span>
+                            </Button>
+                          </Col>}
+                      </Row>
+                      {/* </CardHeader> */}
+                    </CardHeader>
+                    <CardBody>
 
 
-                      {/* Address */}
-                      <FormGroup>
-                        <InputGroup className="input-group-alternative mb-3">
-                          <InputGroupAddon addonType="prepend">
-                            <InputGroupText>
-                              <i className="ni ni-shop" />
-                            </InputGroupText>
-                          </InputGroupAddon>
-                          <Input placeholder="Address" type="text" value={address} onChange={(e) => handleAddress(e.target.value)} />
-                        </InputGroup>
-                      </FormGroup>
+                      <Form role="form">
 
-                      {/* Pincode */}
-                      <FormGroup>
-                        <InputGroup className="input-group-alternative mb-3">
-                          <InputGroupAddon addonType="prepend">
-                            <InputGroupText>
-                              <i className="ni ni-square-pin" />
-                            </InputGroupText>
-                          </InputGroupAddon>
-                          <Input placeholder="Pincode" type="number" value={pincode} onChange={(e) => handlePincode(e.target.value)} />
-                        </InputGroup>
-                      </FormGroup>
-
-                      {/* Add admins */}
-                      <FormGroup>
-                        <InputGroup className="input-group-alternative mb-3">
-                          <InputGroupAddon addonType="prepend">
-                            <InputGroupText>
-                              <i className="ni ni-badge" />
-                            </InputGroupText>
-                          </InputGroupAddon>
-                          <Input placeholder="Add Other Admins by UserID" type="text" value={addAdmin} onChange={(e) => handleaddAdmin(e.target.value)} />
-                        </InputGroup>
-                      </FormGroup>
-
-
-                      {registerButton === "Hospital" ? (
-                        /* HOSPITAL REGISTRATION */
-
-                        /* Patients */
+                        {/* Name */}
                         <FormGroup>
                           <InputGroup className="input-group-alternative mb-3">
                             <InputGroupAddon addonType="prepend">
                               <InputGroupText>
-                                <i className="ni ni-single-02" />
+                                <i className="ni ni-hat-3" />
                               </InputGroupText>
                             </InputGroupAddon>
-                            <Input placeholder="Number of Admitted Patients" type="number" value={patients} onChange={(e) => handlePatients(e.target.value)} />
+                            <Input placeholder="Name" type="text" value={name} onChange={(e) => handleName(e.target.value)} />
                           </InputGroup>
                         </FormGroup>
 
-                      ) : null}
 
-
-
-
-                      {registerButton === "DonationCenter" ? (
-                        /* DONATION CENTER REGISTRATION */
-
-                        /* Associated Blood Bank ID */
+                        {/* Address */}
                         <FormGroup>
                           <InputGroup className="input-group-alternative mb-3">
                             <InputGroupAddon addonType="prepend">
                               <InputGroupText>
-                                <i className="ni ni-favourite-28" />
+                                <i className="ni ni-shop" />
                               </InputGroupText>
                             </InputGroupAddon>
-                            <Input placeholder="Enter Associated Blood Bank ID" type="number" value={associatedbbid} onChange={(e) => handleassociatedbbid(e.target.value)} />
+                            <Input placeholder="Address" type="text" value={address} onChange={(e) => handleAddress(e.target.value)} />
                           </InputGroup>
                         </FormGroup>
-                      ) : null}
+
+                        {/* Pincode */}
+                        <FormGroup>
+                          <InputGroup className="input-group-alternative mb-3">
+                            <InputGroupAddon addonType="prepend">
+                              <InputGroupText>
+                                <i className="ni ni-square-pin" />
+                              </InputGroupText>
+                            </InputGroupAddon>
+                            <Input placeholder="Pincode" type="number" value={pincode} onChange={(e) => handlePincode(e.target.value)} />
+                          </InputGroup>
+                        </FormGroup>
+
+                        {/* Add admins */}
+                        <FormGroup>
+                          <InputGroup className="input-group-alternative mb-3">
+                            <InputGroupAddon addonType="prepend">
+                              <InputGroupText>
+                                <i className="ni ni-badge" />
+                              </InputGroupText>
+                            </InputGroupAddon>
+                            <Input placeholder="Add Other Admins by UserID" type="text" value={addAdmin} onChange={(e) => handleaddAdmin(e.target.value)} />
+                          </InputGroup>
+                        </FormGroup>
 
 
-                      {registerButton === "BloodBank" ? (
-                        /* BLOOD BANK REGISTRATION */
-                        <>
-                          {/* Total Capacity */}
+                        {registerButton === "Hospital" ? (
+                          /* HOSPITAL REGISTRATION */
+
+                          /* Patients */
                           <FormGroup>
                             <InputGroup className="input-group-alternative mb-3">
                               <InputGroupAddon addonType="prepend">
                                 <InputGroupText>
-                                  <i className="ni ni-ambulance" />
+                                  <i className="ni ni-single-02" />
                                 </InputGroupText>
                               </InputGroupAddon>
-                              <Input placeholder="Total Blood Capacity (in Litres)" type="number" value={totalcapacity} onChange={(e) => handletotalcapacity(e.target.value)} />
+                              <Input placeholder="Number of Admitted Patients" type="number" value={patients} onChange={(e) => handlePatients(e.target.value)} />
                             </InputGroup>
                           </FormGroup>
-                          {/* Capacity Left */}
+
+                        ) : null}
+
+
+
+
+                        {registerButton === "DonationCenter" ? (
+                          /* DONATION CENTER REGISTRATION */
+
+                          /* Associated Blood Bank ID */
                           <FormGroup>
                             <InputGroup className="input-group-alternative mb-3">
                               <InputGroupAddon addonType="prepend">
@@ -561,26 +477,54 @@ const Index = () => {
                                   <i className="ni ni-favourite-28" />
                                 </InputGroupText>
                               </InputGroupAddon>
-                              <Input placeholder="Capacity Left (in Litres)" type="number" value={capacityleft} onChange={(e) => handlecapacityleft(e.target.value)} />
+                              <Input placeholder="Enter Associated Blood Bank ID" type="number" value={associatedbbid} onChange={(e) => handleassociatedbbid(e.target.value)} />
                             </InputGroup>
                           </FormGroup>
-                        </>
-                      ) : null}
+                        ) : null}
 
-                      {/* REGISTER BUTTON */}
-                      <div className="text-center">
-                        <Button className="my-4" color="primary" type="button" onClick={registerOrganization}>
-                          Register
+
+                        {registerButton === "BloodBank" ? (
+                          /* BLOOD BANK REGISTRATION */
+                          <>
+                            {/* Total Capacity */}
+                            <FormGroup>
+                              <InputGroup className="input-group-alternative mb-3">
+                                <InputGroupAddon addonType="prepend">
+                                  <InputGroupText>
+                                    <i className="ni ni-ambulance" />
+                                  </InputGroupText>
+                                </InputGroupAddon>
+                                <Input placeholder="Total Blood Capacity (in Litres)" type="number" value={totalcapacity} onChange={(e) => handletotalcapacity(e.target.value)} />
+                              </InputGroup>
+                            </FormGroup>
+                            {/* Capacity Left */}
+                            <FormGroup>
+                              <InputGroup className="input-group-alternative mb-3">
+                                <InputGroupAddon addonType="prepend">
+                                  <InputGroupText>
+                                    <i className="ni ni-favourite-28" />
+                                  </InputGroupText>
+                                </InputGroupAddon>
+                                <Input placeholder="Capacity Left (in Litres)" type="number" value={capacityleft} onChange={(e) => handlecapacityleft(e.target.value)} />
+                              </InputGroup>
+                            </FormGroup>
+                          </>
+                        ) : null}
+
+                        {/* REGISTER BUTTON */}
+                        <div className="text-center">
+                          <Button className="my-4" color="primary" type="button" onClick={registerOrganization}>
+                            Register
                   </Button>
-                      </div>
-                    </Form>
-                    <h2 className="text-center">{registerOrganizationMessage}</h2>
+                        </div>
+                      </Form>
+                      <h2 className="text-center">{registerOrganizationMessage}</h2>
 
-                  </CardBody>
-                </Card>
-              </Col>
-
-            </Row>
+                    </CardBody>
+                  </Card>
+                </Col>
+                <Col xl={2}></Col>
+              </Row>}
           </> :
 
           // ----------------------------------------- DONOR PAGE -----------------------------------------

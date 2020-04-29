@@ -83,18 +83,18 @@ const EmergencyBloodRequirements = () => {
 
 
   useEffect(() => {
-    if (!requestCompleted) {
-      setrequestCompleted(true)
-      req.getnearbyhospitals(localStorage.getItem('userID')).then((nearbydc) => {
-        setnearbydc(nearbydc)
-      })
-    }
-    if (!request1Completed) {
-      setrequest1Completed(true)
-      req.getallhospitals(localStorage.getItem('userID')).then((alldc) => {
-        setalldc(alldc)
-      })
-    }
+    // if (!requestCompleted) {
+    //   setrequestCompleted(true)
+    //   req.getnearbyhospitals(localStorage.getItem('userID')).then((nearbydc) => {
+    //     setnearbydc(nearbydc)
+    //   })
+    // }
+    // if (!request1Completed) {
+    //   setrequest1Completed(true)
+    //   req.getallhospitals(localStorage.getItem('userID')).then((alldc) => {
+    //     setalldc(alldc)
+    //   })
+    // }
 
     if (!request2Completed) {
       setrequest2Completed(true)
@@ -135,7 +135,7 @@ const EmergencyBloodRequirements = () => {
                 <CardHeader className="border-0 text-center">
                   <h3 className="mb-0">Emergency Blood Requirements Near You</h3>
                 </CardHeader>
-                <div className={ ERNearby.length > 6 ? 'scrollspy-example-2' : ''}>
+                <div className={ERNearby.length > 6 ? 'scrollspy-example-2' : ''}>
                   <Table className="align-items-center table-flush" responsive>
                     <thead className="thead-light">
                       <tr>
@@ -143,6 +143,7 @@ const EmergencyBloodRequirements = () => {
                         <th scope="col">Blood Needed</th>
                         <th scope="col">Hospital ID</th>
                         <th scope="col">Hospital Name</th>
+                        <th scope="col">Date</th>
                         <th scope="col">Hospital Address</th>
                         <th scope="col">Pincode</th>
                         <th scope="col" />
@@ -154,6 +155,7 @@ const EmergencyBloodRequirements = () => {
                           <td> {res.BloodNeeded} </td>
                           <td> {res.HID} </td>
                           <td> {res.Name} </td>
+                          <td> {Moment(res.DateRecieved).format('LL')} </td>
                           <td> {res.Address} </td>
                           <td> {res.Pincode} </td>
                         </tr>
@@ -179,7 +181,7 @@ const EmergencyBloodRequirements = () => {
                 <CardHeader className="border-0 text-center">
                   <h3 className="mb-0">All Emergency Blood Requirements</h3>
                 </CardHeader>
-                <div className={ ERAll.length > 6 ? 'scrollspy-example-2' : ''}>
+                <div className={ERAll.length > 6 ? 'scrollspy-example-2' : ''}>
                   <Table className="align-items-center table-flush" responsive>
                     <thead className="thead-light">
                       <tr>
@@ -187,6 +189,7 @@ const EmergencyBloodRequirements = () => {
                         <th scope="col">Blood Needed</th>
                         <th scope="col">Hospital ID</th>
                         <th scope="col">Hospital Name</th>
+                        <th scope="col">Date</th>
                         <th scope="col">Hospital Address</th>
                         <th scope="col">Pincode</th>
                         <th scope="col" />
@@ -198,6 +201,7 @@ const EmergencyBloodRequirements = () => {
                           <td> {res.BloodNeeded} </td>
                           <td> {res.HID} </td>
                           <td> {res.Name} </td>
+                          <td> {Moment(res.DateRecieved).format('LL')} </td>
                           <td> {res.Address} </td>
                           <td> {res.Pincode} </td>
                         </tr>
@@ -223,46 +227,48 @@ const EmergencyBloodRequirements = () => {
         <Row className="mt-6">
           <Col xl={6} l={6} m={6}>
 
-            {alldc && alldc.length > 0 ?
-              <Card className="shadow my-4">
-                <CardHeader className="border-0 text-center">
-                  <h3 className="mb-0">All Hospitals</h3>
-                </CardHeader>
-                <div className={ alldc.length > 6 ? 'scrollspy-example-2' : ''}>
-                  <Table className="align-items-center table-flush" responsive>
-                    <thead className="thead-light">
-                      <tr>
-                        {/* <th onClick={e => onSort(e, 'Date')} scope="col">Date</th> */}
-                        <th scope="col">Hospital ID</th>
-                        <th scope="col">Hospital Name</th>
-                        <th scope="col">Address</th>
-                        <th scope="col">Pincode</th>
-                        <th scope="col" />
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {alldc && alldc.map((res, index) => {
-                        return <tr key={index}>
-                          <td> {res.HID} </td>
-                          <td> {res.Name} </td>
-                          <td> {res.Address} </td>
-                          <td> {res.Pincode} </td>
-                        </tr>
-                      })}
-                    </tbody>
-                  </Table>
-                </div>
-                <CardFooter className="py-4 text-center">
-                </CardFooter>
-              </Card>
-              : null}
+            {
+              // alldc && alldc.length > 0 ?
+              // <Card className="shadow my-4">
+              //   <CardHeader className="border-0 text-center">
+              //     <h3 className="mb-0">All Hospitals</h3>
+              //   </CardHeader>
+              //   <div className={ alldc.length > 6 ? 'scrollspy-example-2' : ''}>
+              //     <Table className="align-items-center table-flush" responsive>
+              //       <thead className="thead-light">
+              //         <tr>
+              //           {/* <th onClick={e => onSort(e, 'Date')} scope="col">Date</th> */}
+              //           <th scope="col">Hospital ID</th>
+              //           <th scope="col">Hospital Name</th>
+              //           <th scope="col">Address</th>
+              //           <th scope="col">Pincode</th>
+              //           <th scope="col" />
+              //         </tr>
+              //       </thead>
+              //       <tbody>
+              //         {alldc && alldc.map((res, index) => {
+              //           return <tr key={index}>
+              //             <td> {res.HID} </td>
+              //             <td> {res.Name} </td>
+              //             <td> {res.Address} </td>
+              //             <td> {res.Pincode} </td>
+              //           </tr>
+              //         })}
+              //       </tbody>
+              //     </Table>
+              //   </div>
+              //   <CardFooter className="py-4 text-center">
+              //   </CardFooter>
+              // </Card>
+              // : null
+            }
           </Col>
 
 
           <Col xl={6} l={6} m={6}>
 
             {
-            // nearbydc && nearbydc.length > 0 ?
+              // nearbydc && nearbydc.length > 0 ?
               // <Card className="shadow my-4">
               //   <CardHeader className="border-0 text-center">
               //     <h3 className="mb-0">Nearby Hospitals</h3>

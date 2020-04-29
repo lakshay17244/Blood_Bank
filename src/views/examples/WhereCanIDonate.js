@@ -24,6 +24,8 @@ import Chart from "chart.js";
 import { Line, Bar } from "react-chartjs-2";
 // reactstrap components
 import Moment from 'moment';
+import emailjs from 'emailjs-com';
+
 import {
   Badge,
   CardFooter,
@@ -69,7 +71,7 @@ const WhereCanIDonate = () => {
   // Donate Blood
   const [AppointmentDate, setAppointmentDate] = useState('')
   const [AppointmentDCID, setAppointmentDCID] = useState('')
-  const [booked, setbooked] = useState('')
+  const [booked, setbooked] = useState(false)
 
 
   const [donorAppointments, setdonorAppointments] = useState([])
@@ -78,6 +80,32 @@ const WhereCanIDonate = () => {
   const [alldc, setalldc] = useState('')
   const [requestCompleted, setrequestCompleted] = useState(false);
   const [request1Completed, setrequest1Completed] = useState(false);
+  const [donations, setDonations] = useState('')
+  const [nextDonationDate, setnextDonationDate] = useState(Moment(new Date()).format('LL'))
+
+  const getNextDonationDate = (data) => {
+    if (data && data.length > 0) {
+      data.sort((a, b) => {
+        let d1 = Date.parse(a['DateRecieved'])
+        let d2 = Date.parse(b['DateRecieved'])
+        if (d1 <= d2)
+          return 1
+        else
+          return -1
+      })
+      let maxDate = new Date(data[0]['DateRecieved'])
+      maxDate.setMonth(maxDate.getMonth() + 3);
+
+      console.log("Today is ", Moment(maxDate).format('LL'))
+
+      setnextDonationDate(Moment(maxDate).format('YYYY-MM-DD'))
+    }
+    else {
+      setnextDonationDate(Moment(new Date()).format('YYYY-MM-DD'))
+    }
+
+  }
+
 
   const bookAppointment = () => {
     let toSend = {
@@ -85,41 +113,23 @@ const WhereCanIDonate = () => {
       "UserID": localStorage.getItem("userID"),
       "Date": AppointmentDate
     }
-    
-    const mailjet = require('node-mailjet')
-      .connect('b5ca5c4487b925b91d5e11531fb55d06', '326ff998ee00341782bac4beb2f94861')
-    const request = mailjet
-      .post("send", { 'version': 'v3.1' })
-      .request({
-        "Messages": [
-          {
-            "From": {
-              "Email": "lakshay.sharma10@gmail.com",
-              "Name": "Lakshay"
-            },
-            "To": [
-              {
-                "Email": "lakshay.sharma10@gmail.com",
-                "Name": "Lakshay"
-              }
-            ],
-            "Subject": "Greetings from Team Life.Connect!",
-            "TextPart": "Your appointment has been confirmed with Donation Center ID" + AppointmentDCID,
-            "HTMLPart": "<h3>Dear passenger 1, welcome to <a href='https://www.mailjet.com/'>Mailjet</a>!</h3><br />May the delivery force be with you!",
-            "CustomID": "AppGettingStartedTest"
-          }
-        ]
-      })
-    request
+    let DC = searchDC(AppointmentDCID)
+
+    let paramsToSend = {
+      "email": localStorage.getItem("email"),
+      "name": localStorage.getItem("name"),
+      "dcname": DC.Name,
+      "address": DC.Address,
+      "date": Moment(AppointmentDate).format('LL')
+    }
+
+    console.log(paramsToSend)
+    emailjs.send('default_service', 'lifeconnect', paramsToSend, "***REMOVED***")
       .then((result) => {
-        console.log(result.body)
-      })
-      .catch((err) => {
-        console.log(err.statusCode)
-      })
-
-
-
+        console.log(result.text);
+      }, (error) => {
+        console.log(error.text);
+      });
 
     req.bookAppointment(toSend).then(r => {
       if (r.status === 200) {
@@ -129,6 +139,16 @@ const WhereCanIDonate = () => {
     })
   }
 
+
+  const searchDC = (DCID) => {
+    let res = []
+    alldc.map(r => {
+      if (r['DCID'] == DCID) {
+        res = r;
+      }
+    })
+    return res;
+  }
   const getDonorAppointments = () => {
     req.getDonorAppointments(localStorage.getItem("userID")).then(r => {
       if (r && r.length > 0) {
@@ -142,6 +162,12 @@ const WhereCanIDonate = () => {
     if (!requestCompleted) {
       setrequestCompleted(true)
       getDonorAppointments()
+
+      req.getPastDonations(localStorage.getItem('userID')).then((donations) => {
+        setDonations(donations)
+        getNextDonationDate(donations)
+      })
+
       req.getnearbydc(localStorage.getItem('userID')).then((nearbydc) => {
         setnearbydc(nearbydc)
       })
@@ -299,7 +325,7 @@ const WhereCanIDonate = () => {
                               <i className="ni ni-calendar-grid-58 mr-2" /> Date Of Appointment
                       </InputGroupText>
                           </InputGroupAddon>
-                          <Input type="date" pattern="[0-9]*" value={AppointmentDate} onChange={(e) => setAppointmentDate(e.target.value)} min={Moment(new Date()).format('YYYY-MM-DD')} />
+                          <Input type="date" pattern="[0-9]*" value={AppointmentDate} onChange={(e) => setAppointmentDate(e.target.value)} min={nextDonationDate} />
                         </InputGroup>
                       </FormGroup>
 

@@ -77,6 +77,8 @@ const DonationCenter = () => {
 
   const [DCDetails, setDCDetails] = useState([])
 
+  const [donateBloodMessage, setDonateBloodMessage] = useState('')
+  const [donatedBloodUserID, setdonatedBloodUserID] = useState('')
   const [DCID, setDCID] = useState('')
   const [DCName, setDCName] = useState('')
   const [DCAddress, setDCAddress] = useState('')
@@ -128,6 +130,11 @@ const DonationCenter = () => {
     setrequestCompleted(true)
     req.getDonatedBlood(localStorage.getItem('userID')).then((result) => {
       setdonatedBlood(result)
+      setbloodsent(true)
+      result.map((record, key) => {
+        if (record.Available == 0)
+          setbloodsent(false)
+      })
     })
   }
 
@@ -163,6 +170,29 @@ const DonationCenter = () => {
     })
   }
 
+  const donateBlood = () => {
+    let today = new Date()
+    let month = (today.getMonth() + 1) >= 10 ? today.getMonth() + 1 : '0' + (today.getMonth() + 1);
+    let day = today.getDate() >= 10 ? today.getDate() : '0' + today.getDate();
+    let dateToday = today.getFullYear() + '-' + month + '-' + (day)
+
+    let toSend = {
+      'UserID': donatedBloodUserID.split(","),
+      'DateRecieved': dateToday,
+      'AdminID': localStorage.getItem("userID")
+    }
+    console.log("To send = ", toSend)
+    req.donateBlood(toSend).then((res) => {
+      if (res.status === 200) {
+        setDonateBloodMessage(res.message)
+        getDonatedBlood()
+      }
+      else
+        setDonateBloodMessage("Error in SQL - " + res.message)
+    })
+
+  }
+
   const sendBloodToBloodBank = () => {
     let toSend = {
       "DCID": DCID
@@ -172,7 +202,6 @@ const DonationCenter = () => {
       if (e.status == 200) {
         getDonatedBlood()
         setbloodsent(true)
-        setTimeout(() => { setbloodsent(false) }, 2000)
       }
     })
   }
@@ -293,7 +322,7 @@ const DonationCenter = () => {
             <Col xl={6} l={6} m={6}>
               {donatedBlood && donatedBlood.length > 0 ?
                 <>
-                  <div className='scrollspy-example-2 mt-4'>
+                  <div className={donatedBlood.length > 6 ? 'scrollspy-example-2 mt-4' : 'mt-4'}>
                     <Card className="shadow" >
                       <CardHeader className="border-0 text-center">
                         <h3 className="mb-0">Blood Donation Records</h3>
@@ -314,7 +343,7 @@ const DonationCenter = () => {
                             return <tr key={index}>
                               <td> {res.UserID} </td>
                               <td> {res.BloodGroup} </td>
-                              <td> {res.DateRecieved} </td>
+                              <td> {Moment(res.DateRecieved).format('LL')} </td>
                               <td> {res.Available == 0 ? "No" : "Yes"} </td>
                             </tr>
                           })}
@@ -331,6 +360,7 @@ const DonationCenter = () => {
                       <Button className="mt-3" disabled={bloodsent} color="primary" type="button" onClick={sendBloodToBloodBank}>{bloodsent ? "SENT!" : "SEND"}</Button>
                     </CardBody>
                   </Card >
+
                 </>
                 :
                 <Card className="shadow mb-5 mt-4" >
@@ -338,6 +368,36 @@ const DonationCenter = () => {
                     <h3 className="mb-0 text-center">There have not been any blood donations to your donation center yet.</h3>
                   </CardBody>
                 </Card >}
+
+              {/* ADD DONATION RECORD */}
+              <Card className="bg-secondary shadow border-0 my-4">
+                <CardHeader className="bg-transparent pb-5">
+                  <h2 className="text-center mb-0">Add Donation Record</h2>
+                </CardHeader>
+                <CardBody>
+                  <Form role="form">
+
+                    {/* User ID's */}
+                    <FormGroup>
+                      <InputGroup className="input-group-alternative mb-3">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-badge" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="UserID's" type="text" value={donatedBloodUserID} onChange={(e) => setdonatedBloodUserID(e.target.value)} />
+                      </InputGroup>
+                    </FormGroup>
+
+
+                    <div className="text-center">
+                      <Button className="my-4" color="primary" type="button" onClick={donateBlood}>Submit</Button>
+                    </div>
+                  </Form>
+                  <h2 className='text-center'>{donateBloodMessage}</h2>
+                </CardBody>
+              </Card>
+
 
 
               {Appointments && Appointments.length > 0 ?
@@ -379,10 +439,10 @@ const DonationCenter = () => {
                     <h3 className="mb-0">Appointments</h3>
 
                   </CardHeader>
-                  <CardBody>There aren't any appointments with your Donation Center yet.</CardBody>
+                  <CardBody className="text-center">There aren't any appointments with your Donation Center yet.</CardBody>
                   <CardFooter>
 
-                   
+
                   </CardFooter>
                 </Card >
               }
