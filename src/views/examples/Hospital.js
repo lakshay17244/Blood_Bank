@@ -55,6 +55,7 @@ import {
   Row,
   Col
 } from "reactstrap";
+import emailjs from 'emailjs-com';
 
 import Header from "components/Headers/Header.js";
 import * as req from "../../requests"
@@ -142,6 +143,30 @@ const Hospital = () => {
         getemergencyrequirements()
         setemergencyBGAdded(true)
         setTimeout(() => { setemergencyBGAdded(false) }, 2000)
+      }
+    })
+
+    req.getWTDDonors().then(r => {
+      if (r && r.length > 0) {
+        r.map((obj, key) => {
+
+          
+          let paramsToSend = {
+            "email": obj.Email,
+            "blood": emergencyBGInput,
+            "hname": HName,
+            "address": HAddress,
+            "date": Moment(new Date()).format('YYYY-MM-DD')
+
+          }
+          console.log(paramsToSend)
+          emailjs.send('default_service', 'template_L4Biapa8', paramsToSend, "***REMOVED***")
+            .then((result) => {
+              console.log(result.text);
+            }, (error) => {
+              console.log(error.text);
+            });
+        })
       }
     })
   }
@@ -409,37 +434,43 @@ const Hospital = () => {
                       </Table>
                     </Card >
 
-                    <Card className="shadow mt-4" >
-                      <CardHeader className="border-0 text-center">
-                        <h3 className="mb-0">Record of All Admitted Patients</h3>
-
-                      </CardHeader>
-                      <Table className="align-items-center table-flush mb-4" responsive>
-                        <thead className="thead-light">
-                          <tr>
-                            <th scope="col">Patient ID</th>
-                            <th scope="col">Blood Needed</th>
-                            <th scope="col">Admission Date</th>
-                            <th scope="col">Doctor UserID</th>
-                            <th scope="col" />
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {PatientDetails.map((res, index) => {
-                            return <tr key={index}>
-                              <td> {res.PID} </td>
-                              <td> {res.BloodNeeded} </td>
-                              <td> {Moment(res.AdmissionDate).format('LL')} </td>
-                              <td> {res.UserID} </td>
-                            </tr>
-                          })}
-                        </tbody>
-                      </Table>
-                    </Card >
-
                   </>
                   // </div>
                   :
+                  <Card className="shadow mt-4" >
+                    <CardBody>
+                      <h3 className="mb-0 text-center">There are no admitted patients under you yet.</h3>
+                    </CardBody>
+                  </Card >
+                }
+                {PatientDetails && PatientDetails.length > 0 ?
+                  <Card className="shadow mt-4" >
+                    <CardHeader className="border-0 text-center">
+                      <h3 className="mb-0">Record of All Admitted Patients</h3>
+
+                    </CardHeader>
+                    <Table className="align-items-center table-flush mb-4" responsive>
+                      <thead className="thead-light">
+                        <tr>
+                          <th scope="col">Patient ID</th>
+                          <th scope="col">Blood Needed</th>
+                          <th scope="col">Admission Date</th>
+                          <th scope="col">Doctor UserID</th>
+                          <th scope="col" />
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {PatientDetails.map((res, index) => {
+                          return <tr key={index}>
+                            <td> {res.PID} </td>
+                            <td> {res.BloodNeeded} </td>
+                            <td> {Moment(res.AdmissionDate).format('LL')} </td>
+                            <td> {res.UserID} </td>
+                          </tr>
+                        })}
+                      </tbody>
+                    </Table>
+                  </Card > :
                   <Card className="shadow mt-4" >
                     <CardBody>
                       <h3 className="mb-0 text-center">There are no admitted patients in your hospital yet.</h3>
