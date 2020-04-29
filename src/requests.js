@@ -3,6 +3,20 @@ import axios from 'axios';
 
 const URL = "http://127.0.0.1:5000/"
 
+
+export const getWTDDonors = async () => {
+    let details = "Couldn't Do the request";
+    await axios.get(URL + `getWTDDonors`)
+        .then(res => {
+            details = res.data;
+            // console.log(details);
+        }).catch(e => {
+            details = e
+            console.log("ERROR")
+        });
+    return details;
+}
+
 export const getDonorAppointments = async (UserID) => {
     let details = "Couldn't Do the request";
     await axios.get(URL + `getDonorAppointments/` + UserID)
