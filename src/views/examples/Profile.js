@@ -29,21 +29,7 @@ class Profile extends React.Component {
   componentDidMount() {
     let userid = localStorage.getItem("userID")
     if (userid.length > 0) {
-      req.getUserDetails(userid).then(e => {
-        console.log(e)
-        this.setState({
-          type: e.Type,
-          username: e.Username,
-          userid: e.UserID,
-          email: e.Email,
-          dob: e.Age,
-          bloodgroup: e.BloodGroup,
-          phone: e.Phone,
-          address: e.Address,
-          pincode: e.Pincode,
-          WTD: e.WillingToDonate
-        })
-      })
+      this.getUserDetails()
     }
   }
 
@@ -73,6 +59,26 @@ class Profile extends React.Component {
       editable: true
     }
   }
+
+  getUserDetails = () => {
+    let userid = localStorage.getItem("userID")
+    req.getUserDetails(userid).then(e => {
+      console.log(e)
+      this.setState({
+        type: e.Type,
+        username: e.Username,
+        userid: e.UserID,
+        email: e.Email,
+        dob: e.Age,
+        bloodgroup: e.BloodGroup,
+        phone: e.Phone,
+        address: e.Address,
+        pincode: e.Pincode,
+        WTD: e.WillingToDonate
+      })
+    })
+  }
+
   updateUser = () => {
     let toSend = {
       "UserID": localStorage.getItem("userID"),
@@ -97,7 +103,7 @@ class Profile extends React.Component {
           UserUpdated: true,
           editable: false
         })
-
+        this.getUserDetails()
         setTimeout(() => { this.setState({ editable: true }) }, 1000)
       }
     })
@@ -330,7 +336,7 @@ class Profile extends React.Component {
                               // readOnly
                               className="form-control-alternative"
                               value={this.state.username}
-                              onChange={(e) => { this.handleusername(e.target.value)}}
+                              onChange={(e) => { this.handleusername(e.target.value) }}
                               id="input-username"
                               placeholder="Username"
                               type="text"

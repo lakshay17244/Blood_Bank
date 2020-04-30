@@ -115,7 +115,7 @@ const Hospital = () => {
             "date": Moment(new Date()).format('YYYY-MM-DD')
           }
           console.log(paramsToSend)
-          emailjs.send('default_service', 'template_L4Biapa8', paramsToSend, "***REMOVED***")
+          emailjs.send('default_service', 'template_L4Biapa8', paramsToSend, process.env.REACT_APP_EMAILJSUSERID)
             .then((result) => {
               console.log(result.text);
             }, (error) => {

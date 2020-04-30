@@ -37,9 +37,6 @@ class AdminNavbar extends React.Component {
     let userid = localStorage.getItem("userID")
     if (userid.length > 0) {
       req.getUserDetails(userid).then(e => {
-        localStorage.setItem("name", e.Username)
-        localStorage.setItem("type", e.Type)
-        localStorage.setItem("email", e.Email)
         this.setState({
           name: e.Username
         })

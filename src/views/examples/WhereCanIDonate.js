@@ -83,7 +83,7 @@ const WhereCanIDonate = () => {
     }
 
     console.log(paramsToSend)
-    emailjs.send('default_service', 'lifeconnect', paramsToSend, "***REMOVED***")
+    emailjs.send('default_service', 'lifeconnect', paramsToSend, process.env.REACT_APP_EMAILJSUSERID)
       .then((result) => {
         console.log(result.text);
       }, (error) => {

@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 
-// const URL = "http://127.0.0.1:5000/"
-const URL = "https://dbmsbloodbank.herokuapp.com/"
+const URL = "http://127.0.0.1:5000/"
+// const URL = "https://dbmsbloodbank.herokuapp.com/"
 
 export const getWTDDonors = async (BG) => {
     let details = "Couldn't Do the request";
@@ -725,8 +725,9 @@ export const getUserDetails = async (UserId) => {
     await axios.get(URL + `showprofile/` + UserId)
         .then(res => {
             details = res.data;
-            // console.log(details);
-
+            localStorage.setItem("name", details.Username)
+            localStorage.setItem("type", details.Type)
+            localStorage.setItem("email", details.Email)
         }).catch(e => {
             details = e
             console.log("ERROR")
