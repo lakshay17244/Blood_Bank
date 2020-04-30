@@ -83,7 +83,7 @@ const WhereCanIDonate = () => {
     }
 
     console.log(paramsToSend)
-    emailjs.send('default_service', 'lifeconnect', paramsToSend, "user_JgWQwKm41WMzpHGUh9O3x")
+    emailjs.send('default_service', 'lifeconnect', paramsToSend, process.env.REACT_APP_EMAILJSUSERID)
       .then((result) => {
         console.log(result.text);
       }, (error) => {
