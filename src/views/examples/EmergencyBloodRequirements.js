@@ -15,89 +15,27 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useState, useEffect } from 'react';
-// node.js library that concatenates classes (strings)
-import classnames from "classnames";
-// javascipt plugin for creating charts
-import Chart from "chart.js";
-// react plugin used to create charts
-import { Line, Bar } from "react-chartjs-2";
+import Header from "components/Headers/Header.js";
 // reactstrap components
 import Moment from 'moment';
-import {
-  Badge,
-  CardFooter,
-  DropdownMenu,
-  DropdownItem,
-  UncontrolledDropdown,
-  DropdownToggle,
-  Media,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  UncontrolledTooltip,
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  NavItem,
-  NavLink,
-  Nav,
-  Progress,
-  Table,
-  Container,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  FormGroup,
-  Row,
-  Col
-} from "reactstrap";
+import React, { useEffect, useState } from 'react';
+import { Card, CardFooter, CardHeader, Col, Container, Row, Table } from "reactstrap";
+import * as req from "../../requests";
 
-import Header from "components/Headers/Header.js";
-import * as req from "../../requests"
+
 
 
 const EmergencyBloodRequirements = () => {
 
-  // User Details
-  const [type, setType] = useState('')
-  const [bloodGroup, setbloodGroup] = useState('B+')
-
-  // Donate Blood
-  const [donatedBloodAmount, setdonatedBloodAmount] = useState('')
-  const [donatedBloodDCID, setdonatedBloodDCID] = useState('')
-  const [donateBloodMessage, setDonateBloodMessage] = useState('')
-  const [donatedBloodUserID, setdonatedBloodUserID] = useState('')
-
-  const [nearbydc, setnearbydc] = useState('')
-  const [alldc, setalldc] = useState('')
-  const [requestCompleted, setrequestCompleted] = useState(false);
-  const [request1Completed, setrequest1Completed] = useState(false);
-  const [request2Completed, setrequest2Completed] = useState(false);
+  const [DidMount, setDidMount] = useState(false);
 
   const [ERNearby, setERNearby] = useState([])
   const [ERAll, setERAll] = useState([])
 
 
   useEffect(() => {
-    // if (!requestCompleted) {
-    //   setrequestCompleted(true)
-    //   req.getnearbyhospitals(localStorage.getItem('userID')).then((nearbydc) => {
-    //     setnearbydc(nearbydc)
-    //   })
-    // }
-    // if (!request1Completed) {
-    //   setrequest1Completed(true)
-    //   req.getallhospitals(localStorage.getItem('userID')).then((alldc) => {
-    //     setalldc(alldc)
-    //   })
-    // }
-
-    if (!request2Completed) {
-      setrequest2Completed(true)
+    if (!DidMount) {
+      setDidMount(true)
       req.getDonorERNearby(localStorage.getItem('userID')).then((ER) => {
         setERNearby(ER)
       })
@@ -105,18 +43,7 @@ const EmergencyBloodRequirements = () => {
         setERAll(ER)
       })
     }
-    // Set Type to admin or donor with delay added for user request
-    setTimeout(() => {
-      // console.log("==>", localStorage.getItem('type'))
-      setType(localStorage.getItem('type'))
-    }, 500)
-
-    setTimeout(() => {
-      // console.log("==>", localStorage.getItem('type'))
-      setType(localStorage.getItem('type'))
-    }, 3000)
-
-  })
+  }, [DidMount])
 
 
   return (

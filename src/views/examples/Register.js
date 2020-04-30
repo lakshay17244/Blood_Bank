@@ -15,25 +15,12 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
 import classnames from "classnames";
-import * as req from "../../requests"
+import React from "react";
 import { Link } from "react-router-dom";
 // reactstrap components
-import {
-	Button,
-	Card,
-	CardHeader,
-	CardBody,
-	FormGroup,
-	Form,
-	Input,
-	InputGroupAddon,
-	InputGroupText,
-	InputGroup,
-	Row,
-	Col
-} from "reactstrap";
+import { Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from "reactstrap";
+import * as req from "../../requests";
 
 class Register extends React.Component {
 
@@ -78,11 +65,11 @@ class Register extends React.Component {
 				"WTD": this.state.wtd ? 1 : 0
 			}
 		}
-		console.log("Sending ", toSend)
+		// console.log("Sending ", toSend)
 		req.createUser(toSend).then(e => {
 			console.log("CREATE USER RETURNED - ", e);
-			if (e.status == 200) {
-				localStorage.setItem("UserMade",1)
+			if (parseInt(e.status) === 200) {
+				localStorage.setItem("UserMade", 1)
 				this.setState({
 					UserMade: true,
 					UserIdMade: e.userid
@@ -334,7 +321,7 @@ class Register extends React.Component {
 											<span className="text-success font-weight-700">Strong</span>
 										</small>
 									</div> */}
-									{this.state.type == "Donor" ? (<Row className="my-4">
+									{this.state.type === "Donor" ? (<Row className="my-4">
 										<Col xs="12">
 											<div className="custom-control custom-control-alternative custom-checkbox">
 												<input

@@ -15,67 +15,25 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useState, useEffect } from 'react';
-// node.js library that concatenates classes (strings)
-import classnames from "classnames";
-// javascipt plugin for creating charts
-import Chart from "chart.js";
-// react plugin used to create charts
-import { Line, Bar } from "react-chartjs-2";
+import Header from "components/Headers/Header.js";
 // reactstrap components
 import Moment from 'moment';
-import {
-  Badge,
-  CardFooter,
-  DropdownMenu,
-  DropdownItem,
-  UncontrolledDropdown,
-  DropdownToggle,
-  Media,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  UncontrolledTooltip,
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  NavItem,
-  NavLink,
-  Nav,
-  Progress,
-  Table,
-  Container,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  FormGroup,
-  Row,
-  Col
-} from "reactstrap";
+import React, { useEffect, useState } from 'react';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Row, Table } from "reactstrap";
+import AddRemoveAdmins from "../../components/AddRemoveAdmins";
+import * as req from "../../requests";
 
-import Header from "components/Headers/Header.js";
-import * as req from "../../requests"
-import { Link } from 'react-router-dom'
-import AddRemoveAdmins from "../../components/AddRemoveAdmins"
 
 const DonationCenter = () => {
 
   const [hasOrganization, sethasOrganization] = useState(true)
 
-  const [requestCompleted3, setrequestCompleted3] = useState(false)
-  const [requestCompleted2, setrequestCompleted2] = useState(false)
-  const [requestCompleted1, setrequestCompleted1] = useState(false)
-  const [requestCompleted, setrequestCompleted] = useState(false)
+  const [DidMount, setDidMount] = useState(false)
 
 
 
   const [donatedBlood, setdonatedBlood] = useState([])
   const [BBDetails, setBBDetails] = useState([])
-
-  const [DCDetails, setDCDetails] = useState([])
 
   const [donateBloodMessage, setDonateBloodMessage] = useState('')
   const [donatedBloodUserID, setdonatedBloodUserID] = useState('')
@@ -91,30 +49,19 @@ const DonationCenter = () => {
 
   useEffect(() => {
 
-    if (!requestCompleted) {
+    if (!DidMount) {
+      setDidMount(true)
+      getDCDetails()
       getDonatedBlood()
       getAppointment()
-    }
-    if (!requestCompleted1) {
-      setrequestCompleted1(true)
       req.getAdminOrganization(localStorage.getItem('userID')).then((result) => {
-        // console.log(result)
         sethasOrganization(result)
       })
-    }
-    if (!requestCompleted2) {
-      setrequestCompleted2(true)
       req.getAssociatedBloodBank(localStorage.getItem('userID')).then((result) => {
-        // console.log(result)
         setBBDetails(result)
       })
     }
-
-    if (!requestCompleted3) {
-      getDCDetails()
-    }
-
-  })
+  }, [DidMount])
 
   const getAppointment = () => {
     let toSend = {
@@ -127,22 +74,18 @@ const DonationCenter = () => {
   }
 
   const getDonatedBlood = () => {
-    setrequestCompleted(true)
     req.getDonatedBlood(localStorage.getItem('userID')).then((result) => {
       setdonatedBlood(result)
       setbloodsent(true)
-      result.map((record, key) => {
-        if (record.Available == 0)
+      result.forEach((record) => {
+        if (parseInt(record.Available) === 0)
           setbloodsent(false)
       })
     })
   }
 
   const getDCDetails = () => {
-    setrequestCompleted3(true)
     req.getDCDetails(localStorage.getItem('userID')).then((result) => {
-      console.log(result)
-      setDCDetails(result)
       if (result && result.length > 0) {
         let DC = result[0]
         setDCName(DC.Name)
@@ -161,8 +104,7 @@ const DonationCenter = () => {
       "Pincode": Pincode
     }
     req.updateDC(toSend).then(e => {
-      // console.log("UPDATE DC DETAILS - ", e)
-      if (e.status == 200) {
+      if (parseInt(e.status) === 200) {
         getDCDetails()
         setsaved(true)
         setTimeout(() => { setsaved(false) }, 1000)
@@ -199,7 +141,7 @@ const DonationCenter = () => {
     }
     req.sendBloodToBloodBank(toSend).then(e => {
       console.log("SEND BLOOD TO BLOOD BANK - ", e)
-      if (e.status == 200) {
+      if (parseInt(e.status) === 200) {
         getDonatedBlood()
         setbloodsent(true)
       }
@@ -344,7 +286,7 @@ const DonationCenter = () => {
                               <td> {res.UserID} </td>
                               <td> {res.BloodGroup} </td>
                               <td> {Moment(res.DateRecieved).format('LL')} </td>
-                              <td> {res.Available == 0 ? "No" : "Yes"} </td>
+                              <td> {parseInt(res.Available) === 0 ? "No" : "Yes"} </td>
                             </tr>
                           })}
                         </tbody>

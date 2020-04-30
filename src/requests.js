@@ -4,9 +4,9 @@ import axios from 'axios';
 const URL = "http://127.0.0.1:5000/"
 
 
-export const getWTDDonors = async () => {
+export const getWTDDonors = async (BG) => {
     let details = "Couldn't Do the request";
-    await axios.get(URL + `getWTDDonors`)
+    await axios.get(URL + `getWTDDonors/` + BG)
         .then(res => {
             details = res.data;
             // console.log(details);
@@ -433,6 +433,7 @@ export const getAdmins = async (type, UserID) => {
         case "H":
             path = "gethsemployees/"
             break;
+        default: return details
     }
     await axios.get(URL + path + UserID)
         .then(res => {
@@ -597,7 +598,6 @@ export const registerOrganization = async (organization, toSend) => {
 
 export const getPastDonations = async (UserId) => {
     let details = "Couldn't Do the request";
-    let send = URL + `getpastdonations/` + UserId
     await axios.get(URL + `getpastdonations/` + UserId)
         .then(res => {
             details = res.data;
