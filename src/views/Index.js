@@ -113,7 +113,7 @@ const Index = () => {
           setregisterOrganizationMessage(r)
           getAdminOrganization()
         })
-        console.log(toSend)
+        // console.log(toSend)
         break;
 
       case "BloodBank":
@@ -129,7 +129,7 @@ const Index = () => {
           setregisterOrganizationMessage(r)
           getAdminOrganization()
         })
-        console.log(toSend)
+        // console.log(toSend)
         break;
 
       case "DonationCenter":
@@ -140,7 +140,7 @@ const Index = () => {
           'UserID': addAdmin.length > 0 ? [...otherAdmins, myID] : [myID], //Comma separated user IDs array
           'BBID': associatedbbid
         }
-        console.log(toSend)
+        // console.log(toSend)
         req.registerOrganization("DonationCenter", toSend).then(r => {
           setregisterOrganizationMessage(r)
           getAdminOrganization()

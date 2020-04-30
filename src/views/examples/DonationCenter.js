@@ -68,7 +68,7 @@ const DonationCenter = () => {
       "UserID": localStorage.getItem("userID")
     }
     req.getAppointment(toSend).then((result) => {
-      console.log(result)
+      // console.log(result)
       setAppointments(result)
     })
   }
@@ -123,7 +123,7 @@ const DonationCenter = () => {
       'DateRecieved': dateToday,
       'AdminID': localStorage.getItem("userID")
     }
-    console.log("To send = ", toSend)
+    // console.log("To send = ", toSend)
     req.donateBlood(toSend).then((res) => {
       if (res.status === 200) {
         setDonateBloodMessage(res.message)
@@ -140,7 +140,7 @@ const DonationCenter = () => {
       "DCID": DCID
     }
     req.sendBloodToBloodBank(toSend).then(e => {
-      console.log("SEND BLOOD TO BLOOD BANK - ", e)
+      // console.log("SEND BLOOD TO BLOOD BANK - ", e)
       if (parseInt(e.status) === 200) {
         getDonatedBlood()
         setbloodsent(true)

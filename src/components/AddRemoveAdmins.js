@@ -42,9 +42,7 @@ const AddRemoveAdmins = (props) => {
             "BBID": id,
             "DCID": id
         }
-        console.log(toSend)
         req.addEmployee(toSend).then(r => {
-            console.log("R is = ", r)
             if (r.status === 200) {
                 switch (place) {
                     case "hospital":

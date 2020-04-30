@@ -63,7 +63,7 @@ class Profile extends React.Component {
   getUserDetails = () => {
     let userid = localStorage.getItem("userID")
     req.getUserDetails(userid).then(e => {
-      console.log(e)
+      // console.log(e)
       this.setState({
         type: e.Type,
         username: e.Username,
@@ -97,7 +97,6 @@ class Profile extends React.Component {
     }
 
     req.updateUser(toSend).then(e => {
-      console.log("CREATE USER RETURNED - ", e);
       if (parseInt(e.status) === 200) {
         this.setState({
           UserUpdated: true,

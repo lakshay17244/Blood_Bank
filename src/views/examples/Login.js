@@ -32,9 +32,8 @@ function Login() {
   const [recievedMessage, setrecievedMessage] = useState("");
 
   const sendLoginReq = () => {
-    console.log("Sending login")
     req.loginAPI(parseInt(userID), password).then((e => {
-      console.log("LOG IN API RETURNED ", e)
+      // console.log("LOG IN API RETURNED ", e)
       setrecievedMessage(e.message)
       setisLoggedIn(e.loggedIn)
     }))

@@ -80,7 +80,6 @@ const Hospital = () => {
     // Clear previous results
     setemergencyRequirements([])
     req.getemergencyrequirements(localStorage.getItem("userID")).then((result) => {
-      console.log("emer=?", result)
       if (result && result.length > 0) {
         setemergencyRequirements(result)
       }
@@ -95,7 +94,7 @@ const Hospital = () => {
       "DoctorID": localStorage.getItem("userID")
     }
     req.addemergencyrequirement(toSend).then(r => {
-      console.log(r)
+      // console.log(r)
       setERMessage(r.message)
       if (r.status === 200) {
         getemergencyrequirements()
@@ -114,7 +113,7 @@ const Hospital = () => {
             "address": HAddress,
             "date": Moment(new Date()).format('YYYY-MM-DD')
           }
-          console.log(paramsToSend)
+          // console.log(paramsToSend)
           emailjs.send('default_service', 'template_L4Biapa8', paramsToSend, process.env.REACT_APP_EMAILJSUSERID)
             .then((result) => {
               console.log(result.text);
@@ -132,9 +131,9 @@ const Hospital = () => {
       "EID": emergencyEIDInput,
       "UserID": localStorage.getItem("userID")
     }
-    console.log(toSend)
+    // console.log(toSend)
     req.removeemergencyrequirement(toSend).then(r => {
-      console.log(r)
+      // console.log(r)
       setERMessage(r.message)
       if (r.status === 200) {
         getemergencyrequirements()
@@ -153,14 +152,14 @@ const Hospital = () => {
     setCheckBGAvailibilityNearby([])
 
     req.checkBloodAvailability(CheckBGInput).then((result) => {
-      console.log(result)
+      // console.log(result)
       if (result && result.length > 0) {
         setCheckBGAvailibility(result)
       }
     })
 
     req.checkBloodAvailabilityNearby(CheckBGInput, localStorage.getItem("userID")).then((result) => {
-      console.log(result)
+      // console.log(result)
       if (result && result.length > 0) {
         setCheckBGAvailibilityNearby(result)
       }
@@ -181,7 +180,6 @@ const Hospital = () => {
       "UserID": localStorage.getItem('userID'),
       "HID": HID
     }
-    console.log(toSend)
     req.addPatient(toSend).then((result) => {
       getPatientDetails()
     })
@@ -219,7 +217,6 @@ const Hospital = () => {
 
   const getPatientDetails = () => {
     req.getPatientDetails(localStorage.getItem('userID')).then((result) => {
-      console.log("=====", result)
       setPatientDetails(result)
     })
 

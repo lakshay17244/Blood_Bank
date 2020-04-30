@@ -104,8 +104,6 @@ export const removeemergencyrequirement = async (toSend) => {
 
 export const withdrawBlood = async (toSend) => {
     let details = "Couldn't Do the request";
-
-    console.log("withdrawBlood sending - ", toSend)
     await axios({
         method: 'post',
         url: URL + "withdrawBlood",
@@ -149,9 +147,6 @@ export const checkBloodAvailability = async (BG) => {
 
 export const addPatient = async (toSend) => {
     let details = "Couldn't Do the request";
-
-    console.log("add patient sending - ", toSend)
-    console.log("URL = ", URL + "addPatient")
     await axios({
         method: 'post',
         url: URL + "addPatient",
@@ -391,7 +386,6 @@ export const addEmployee = async (toSend) => {
         headers: { 'Content-Type': 'application/json' },
         data: toSend
     }).then(res => {
-        console.log(res)
         details = res.data
     }).catch(e => {
         console.log("ERROR | " + e)
@@ -536,7 +530,7 @@ export const getnearbydc = async (UserId) => {
     await axios.get(URL + `getnearbydc/` + UserId)
         .then(res => {
             details = res.data;
-            console.log(details);
+            // console.log(details);
         }).catch(e => {
             details = e
             console.log("ERROR")
@@ -550,7 +544,7 @@ export const getalldc = async () => {
     await axios.get(URL + `getalldc`)
         .then(res => {
             details = res.data;
-            console.log(details);
+            // console.log(details);
         }).catch(e => {
             details = e
             console.log("ERROR")
@@ -612,7 +606,6 @@ export const getPastDonations = async (UserId) => {
 
 export const donateBlood = async (donationDetails) => {
     let details = "Couldn't Do the request";
-    console.log("Donating this -> ", donationDetails)
     await axios({
         method: 'post',
         url: URL + "donateblood",
@@ -631,7 +624,6 @@ export const donateBlood = async (donationDetails) => {
 
 export const updateUser = async (userDetails) => {
     let details = "Couldn't Do the request";
-    console.log("Updating user", userDetails)
     await axios({
         method: 'post',
         url: URL + "updateuser",
@@ -697,7 +689,6 @@ export const loginAPI = async (UserId, Password) => {
             "Password": Password
         }
     }).then(res => {
-        console.log(res)
         result = res.data.status
         message = res.data.message
     }).catch(e => {

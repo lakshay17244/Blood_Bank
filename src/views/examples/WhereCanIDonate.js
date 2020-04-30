@@ -55,8 +55,6 @@ const WhereCanIDonate = () => {
       let maxDate = new Date(data[0]['DateRecieved'])
       maxDate.setMonth(maxDate.getMonth() + 3);
 
-      console.log("Today is ", Moment(maxDate).format('LL'))
-
       setnextDonationDate(Moment(maxDate).format('YYYY-MM-DD'))
     }
     else {
@@ -81,8 +79,6 @@ const WhereCanIDonate = () => {
       "address": DC.Address,
       "date": Moment(AppointmentDate).format('LL')
     }
-
-    console.log(paramsToSend)
     emailjs.send('default_service', 'lifeconnect', paramsToSend, process.env.REACT_APP_EMAILJSUSERID)
       .then((result) => {
         console.log(result.text);
