@@ -15,19 +15,16 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import Index from "views/Index.js";
-import Profile from "views/examples/Profile.js";
-import Maps from "views/examples/Maps.js";
-import Register from "views/examples/Register.js";
-import Login from "views/examples/Login.js";
-import Tables from "views/examples/Tables.js";
-import Icons from "views/examples/Icons.js";
-import WhereCanIDonate from "views/examples/WhereCanIDonate";
-import EmergencyBloodRequirements from "views/examples/EmergencyBloodRequirements";
-import PledgeOrgans from "views/examples/PledgeOrgans";
 import BloodBank from "views/examples/BloodBank";
-import Hospital from "views/examples/Hospital";
 import DonationCenter from "views/examples/DonationCenter";
+import EmergencyBloodRequirements from "views/examples/EmergencyBloodRequirements";
+import Hospital from "views/examples/Hospital";
+import Login from "views/examples/Login.js";
+import PledgeOrgans from "views/examples/PledgeOrgans";
+import Profile from "views/examples/Profile.js";
+import Register from "views/examples/Register.js";
+import WhereCanIDonate from "views/examples/WhereCanIDonate";
+import Index from "views/Index.js";
 
 // var routes = [
 //   {

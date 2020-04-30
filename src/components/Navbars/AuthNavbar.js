@@ -18,17 +18,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 // reactstrap components
-import {
-  UncontrolledCollapse,
-  NavbarBrand,
-  Navbar,
-  NavItem,
-  NavLink,
-  Nav,
-  Container,
-  Row,
-  Col
-} from "reactstrap";
+import { Col, Container, Nav, Navbar, NavbarBrand, NavItem, NavLink, Row, UncontrolledCollapse } from "reactstrap";
 
 class AdminNavbar extends React.Component {
   render() {

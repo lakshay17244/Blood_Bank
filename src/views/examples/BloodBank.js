@@ -16,41 +16,17 @@
 
 */
 import React, { useState, useEffect } from 'react';
-// node.js library that concatenates classes (strings)
-import classnames from "classnames";
-// javascipt plugin for creating charts
-import Chart from "chart.js";
-// react plugin used to create charts
-import { Line, Bar } from "react-chartjs-2";
-// reactstrap components
-import Moment from 'moment';
+
 import {
-  Badge,
   CardFooter,
-  DropdownMenu,
-  DropdownItem,
-  UncontrolledDropdown,
-  DropdownToggle,
-  Media,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  UncontrolledTooltip,
   Button,
   Card,
   CardHeader,
   CardBody,
-  NavItem,
-  NavLink,
-  Nav,
-  Progress,
   Table,
   Container,
   Form,
   Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
   FormGroup,
   Row,
   Col
@@ -58,17 +34,13 @@ import {
 
 import Header from "components/Headers/Header.js";
 import * as req from "../../requests"
-import { Link } from 'react-router-dom'
 import AddRemoveAdmins from "../../components/AddRemoveAdmins"
 
 const BloodBank = () => {
 
   const [hasOrganization, sethasOrganization] = useState(true)
 
-  const [requestCompleted, setrequestCompleted] = useState(false)
-  const [requestCompleted1, setrequestCompleted1] = useState(false)
-  const [requestCompleted2, setrequestCompleted2] = useState(false)
-  const [requestCompleted3, setrequestCompleted3] = useState(false)
+  const [DidMount, setDidMount] = useState(false)
 
   const [associatedDCs, setassociatedDCs] = useState(true)
 
@@ -95,7 +67,7 @@ const BloodBank = () => {
 
     req.updateBB(toSend).then(e => {
       // console.log("UPDATE BB DETAILS - ", e)
-      if (e.status == 200) {
+      if (e.status === 200) {
         getBBDetails()
         setsaved(true)
         setTimeout(() => { setsaved(false) }, 1000)
@@ -104,7 +76,6 @@ const BloodBank = () => {
   }
 
   const getBBDetails = () => {
-    setrequestCompleted2(true)
     req.getBBDetails(localStorage.getItem('userID')).then((result) => {
       setBBDetails(result)
       if (result && result.length > 0) {
@@ -119,7 +90,6 @@ const BloodBank = () => {
   }
 
   const getBBStoredBlood = () => {
-    setrequestCompleted3(true)
     req.getBBStoredBlood(localStorage.getItem('userID')).then((result) => {
       setBBStoredBlood(result)
     })
@@ -127,38 +97,36 @@ const BloodBank = () => {
 
   const sumTotalStoredBlood = () => {
     let total = 0
-    BBStoredBlood && BBStoredBlood.map(res => {
+    BBStoredBlood && BBStoredBlood.forEach(res => {
       total = total + res.Amount
     })
     return total
   }
 
+  const getAdminOrganization = () => {
+    req.getAdminOrganization(localStorage.getItem('userID')).then((result) => {
+      sethasOrganization(result)
+    })
+  }
+
+  const getAssociatedDonationCenter = () => {
+    req.getAssociatedDonationCenter(localStorage.getItem('userID')).then((result) => {
+      setassociatedDCs(result)
+    })
+  }
+
   useEffect(() => {
-    if (!requestCompleted3) {
-      getBBDetails()
-    }
 
-    if (!requestCompleted2) {
+    if (!DidMount) {
+      setDidMount(true)
+
+      getAssociatedDonationCenter()
       getBBStoredBlood()
+      getBBDetails()
+      getAdminOrganization()
     }
 
-    if (!requestCompleted1) {
-      setrequestCompleted1(true)
-      req.getAdminOrganization(localStorage.getItem('userID')).then((result) => {
-        // console.log(result)
-        sethasOrganization(result)
-      })
-    }
-
-    if (!requestCompleted) {
-      setrequestCompleted(true)
-      req.getAssociatedDonationCenter(localStorage.getItem('userID')).then((result) => {
-        console.log(result)
-        setassociatedDCs(result)
-      })
-    }
-
-  })
+  },[DidMount])
 
 
   return (

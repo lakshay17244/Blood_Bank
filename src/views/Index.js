@@ -15,51 +15,14 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useState, useEffect } from 'react';
-// node.js library that concatenates classes (strings)
-import classnames from "classnames";
-// javascipt plugin for creating charts
-import Chart from "chart.js";
-// react plugin used to create charts
-import { Line, Bar } from "react-chartjs-2";
+import Header from "components/Headers/Header.js";
 // reactstrap components
 import Moment from 'moment';
+import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
-import {
-  Badge,
-  CardFooter,
-  DropdownMenu,
-  DropdownItem,
-  UncontrolledDropdown,
-  DropdownToggle,
-  Media,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  UncontrolledTooltip,
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  NavItem,
-  NavLink,
-  Nav,
-  Progress,
-  Table,
-  Container,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  FormGroup,
-  Row,
-  Col
-} from "reactstrap";
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Row, Table } from "reactstrap";
+import * as req from "../requests";
 
-import Header from "components/Headers/Header.js";
-import * as req from "../requests"
-import AddRemoveAdmins from "../components/AddRemoveAdmins"
 
 
 const Index = () => {
@@ -78,16 +41,11 @@ const Index = () => {
 
   // User Details
   const [type, setType] = useState('')
-  const [bloodGroup, setbloodGroup] = useState('B+')
-
-  // Donate Blood
-  const [donatedBloodAmount, setdonatedBloodAmount] = useState('')
-  const [donatedBloodDCID, setdonatedBloodDCID] = useState('')
 
   const [showDonationDate, setshowDonationDate] = useState(true)
   const [donations, setDonations] = useState('')
-  const [requestCompleted, setrequestCompleted] = useState(false)
-  const [requestCompleted1, setrequestCompleted1] = useState(false)
+  const [DidMount, setDidMount] = useState(false)
+
 
   // Register Organization
   const [registerOrganizationMessage, setregisterOrganizationMessage] = useState('')
@@ -101,32 +59,17 @@ const Index = () => {
       sethasOrganization(result)
     })
   }
+
   useEffect(() => {
-    if (!requestCompleted) {
-      setrequestCompleted(true)
+    if (!DidMount) {
+      setDidMount(true)
       req.getPastDonations(localStorage.getItem('userID')).then((donations) => {
         setDonations(donations)
       })
-    }
-
-
-    if (!requestCompleted1) {
-      setrequestCompleted1(true)
       getAdminOrganization()
+      setType(localStorage.getItem('type'))
     }
-
-    // Set Type to admin or donor with delay added for user request
-    setTimeout(() => {
-      // console.log("==>", localStorage.getItem('type'))
-      setType(localStorage.getItem('type'))
-    }, 500)
-
-    setTimeout(() => {
-      // console.log("==>", localStorage.getItem('type'))
-      setType(localStorage.getItem('type'))
-    }, 3000)
-
-  })
+  }, [DidMount])
 
 
   const getNextDonationDate = () => {
@@ -214,7 +157,7 @@ const Index = () => {
     setcurrHead(sortKey)
     if (sortAsc)
       data.sort((a, b) => {
-        if (sortKey == "Date") {
+        if (sortKey === "Date") {
           let d1 = Date.parse(a['DateRecieved'])
           let d2 = Date.parse(b['DateRecieved'])
           if (d1 >= d2)
@@ -227,7 +170,7 @@ const Index = () => {
       })
     else
       data.sort((a, b) => {
-        if (sortKey == "Date") {
+        if (sortKey === "Date") {
           let d1 = Date.parse(a['DateRecieved'])
           let d2 = Date.parse(b['DateRecieved'])
           if (d1 <= d2)
@@ -247,7 +190,7 @@ const Index = () => {
 
   const getTotalBlood = () => {
     let sum = 0
-    donations && donations.map(res => {
+    donations && donations.forEach(res => {
       sum = sum + res.Amount
     })
     return sum
@@ -264,69 +207,75 @@ const Index = () => {
 
           // ----------------------------------------- ADMIN PAGE -----------------------------------------
           <>
-            {(hasOrganization["BBE"] == 1 || hasOrganization["DCE"] == 1 || hasOrganization["HE"] == 1) ?
-              <>
+            {
+              (parseInt(hasOrganization["BBE"]) === 1
+                || parseInt(hasOrganization["DCE"]) === 1
+                || parseInt(hasOrganization["HE"]) === 1) ?
+                <>
 
+                  <Row >
+                    <Col xl={4} l={4} m={4}></Col>
+                    <Col xl={4} l={4} m={4}>
+                      <Card className="bg-secondary shadow border-0">
+                        <CardHeader className="bg-gradient-info shadow border-0">
+                          <h2 className="text-white text-center mb-0">Your Organizations</h2>
+                        </CardHeader>
+                        <CardBody className="text-center">
+
+                          <Row className="text-center">
+                            <Col>
+
+                              {hasOrganization["DCE"] === 1 &&
+                                <Link to="/admin/DonationCenter">
+                                  <Button className="my-2 mx-2" color="primary" type="button" onClick={() => { }}>Donation Center</Button>
+                                </Link>}
+
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col>
+
+                              {hasOrganization["BBE"] === 1 &&
+                                <Link to="/admin/BB">
+                                  <Button className="my-2 mx-2" color="primary" type="button" onClick={() => { }}>Blood Bank</Button>
+                                </Link>}
+
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col>
+                              {hasOrganization["HE"] === 1 &&
+                                <Link to="/admin/Hospital">
+                                  <Button className="my-2 mx-2" color="primary" type="button" onClick={() => { }}>Hospital</Button>
+                                </Link>}
+                            </Col>
+                          </Row>
+                        </CardBody>
+                      </Card>
+                    </Col>
+                    <Col xl={4} l={4} m={4}></Col>
+                  </Row>
+                </>
+                :
+                /* NO ORGANIZATION */
                 <Row >
                   <Col xl={4} l={4} m={4}></Col>
                   <Col xl={4} l={4} m={4}>
-                    <Card className="bg-secondary shadow border-0">
-                      <CardHeader className="bg-gradient-info shadow border-0">
-                        <h2 className="text-white text-center mb-0">Your Organizations</h2>
-                      </CardHeader>
-                      <CardBody className="text-center">
-
-                        <Row className="text-center">
-                          <Col>
-
-                            {hasOrganization["DCE"] === 1 &&
-                              <Link to="/admin/DonationCenter">
-                                <Button className="my-2 mx-2" color="primary" type="button" onClick={() => { }}>Donation Center</Button>
-                              </Link>}
-
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>
-
-                            {hasOrganization["BBE"] === 1 &&
-                              <Link to="/admin/BB">
-                                <Button className="my-2 mx-2" color="primary" type="button" onClick={() => { }}>Blood Bank</Button>
-                              </Link>}
-
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>
-                            {hasOrganization["HE"] === 1 &&
-                              <Link to="/admin/Hospital">
-                                <Button className="my-2 mx-2" color="primary" type="button" onClick={() => { }}>Hospital</Button>
-                              </Link>}
-                          </Col>
-                        </Row>
+                    <Card className="bg-gradient-default shadow">
+                      <CardBody>
+                        <h2 className="text-white mb-0">You have not been added to any organization yet. More updates to follow.</h2>
                       </CardBody>
                     </Card>
                   </Col>
                   <Col xl={4} l={4} m={4}></Col>
                 </Row>
-              </>
-              :
-              /* NO ORGANIZATION */
-              <Row >
-                <Col xl={4} l={4} m={4}></Col>
-                <Col xl={4} l={4} m={4}>
-                  <Card className="bg-gradient-default shadow">
-                    <CardBody>
-                      <h2 className="text-white mb-0">You have not been added to any organization yet. More updates to follow.</h2>
-                    </CardBody>
-                  </Card>
-                </Col>
-                <Col xl={4} l={4} m={4}></Col>
-              </Row>
 
             }
 
-            {(hasOrganization["BBE"] != 1 || hasOrganization["DCE"] != 1 || hasOrganization["HE"] != 1) &&
+            {
+              (parseInt(hasOrganization["BBE"]) !== 1 ||
+                parseInt(hasOrganization["DCE"]) !== 1 ||
+                parseInt(hasOrganization["HE"]) !== 1) &&
               <Row className="mt-5">
                 <Col xl={2}></Col>
                 <Col xl={8}>

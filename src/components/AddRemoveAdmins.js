@@ -1,22 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Button, Card, CardBody, CardHeader, Col, Input, Row, Table } from "reactstrap";
+import * as req from "../requests";
 
-import * as req from "../requests"
-import {
-    CardFooter,
-    Card,
-    CardHeader,
-    CardBody,
-    Table,
-    Form,
-    Input,
-    InputGroupAddon,
-    InputGroupText,
-    InputGroup,
-    FormGroup,
-    Row,
-    Col,
-    Button
-} from "reactstrap";
 
 const ErrorMessage = (props) => {
     return (<Row>
@@ -34,15 +19,7 @@ const ErrorMessage = (props) => {
 
 
 const AddRemoveAdmins = (props) => {
-    const [donations, setDonations] = useState('')
-    const [requestCompleted, setrequestCompleted] = useState(false);
-    const [requestCompleted2, setrequestCompleted2] = useState(false);
-    const [requestCompleted3, setrequestCompleted3] = useState(false);
-    const [requestCompleted4, setrequestCompleted4] = useState(false);
-
-    // Table Sorting
-    const [sortAsc, setsortAsc] = useState(false)
-    const [currHead, setcurrHead] = useState('')
+    const [DidMount, setDidMount] = useState(false);
 
     // Other Admin Details
     const [BBAdmins, setBBAdmins] = useState([])
@@ -85,6 +62,7 @@ const AddRemoveAdmins = (props) => {
                             setDCAdmins(res)
                         })
                         break
+                    default: break
                 }
             }
         })
@@ -116,82 +94,38 @@ const AddRemoveAdmins = (props) => {
                             setDCAdmins(res)
                         })
                         break
+                    default: break
                 }
             }
         })
     }
 
-    const onSort = (event, sortKey) => {
-        var data = BBAdmins;
-        setcurrHead(sortKey)
-        if (sortAsc)
-            data.sort((a, b) => {
-                if (sortKey == "Date") {
-                    let d1 = Date.parse(a['DateRecieved'])
-                    let d2 = Date.parse(b['DateRecieved'])
-                    if (d1 >= d2)
-                        return 1
-                    else
-                        return -1
-                }
-                else
-                    return a[sortKey] - b[sortKey]
-            })
-        else
-            data.sort((a, b) => {
-                if (sortKey == "Date") {
-                    let d1 = Date.parse(a['DateRecieved'])
-                    let d2 = Date.parse(b['DateRecieved'])
-                    if (d1 <= d2)
-                        return 1
-                    else
-                        return -1
-                }
-                else
-                    return b[sortKey] - a[sortKey]
-            })
-
-        setDonations([...data])
-        setsortAsc(!sortAsc)
-        // console.log(sortAsc)
-        // console.log(donations)
-    }
-
     useEffect(() => {
-        let hasOrganization = props.hasOrganization
+        if (!DidMount) {
+            setDidMount(true)
+            let hasOrganization = props.hasOrganization
 
-        if (hasOrganization && hasOrganization["BBE"] === 1) {
-            if (!requestCompleted2) {
-                setrequestCompleted2(true)
+            if (hasOrganization && hasOrganization["BBE"] === 1) {
                 req.getAdmins("BB", localStorage.getItem("userID")).then((res) => {
                     setBBAdmins(res)
                 })
+
             }
-        }
-        if (hasOrganization && hasOrganization["DCE"] === 1) {
-            if (!requestCompleted2) {
-                setrequestCompleted2(true)
+            if (hasOrganization && hasOrganization["DCE"] === 1) {
                 req.getAdmins("DC", localStorage.getItem("userID")).then((res) => {
                     setDCAdmins(res)
                 })
+
             }
-        }
-        if (hasOrganization && hasOrganization["HE"] === 1) {
-            if (!requestCompleted3) {
-                setrequestCompleted3(true)
+            if (hasOrganization && hasOrganization["HE"] === 1) {
                 req.getAdmins("H", localStorage.getItem("userID")).then((res) => {
                     setHAdmins(res)
                 })
+
             }
         }
 
-        if (!requestCompleted) {
-            setrequestCompleted(true)
-            req.getPastDonations(localStorage.getItem('userID')).then((donations) => {
-                setDonations(donations)
-            })
-        }
-    })
+    }, [DidMount, props])
 
 
     return (

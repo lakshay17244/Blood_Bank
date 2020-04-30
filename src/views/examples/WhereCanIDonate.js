@@ -15,58 +15,18 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useState, useEffect } from 'react';
-// node.js library that concatenates classes (strings)
-import classnames from "classnames";
-// javascipt plugin for creating charts
-import Chart from "chart.js";
-// react plugin used to create charts
-import { Line, Bar } from "react-chartjs-2";
+import Header from "components/Headers/Header.js";
+import emailjs from 'emailjs-com';
 // reactstrap components
 import Moment from 'moment';
-import emailjs from 'emailjs-com';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Row, Table } from "reactstrap";
+import * as req from "../../requests";
 
-import {
-  Badge,
-  CardFooter,
-  DropdownMenu,
-  DropdownItem,
-  UncontrolledDropdown,
-  DropdownToggle,
-  Media,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  UncontrolledTooltip,
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  NavItem,
-  NavLink,
-  Nav,
-  Progress,
-  Table,
-  Container,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  FormGroup,
-  Row,
-  Col
-} from "reactstrap";
 
-import Header from "components/Headers/Header.js";
-import * as req from "../../requests"
-import { Link } from 'react-router-dom'
 
 const WhereCanIDonate = () => {
-
-  // User Details
-  const [type, setType] = useState('')
-  const [bloodGroup, setbloodGroup] = useState('B+')
 
   // Donate Blood
   const [AppointmentDate, setAppointmentDate] = useState('')
@@ -78,9 +38,8 @@ const WhereCanIDonate = () => {
 
   const [nearbydc, setnearbydc] = useState('')
   const [alldc, setalldc] = useState('')
-  const [requestCompleted, setrequestCompleted] = useState(false);
-  const [request1Completed, setrequest1Completed] = useState(false);
-  const [donations, setDonations] = useState('')
+  const [DidMount, setDidMount] = useState(false);
+
   const [nextDonationDate, setnextDonationDate] = useState(Moment(new Date()).format('LL'))
 
   const getNextDonationDate = (data) => {
@@ -142,11 +101,13 @@ const WhereCanIDonate = () => {
 
   const searchDC = (DCID) => {
     let res = []
-    alldc.map(r => {
-      if (r['DCID'] == DCID) {
-        res = r;
-      }
-    })
+    if (alldc && alldc.length > 0) {
+      alldc.forEach(r => {
+        if (parseInt(r['DCID']) === parseInt(DCID)) {
+          res = r;
+        }
+      })
+    }
     return res;
   }
   const getDonorAppointments = () => {
@@ -159,37 +120,24 @@ const WhereCanIDonate = () => {
 
 
   useEffect(() => {
-    if (!requestCompleted) {
-      setrequestCompleted(true)
+    if (!DidMount) {
+      setDidMount(true)
       getDonorAppointments()
 
       req.getPastDonations(localStorage.getItem('userID')).then((donations) => {
-        setDonations(donations)
+
         getNextDonationDate(donations)
       })
 
       req.getnearbydc(localStorage.getItem('userID')).then((nearbydc) => {
         setnearbydc(nearbydc)
       })
-    }
-    if (!request1Completed) {
-      setrequest1Completed(true)
+
       req.getalldc(localStorage.getItem('userID')).then((alldc) => {
         setalldc(alldc)
       })
     }
-    // Set Type to admin or donor with delay added for user request
-    setTimeout(() => {
-      // console.log("==>", localStorage.getItem('type'))
-      setType(localStorage.getItem('type'))
-    }, 500)
-
-    setTimeout(() => {
-      // console.log("==>", localStorage.getItem('type'))
-      setType(localStorage.getItem('type'))
-    }, 3000)
-
-  })
+  }, [DidMount])
 
 
   return (

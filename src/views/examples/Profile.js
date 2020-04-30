@@ -15,28 +15,14 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
-
-// reactstrap components
-import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  FormGroup,
-  Form,
-  Input,
-  Container,
-  Row,
-  Col,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText
-} from "reactstrap";
-
 import UserHeader from "components/Headers/UserHeader.js";
-
+import React from "react";
+// reactstrap components
+import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from "reactstrap";
 import * as req from "../../requests";
+
+
+
 
 class Profile extends React.Component {
 
@@ -106,13 +92,13 @@ class Profile extends React.Component {
 
     req.updateUser(toSend).then(e => {
       console.log("CREATE USER RETURNED - ", e);
-      if (e.status == 200) {
+      if (parseInt(e.status) === 200) {
         this.setState({
           UserUpdated: true,
           editable: false
         })
 
-        setTimeout(()=>{this.setState({editable: true})},1000)
+        setTimeout(() => { this.setState({ editable: true }) }, 1000)
       }
     })
   }

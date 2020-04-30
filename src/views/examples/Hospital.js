@@ -15,61 +15,20 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useState, useEffect } from 'react';
-// node.js library that concatenates classes (strings)
-import classnames from "classnames";
-// javascipt plugin for creating charts
-import Chart from "chart.js";
-// react plugin used to create charts
-import { Line, Bar } from "react-chartjs-2";
+import Header from "components/Headers/Header.js";
+import emailjs from 'emailjs-com';
 // reactstrap components
 import Moment from 'moment';
-import {
-  Badge,
-  CardFooter,
-  DropdownMenu,
-  DropdownItem,
-  UncontrolledDropdown,
-  DropdownToggle,
-  Media,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  UncontrolledTooltip,
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  NavItem,
-  NavLink,
-  Nav,
-  Progress,
-  Table,
-  Container,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  FormGroup,
-  Row,
-  Col
-} from "reactstrap";
-import emailjs from 'emailjs-com';
+import React, { useEffect, useState } from 'react';
+import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Row, Table } from "reactstrap";
+import AddRemoveAdmins from "../../components/AddRemoveAdmins";
+import * as req from "../../requests";
 
-import Header from "components/Headers/Header.js";
-import * as req from "../../requests"
-import { Link } from 'react-router-dom'
-import AddRemoveAdmins from "../../components/AddRemoveAdmins"
 
 const Hospital = () => {
 
   const [hasOrganization, sethasOrganization] = useState(true)
-  const [requestCompleted1, setrequestCompleted1] = useState(false)
-  const [requestCompleted2, setrequestCompleted2] = useState(false)
-  const [requestCompleted3, setrequestCompleted3] = useState(false)
-  const [requestCompleted4, setrequestCompleted4] = useState(false)
-
+  const [DidMount, setDidMount] = useState(false)
   // Hospital Details
 
   const [HID, setHID] = useState('')
@@ -117,7 +76,6 @@ const Hospital = () => {
   }
 
   const getemergencyrequirements = () => {
-    setrequestCompleted4(true)
 
     // Clear previous results
     setemergencyRequirements([])
@@ -146,18 +104,15 @@ const Hospital = () => {
       }
     })
 
-    req.getWTDDonors().then(r => {
+    req.getWTDDonors(emergencyBGInput).then(r => {
       if (r && r.length > 0) {
-        r.map((obj, key) => {
-
-          
+        r.forEach(obj => {
           let paramsToSend = {
             "email": obj.Email,
             "blood": emergencyBGInput,
             "hname": HName,
             "address": HAddress,
             "date": Moment(new Date()).format('YYYY-MM-DD')
-
           }
           console.log(paramsToSend)
           emailjs.send('default_service', 'template_L4Biapa8', paramsToSend, "***REMOVED***")
@@ -233,7 +188,6 @@ const Hospital = () => {
   }
 
   const getHDetails = () => {
-    setrequestCompleted2(true)
     req.getHDetails(localStorage.getItem('userID')).then((result) => {
       setHDetails(result)
       if (result && result.length > 0) {
@@ -255,7 +209,7 @@ const Hospital = () => {
     }
 
     req.updateH(toSend).then(e => {
-      if (e.status == 200) {
+      if (parseInt(e.status) === 200) {
         getHDetails()
         setsaved(true)
         setTimeout(() => { setsaved(false) }, 2000)
@@ -264,7 +218,6 @@ const Hospital = () => {
   }
 
   const getPatientDetails = () => {
-    setrequestCompleted3(true)
     req.getPatientDetails(localStorage.getItem('userID')).then((result) => {
       console.log("=====", result)
       setPatientDetails(result)
@@ -276,26 +229,17 @@ const Hospital = () => {
   }
 
   useEffect(() => {
-    if (!requestCompleted1) {
-      setrequestCompleted1(true)
+    if (!DidMount) {
+      setDidMount(true)
+
       req.getAdminOrganization(localStorage.getItem('userID')).then((result) => {
-        // console.log(result)
         sethasOrganization(result)
       })
-    }
-
-    if (!requestCompleted2) {
       getHDetails()
-    }
-
-    if (!requestCompleted3) {
       getPatientDetails()
-    }
-
-    if (!requestCompleted4) {
       getemergencyrequirements()
     }
-  })
+  }, [DidMount])
 
 
   return (

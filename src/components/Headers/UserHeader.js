@@ -16,9 +16,9 @@
 
 */
 import React from "react";
-
 // reactstrap components
-import { Button, Container, Row, Col } from "reactstrap";
+import { Col, Container, Row } from "reactstrap";
+
 
 class UserHeader extends React.Component {
   render() {

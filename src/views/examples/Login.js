@@ -15,26 +15,13 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-
 // reactstrap components
-import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  FormGroup,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  Row,
-  Col
-} from "reactstrap";
+import { Button, Card, CardBody, Col, Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from "reactstrap";
+import * as req from "../../requests";
 
-import * as req from "../../requests"
+
 
 function Login() {
 
@@ -54,10 +41,10 @@ function Login() {
   }
 
   useEffect(() => {
-    if (localStorage.getItem('isLoggedIn') == "true") {
+    if (localStorage.getItem('isLoggedIn') === "true") {
       history.push("/admin/index");
     }
-    if (isLoggedIn == true) {
+    if (isLoggedIn === true) {
       localStorage.setItem('isLoggedIn', isLoggedIn);
       localStorage.setItem('userID', userID);
       req.getUserDetails(userID).then(r => {
