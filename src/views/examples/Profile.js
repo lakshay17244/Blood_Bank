@@ -330,7 +330,7 @@ class Profile extends React.Component {
                               // readOnly
                               className="form-control-alternative"
                               value={this.state.username}
-                              onChange={() => { }}
+                              onChange={(e) => { this.handleusername(e.target.value)}}
                               id="input-username"
                               placeholder="Username"
                               type="text"
