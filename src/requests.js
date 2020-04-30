@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 
-const URL = "http://127.0.0.1:5000/"
-
+// const URL = "http://127.0.0.1:5000/"
+const URL = "https://dbmsbloodbank.herokuapp.com/"
 
 export const getWTDDonors = async (BG) => {
     let details = "Couldn't Do the request";
