@@ -487,7 +487,7 @@ const Hospital = () => {
                 </Card>
 
 
-                {hasCheckedBG && CheckBGAvailibilityNearby && CheckBGAvailibilityNearby.length > 0 && CheckBGAvailibility && CheckBGAvailibility.length > 0 ?
+                {hasCheckedBG && ((CheckBGAvailibilityNearby && CheckBGAvailibilityNearby.length > 0) || (CheckBGAvailibility && CheckBGAvailibility.length > 0)) ?
                   <Card className="shadow mt-4 mb-2">
                     <CardHeader>
                       <h2 className="text-center">Withdraw From Blood Bank</h2>

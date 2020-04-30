@@ -23,7 +23,7 @@ import * as req from "../../requests";
 
 
 
-function Login() {
+const Login = () => {
 
   let history = useHistory();
   const [password, setpassword] = useState("");

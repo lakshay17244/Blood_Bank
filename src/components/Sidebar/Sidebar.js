@@ -104,7 +104,7 @@ class Sidebar extends React.Component {
             <span className="navbar-toggler-icon" />
           </button>
           {/* Brand */}
-          
+
           {logo ? (
             <NavbarBrand className="pt-0" {...navbarBrandProps}>
               <img
@@ -114,9 +114,9 @@ class Sidebar extends React.Component {
               />
             </NavbarBrand>
           ) : null}
-          {localStorage.getItem("type") && localStorage.getItem("type").length > 0 && 
-          
-          <h3 className="text-center text-primary">{localStorage.getItem("type")}</h3>
+          {localStorage.getItem("type") && localStorage.getItem("type").length > 0 &&
+
+            <h3 className="text-center text-primary">{localStorage.getItem("type")}</h3>
           }
           {/* User */}
           <Nav className="align-items-center d-md-none">
@@ -167,7 +167,9 @@ class Sidebar extends React.Component {
                   <span>Support</span>
                 </DropdownItem> */}
                 <DropdownItem divider />
-                <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>
+                <DropdownItem to="/auth/login" tag={Link} href="#pablo" onClick={e => {
+                  localStorage.clear();
+                }}>
                   <i className="ni ni-user-run" />
                   <span>Logout</span>
                 </DropdownItem>
