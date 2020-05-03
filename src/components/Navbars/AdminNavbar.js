@@ -19,44 +19,24 @@ import React from "react";
 import { Link } from "react-router-dom";
 // reactstrap components
 import { Container, DropdownItem, DropdownMenu, DropdownToggle, Media, Nav, Navbar, UncontrolledDropdown } from "reactstrap";
-import * as req from "../../requests";
+import { connect } from "react-redux"
+import { logout } from "../../redux/actions_and_reducers/actions"
+import _ from "lodash"
 
-class AdminNavbar extends React.Component {
-  constructor(props) {
-    super(props)
-    let name = "Jessica Jones"
-    if (localStorage.getItem("name")) {
-      name = localStorage.getItem("name")
-    }
-    this.state = {
-      name: name
-    }
-  }
+const AdminNavbar = (props) => {
 
-  componentDidMount() {
-    let userid = localStorage.getItem("userID")
-    if (userid.length > 0) {
-      req.getUserDetails(userid).then(e => {
-        this.setState({
-          name: e.Username
-        })
-      })
-    }
-  }
-
-  render() {
-    return (
-      <>
-        <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
-          <Container fluid>
-            {/* <Link
+  return (
+    <>
+      <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
+        <Container fluid>
+          {/* <Link
               className="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block"
               to={this.props.location.pathname}
             > */}
-              <img className="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block" alt="..." src={require("assets/img/brand/argon-react-white.png")} />
-              {/* {this.props.brandText} */}
-            {/* </Link> */}
-            {/* <Form className="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
+          <img className="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block" alt="..." src={require("assets/img/brand/argon-react-white.png")} />
+          {/* {this.props.brandText} */}
+          {/* </Link> */}
+          {/* <Form className="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
               <FormGroup className="mb-0">
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
@@ -68,33 +48,33 @@ class AdminNavbar extends React.Component {
                 </InputGroup>
               </FormGroup>
             </Form> */}
-            <Nav className="align-items-center d-none d-md-flex" navbar>
-              <UncontrolledDropdown nav>
-                <DropdownToggle className="pr-0" nav>
-                  <Media className="align-items-center">
-                    <span className="avatar avatar-sm rounded-circle">
-                      <img
-                        alt="..."
-                        src={require("assets/img/theme/team-4-800x800.jpg")}
-                      />
+          <Nav className="align-items-center d-none d-md-flex" navbar>
+            <UncontrolledDropdown nav>
+              <DropdownToggle className="pr-0" nav>
+                <Media className="align-items-center">
+                  <span className="avatar avatar-sm rounded-circle">
+                    <img
+                      alt="..."
+                      src={require("assets/img/theme/team-4-800x800.jpg")}
+                    />
+                  </span>
+                  <Media className="ml-2 d-none d-lg-block">
+                    <span className="mb-0 text-sm font-weight-bold">
+                      {props.Name}
                     </span>
-                    <Media className="ml-2 d-none d-lg-block">
-                      <span className="mb-0 text-sm font-weight-bold">
-                        {this.state.name}
-                      </span>
-                    </Media>
                   </Media>
-                </DropdownToggle>
-                <DropdownMenu className="dropdown-menu-arrow" right>
-                  <DropdownItem className="noti-title" header tag="div">
-                    <h6 className="text-overflow m-0">Welcome!</h6>
-                  </DropdownItem>
-                  <DropdownItem to="/admin/user-profile" tag={Link}>
-                    {/* <DropdownItem to="/auth/login" tag={Link}> */}
-                    <i className="ni ni-single-02" />
-                    <span>My profile</span>
-                  </DropdownItem>
-                  {/* <DropdownItem to="/admin/user-profile" tag={Link}>
+                </Media>
+              </DropdownToggle>
+              <DropdownMenu className="dropdown-menu-arrow" right>
+                <DropdownItem className="noti-title" header tag="div">
+                  <h6 className="text-overflow m-0">Welcome!</h6>
+                </DropdownItem>
+                <DropdownItem to="/admin/user-profile" tag={Link}>
+                  {/* <DropdownItem to="/auth/login" tag={Link}> */}
+                  <i className="ni ni-single-02" />
+                  <span>My profile</span>
+                </DropdownItem>
+                {/* <DropdownItem to="/admin/user-profile" tag={Link}>
                     <i className="ni ni-settings-gear-65" />
                     <span>Settings</span>
                   </DropdownItem>
@@ -106,30 +86,35 @@ class AdminNavbar extends React.Component {
                     <i className="ni ni-support-16" />
                     <span>Support</span>
                   </DropdownItem> */}
-                  <DropdownItem divider />
-                  {/* <DropdownItem to="/auth/login" tag={Link} onClick={e => {
-                    // e.preventDefault()
-                    localStorage.setItem('isLoggedIn', false);
-                    localStorage.setItem('userID', '');
-                  }}>
-                    <i className="ni ni-single-02" />
-                    <span>Logout</span>
-                  </DropdownItem> */}
-                  <DropdownItem to="/auth/login" tag={Link} href="#pablo" onClick={e => {
-                    localStorage.clear();
-                  }}>
-                    <i className="ni ni-user-run" />
-                    <span>Logout</span>
-                  </DropdownItem>
+                <DropdownItem divider />
 
-                </DropdownMenu>
-              </UncontrolledDropdown>
-            </Nav>
-          </Container>
-        </Navbar>
-      </>
-    );
+                <DropdownItem to="/auth/login" tag={Link} href="#pablo" onClick={e => {
+                  props.logout()
+                  localStorage.clear()
+                }}>
+                  <i className="ni ni-user-run" />
+                  <span>Logout</span>
+                </DropdownItem>
+
+              </DropdownMenu>
+            </UncontrolledDropdown>
+          </Nav>
+        </Container>
+      </Navbar>
+    </>
+  );
+
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    logout: (e = false) => dispatch(logout(e))
+  }
+}
+const mapStateToProps = (state) => {
+  return {
+    Name: _.get(state, "UserDetails.Username", "Anonymous")
   }
 }
 
-export default AdminNavbar;
+export default connect(mapStateToProps, mapDispatchToProps)(AdminNavbar);

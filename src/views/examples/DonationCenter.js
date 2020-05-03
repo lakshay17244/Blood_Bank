@@ -22,9 +22,10 @@ import React, { useEffect, useState } from 'react';
 import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Row, Table } from "reactstrap";
 import AddRemoveAdmins from "../../components/AddRemoveAdmins";
 import * as req from "../../requests";
+import { connect } from 'react-redux';
+import _ from "lodash"
 
-
-const DonationCenter = () => {
+const DonationCenter = (props) => {
 
   const [hasOrganization, sethasOrganization] = useState(true)
 
@@ -51,17 +52,21 @@ const DonationCenter = () => {
 
     if (!DidMount) {
       setDidMount(true)
-      getDCDetails()
-      getDonatedBlood()
-      getAppointment()
-      req.getAdminOrganization(localStorage.getItem('userID')).then((result) => {
-        sethasOrganization(result)
-      })
-      req.getAssociatedBloodBank(localStorage.getItem('userID')).then((result) => {
-        setBBDetails(result)
-      })
+
+      if (props.hasDonationCenter) {
+        getDCDetails()
+        getDonatedBlood()
+        getAppointment()
+        req.getAdminOrganization(props.UserID).then((result) => {
+          sethasOrganization(result)
+        })
+        req.getAssociatedBloodBank(props.UserID).then((result) => {
+          setBBDetails(result)
+        })
+      }
+
     }
-  }, [DidMount])
+  }, [DidMount, props.hasDonationCenter, props.UserID])
 
   const getAppointment = () => {
     let toSend = {
@@ -74,7 +79,7 @@ const DonationCenter = () => {
   }
 
   const getDonatedBlood = () => {
-    req.getDonatedBlood(localStorage.getItem('userID')).then((result) => {
+    req.getDonatedBlood(props.UserID).then((result) => {
       setdonatedBlood(result)
       setbloodsent(true)
       result.forEach((record) => {
@@ -85,7 +90,7 @@ const DonationCenter = () => {
   }
 
   const getDCDetails = () => {
-    req.getDCDetails(localStorage.getItem('userID')).then((result) => {
+    req.getDCDetails(props.UserID).then((result) => {
       if (result && result.length > 0) {
         let DC = result[0]
         setDCName(DC.Name)
@@ -400,4 +405,12 @@ const DonationCenter = () => {
   );
 }
 
-export default DonationCenter;
+const mapStateToProps = (state) => {
+  return {
+    hasDonationCenter: _.get(state, "UserDetails.hasDonationCenter", false),
+    UserID: _.get(state, "UserDetails.UserID")
+  }
+}
+
+export default connect(mapStateToProps)(DonationCenter);
+

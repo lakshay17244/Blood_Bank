@@ -23,11 +23,11 @@ import React, { useEffect, useState } from 'react';
 import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Row, Table } from "reactstrap";
 import AddRemoveAdmins from "../../components/AddRemoveAdmins";
 import * as req from "../../requests";
+import _ from "lodash"
+import { connect } from "react-redux"
 
 
-const Hospital = () => {
-
-  const [hasOrganization, sethasOrganization] = useState(true)
+const Hospital = (props) => {
   const [DidMount, setDidMount] = useState(false)
   // Hospital Details
 
@@ -79,7 +79,7 @@ const Hospital = () => {
 
     // Clear previous results
     setemergencyRequirements([])
-    req.getemergencyrequirements(localStorage.getItem("userID")).then((result) => {
+    req.getemergencyrequirements(props.UserID).then((result) => {
       if (result && result.length > 0) {
         setemergencyRequirements(result)
       }
@@ -91,7 +91,7 @@ const Hospital = () => {
     let toSend = {
       "BloodNeeded": emergencyBGInput,
       "DateRecieved": Moment(new Date()).format('YYYY-MM-DD'),
-      "DoctorID": localStorage.getItem("userID")
+      "DoctorID": props.UserID
     }
     req.addemergencyrequirement(toSend).then(r => {
       // console.log(r)
@@ -129,7 +129,7 @@ const Hospital = () => {
     setERMessage('')
     let toSend = {
       "EID": emergencyEIDInput,
-      "UserID": localStorage.getItem("userID")
+      "UserID": props.UserID
     }
     // console.log(toSend)
     req.removeemergencyrequirement(toSend).then(r => {
@@ -158,7 +158,7 @@ const Hospital = () => {
       }
     })
 
-    req.checkBloodAvailabilityNearby(CheckBGInput, localStorage.getItem("userID")).then((result) => {
+    req.checkBloodAvailabilityNearby(CheckBGInput, props.UserID).then((result) => {
       // console.log(result)
       if (result && result.length > 0) {
         setCheckBGAvailibilityNearby(result)
@@ -177,7 +177,7 @@ const Hospital = () => {
     let toSend = {
       "BloodGroup": AddPatiendBG,
       "AdmissionDate": Moment(new Date()).format('YYYY-MM-DD'),
-      "UserID": localStorage.getItem('userID'),
+      "UserID": props.UserID,
       "HID": HID
     }
     req.addPatient(toSend).then((result) => {
@@ -186,7 +186,7 @@ const Hospital = () => {
   }
 
   const getHDetails = () => {
-    req.getHDetails(localStorage.getItem('userID')).then((result) => {
+    req.getHDetails(props.UserID).then((result) => {
       setHDetails(result)
       if (result && result.length > 0) {
         let H = result[0]
@@ -216,11 +216,11 @@ const Hospital = () => {
   }
 
   const getPatientDetails = () => {
-    req.getPatientDetails(localStorage.getItem('userID')).then((result) => {
+    req.getPatientDetails(props.UserID).then((result) => {
       setPatientDetails(result)
     })
 
-    req.getPatientDetailsUnderYou(localStorage.getItem('userID')).then((result) => {
+    req.getPatientDetailsUnderYou(props.UserID).then((result) => {
       setPatientDetailsUnderYou(result)
     })
   }
@@ -228,13 +228,11 @@ const Hospital = () => {
   useEffect(() => {
     if (!DidMount) {
       setDidMount(true)
-
-      req.getAdminOrganization(localStorage.getItem('userID')).then((result) => {
-        sethasOrganization(result)
-      })
-      getHDetails()
-      getPatientDetails()
-      getemergencyrequirements()
+      if (props.hasHospital) {
+        getHDetails()
+        getPatientDetails()
+        getemergencyrequirements()
+      }
     }
   }, [DidMount])
 
@@ -247,10 +245,10 @@ const Hospital = () => {
 
         {/* ----------------------------------------- DONOR PAGE ----------------------------------------- */}
 
-        <AddRemoveAdmins hasOrganization={hasOrganization} BB={false} HS={true} DC={false} />
+        <AddRemoveAdmins BB={false} HS={true} DC={false} />
 
 
-        {hasOrganization && hasOrganization.HE === 1 ?
+        {props.hasHospital ?
           <>
             <Row>
               <Col xl={6} l={6} m={6}>
@@ -695,4 +693,11 @@ const Hospital = () => {
   );
 }
 
-export default Hospital;
+const mapStateToProps = (state) => {
+  return {
+    hasHospital: _.get(state, "UserDetails.hasHospital", false),
+    UserID: _.get(state, "UserDetails.UserID")
+  }
+}
+
+export default connect(mapStateToProps)(Hospital);

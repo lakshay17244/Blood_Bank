@@ -22,13 +22,14 @@ import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Row, Table } from "reactstrap";
 import * as req from "../requests";
+import { connect } from "react-redux";
+import _ from "lodash"
+import { getUserDetails } from "../redux/actions_and_reducers/actions";
 
-
-
-const Index = () => {
+const Index = (props) => {
 
   // Add New Organization
-  const [hasOrganization, sethasOrganization] = useState(true)
+  // const [hasOrganization, sethasOrganization] = useState(true)
   const [name, handleName] = useState('')
   const [patients, handlePatients] = useState('')
   const [address, handleAddress] = useState('')
@@ -54,20 +55,22 @@ const Index = () => {
   const [currHead, setcurrHead] = useState('')
 
 
-  const getAdminOrganization = () => {
-    req.getAdminOrganization(localStorage.getItem('userID')).then((result) => {
-      sethasOrganization(result)
-    })
-  }
+  // const getAdminOrganization = () => {
+
+  //   props.isLoggedIn && req.getAdminOrganization(props.UserID).then((result) => {
+  //     sethasOrganization(result)
+  //   })
+  // }
 
   useEffect(() => {
     if (!DidMount) {
+      console.log("Index.js Mounted", props)
       setDidMount(true)
-      req.getPastDonations(localStorage.getItem('userID')).then((donations) => {
+      props.isLoggedIn && props.Type === "Donor " && req.getPastDonations(props.UserID).then((donations) => {
         setDonations(donations)
       })
-      getAdminOrganization()
-      setType(localStorage.getItem('type'))
+      // getAdminOrganization()
+      setType(props.Type)
     }
   }, [DidMount])
 
@@ -86,7 +89,6 @@ const Index = () => {
     maxDate.setMonth(maxDate.getMonth() + 3);
 
     let today = new Date()
-    // console.log("Today is ", today === )
     if (showDonationDate && today > maxDate)
       setshowDonationDate(false)
 
@@ -98,7 +100,7 @@ const Index = () => {
     setregisterOrganizationMessage("")
     let toSend = {}
     let otherAdmins = addAdmin.split(',')
-    let myID = localStorage.getItem("userID")
+    let myID = props.UserID
     switch (registerButton) {
 
       case "Hospital":
@@ -111,7 +113,8 @@ const Index = () => {
         }
         req.registerOrganization("Hospital", toSend).then(r => {
           setregisterOrganizationMessage(r)
-          getAdminOrganization()
+          // getAdminOrganization()
+          props.getUserDetails(props.UserID)
         })
         // console.log(toSend)
         break;
@@ -127,7 +130,8 @@ const Index = () => {
         }
         req.registerOrganization("BloodBank", toSend).then(r => {
           setregisterOrganizationMessage(r)
-          getAdminOrganization()
+          // getAdminOrganization()
+          props.getUserDetails(props.UserID)
         })
         // console.log(toSend)
         break;
@@ -143,7 +147,8 @@ const Index = () => {
         console.log(toSend)
         req.registerOrganization("DonationCenter", toSend).then(r => {
           setregisterOrganizationMessage(r)
-          getAdminOrganization()
+          // getAdminOrganization()
+          props.getUserDetails(props.UserID)
         })
         break;
 
@@ -195,7 +200,8 @@ const Index = () => {
     })
     return sum
   }
-
+  let { hasHospital, hasBloodBank, hasDonationCenter } = props
+  console.log("=======>PROPS=", props)
   return (
     <>
       <Header />
@@ -208,9 +214,10 @@ const Index = () => {
           // ----------------------------------------- ADMIN PAGE -----------------------------------------
           <>
             {
-              (parseInt(hasOrganization["BBE"]) === 1
-                || parseInt(hasOrganization["DCE"]) === 1
-                || parseInt(hasOrganization["HE"]) === 1) ?
+              // (parseInt(hasOrganization["BBE"]) === 1
+              //   || parseInt(hasOrganization["DCE"]) === 1
+              //   || parseInt(hasOrganization["HE"]) === 1) ?
+              (hasHospital || hasDonationCenter || hasBloodBank) ?
                 <>
 
                   <Row >
@@ -225,7 +232,8 @@ const Index = () => {
                           <Row className="text-center">
                             <Col>
 
-                              {hasOrganization["DCE"] === 1 &&
+                              {/* {hasOrganization["DCE"] === 1 && */}
+                              {hasDonationCenter === 1 &&
                                 <Link to="/admin/DonationCenter">
                                   <Button className="my-2 mx-2" color="primary" type="button" onClick={() => { }}>Donation Center</Button>
                                 </Link>}
@@ -235,7 +243,8 @@ const Index = () => {
                           <Row>
                             <Col>
 
-                              {hasOrganization["BBE"] === 1 &&
+                              {/* {hasOrganization["BBE"] === 1 && */}
+                              {hasBloodBank === 1 &&
                                 <Link to="/admin/BB">
                                   <Button className="my-2 mx-2" color="primary" type="button" onClick={() => { }}>Blood Bank</Button>
                                 </Link>}
@@ -244,7 +253,8 @@ const Index = () => {
                           </Row>
                           <Row>
                             <Col>
-                              {hasOrganization["HE"] === 1 &&
+                              {/* {hasOrganization["HE"] === 1 && */}
+                              {hasHospital === 1 &&
                                 <Link to="/admin/Hospital">
                                   <Button className="my-2 mx-2" color="primary" type="button" onClick={() => { }}>Hospital</Button>
                                 </Link>}
@@ -273,9 +283,10 @@ const Index = () => {
             }
 
             {
-              (parseInt(hasOrganization["BBE"]) !== 1 ||
-                parseInt(hasOrganization["DCE"]) !== 1 ||
-                parseInt(hasOrganization["HE"]) !== 1) &&
+              // (parseInt(hasOrganization["BBE"]) !== 1 ||
+              //   parseInt(hasOrganization["DCE"]) !== 1 ||
+              //   parseInt(hasOrganization["HE"]) !== 1) &&
+              (!hasHospital || !hasDonationCenter || !hasBloodBank) &&
               <Row className="mt-5">
                 <Col xl={2}></Col>
                 <Col xl={8}>
@@ -290,7 +301,8 @@ const Index = () => {
                       </div>
 
                       <Row className="btn-wrapper text-center">
-                        {hasOrganization["HE"] !== 1 &&
+                        {/* {hasOrganization["HE"] !== 1 && */}
+                        {!hasHospital &&
                           <Col>
 
                             <Button
@@ -307,7 +319,8 @@ const Index = () => {
                             </Button>
                           </Col>}
 
-                        {hasOrganization["BBE"] !== 1 &&
+                        {/* {hasOrganization["BBE"] !== 1 && */}
+                        {!hasBloodBank &&
                           <Col>
                             <Button
                               className="btn-neutral btn-icon"
@@ -322,7 +335,8 @@ const Index = () => {
                               <span className="btn-inner--text">Blood Bank</span>
                             </Button>
                           </Col>}
-                        {hasOrganization["DCE"] !== 1 &&
+                        {/* {hasOrganization["DCE"] !== 1 && */}
+                        {!hasDonationCenter &&
                           <Col>
                             <Button
                               className="btn-neutral btn-icon mt-0 mt-4 mt-sm-0"
@@ -562,4 +576,21 @@ const Index = () => {
   );
 }
 
-export default Index;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getUserDetails: (UserID) => dispatch(getUserDetails(UserID)),
+  }
+}
+const mapStateToProps = (state) => {
+  return {
+    UserDetails: state.UserDetails,
+    isLoggedIn: _.get(state, 'isLoggedIn', false),
+    UserID: _.get(state, "UserDetails.UserID"),
+    Type: _.get(state, "UserDetails.Type", "Anon"),
+    hasBloodBank: _.get(state, "UserDetails.hasBloodBank", false),
+    hasHospital: _.get(state, "UserDetails.hasHospital", false),
+    hasDonationCenter: _.get(state, "UserDetails.hasDonationCenter", false)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

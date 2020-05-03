@@ -15,44 +15,17 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 // reactstrap components
 import { Button, Card, CardBody, Col, Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from "reactstrap";
-import * as req from "../../requests";
+import { login } from "../../redux/actions_and_reducers/actions";
 
 
-
-const Login = () => {
-
-  let history = useHistory();
-  const [password, setpassword] = useState("");
-  const [userID, setuserID] = useState("");
-  const [isLoggedIn, setisLoggedIn] = useState(false);
-  const [recievedMessage, setrecievedMessage] = useState("");
-
-  const sendLoginReq = () => {
-    req.loginAPI(parseInt(userID), password).then((e => {
-      // console.log("LOG IN API RETURNED ", e)
-      setrecievedMessage(e.message)
-      setisLoggedIn(e.loggedIn)
-    }))
-  }
-
-  useEffect(() => {
-    if (localStorage.getItem('isLoggedIn') === "true") {
-      history.push("/admin/index");
-    }
-    if (isLoggedIn === true) {
-      localStorage.setItem('isLoggedIn', isLoggedIn);
-      localStorage.setItem('userID', userID);
-      req.getUserDetails(userID).then(r => {
-        localStorage.setItem("type", r.Type)
-        localStorage.setItem("name", r.Username)
-        history.push("/admin/index");
-      })
-    }
-  })
+const Login = (props) => {
+  const [Password, setPassword] = useState("");
+  const [UserID, setUserID] = useState("");
 
   return (
     <>
@@ -108,8 +81,8 @@ const Login = () => {
                       <i className="ni ni-single-02" />
                     </InputGroupText>
                   </InputGroupAddon>
-                  {/* <Input placeholder="UserID" type="number" value={this.state.userID} onChange={(e) => this.handleuserID(e)} /> */}
-                  <Input placeholder="UserID" type="number" value={userID} onChange={(e) => setuserID(e.target.value)} />
+                  {/* <Input placeholder="UserID" type="number" value={this.state.UserID} onChange={(e) => this.handleuserID(e)} /> */}
+                  <Input placeholder="UserID" type="number" value={UserID} onChange={(e) => setUserID(e.target.value)} />
                 </InputGroup>
               </FormGroup>
               <FormGroup>
@@ -120,11 +93,11 @@ const Login = () => {
                     </InputGroupText>
                   </InputGroupAddon>
                   {/* <Input placeholder="Password" type="password" autoComplete="new-password" value={this.state.password} onChange={(e) => this.handlepassword(e)} /> */}
-                  <Input placeholder="Password" type="password" autoComplete="new-password" value={password} onChange={(e) => setpassword(e.target.value)} />
+                  <Input placeholder="Password" type="password" autoComplete="new-password" value={Password} onChange={(e) => setPassword(e.target.value)} />
                 </InputGroup>
               </FormGroup>
               <div className="text-center mb-4">
-                <small>{recievedMessage}</small>
+                <small>{props.LoginMessage}</small>
               </div>
               <div className="custom-control custom-control-alternative custom-checkbox">
                 <input
@@ -140,7 +113,7 @@ const Login = () => {
                 </label>
               </div>
               <div className="text-center">
-                <Button className="my-4" color="primary" type="button" onClick={() => sendLoginReq()}>
+                <Button className="my-4" color="primary" type="button" onClick={() => props.login(UserID, Password)}>
                   Sign in
                   </Button>
               </div>
@@ -176,4 +149,17 @@ const Login = () => {
   );
 }
 
-export default Login;
+const mapStateToProps = (state) => {
+  return {
+    LoginMessage: state.LoginMessage
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    login: (u, p) => dispatch(login(u, p))
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

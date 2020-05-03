@@ -20,11 +20,12 @@ import React, { useEffect, useState } from "react";
 // reactstrap components
 import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Row, Spinner } from "reactstrap";
 import * as req from "../../requests";
+import { connect } from "react-redux";
+import { getUserDetails } from "../../redux/actions_and_reducers/actions"
+import _ from "lodash"
 
 
-
-
-const Profile = () => {
+const Profile = (props) => {
   const [DidMount, setDidMount] = useState(false)
   const [type, settype] = useState('Donor')
   const [date, setdate] = useState('')
@@ -44,10 +45,24 @@ const Profile = () => {
 
   useEffect(() => {
     if (!DidMount) {
+      console.log("Mounted Profile.js")
       setDidMount(true)
-      let userid = localStorage.getItem("userID")
-      if (userid.length > 0) {
-        getUserDetails()
+      let { UserDetails, UserDetailsLoading, isLoggedIn } = props
+
+      if (_.isEmpty(UserDetails) && !UserDetailsLoading && isLoggedIn) {
+        console.log("If statement")
+        let UserID = localStorage.getItem("UserID")
+        if (UserID && UserID.length > 0) {
+          setloading(true)
+          props.getUserDetails(UserID).then(e => {
+            console.log("======", e)
+            // Set all user details
+            setUserDetails(e)
+          })
+        }
+      }
+      else {
+        setUserDetails(UserDetails)
       }
 
       let today = new Date()
@@ -56,14 +71,10 @@ const Profile = () => {
       let dateToday = today.getFullYear() - 18 + '-' + month + '-' + day
       setdate(dateToday)
     }
-  }, [DidMount])
+  }, [DidMount, props])
 
-
-  const getUserDetails = () => {
-    setloading(true)
-    let userid = localStorage.getItem("userID")
-    req.getUserDetails(userid).then(e => {
-      // Set all user details
+  const setUserDetails = (e) => {
+    if (!_.isEmpty(e)) {
       settype(e.Type)
       setusername(e.Username)
       setuserid(e.UserID)
@@ -75,12 +86,15 @@ const Profile = () => {
       setpincode(e.Pincode)
       setWTD(e.WillingToDonate)
       setloading(false)
-    })
+    }
+    else
+      setloading(false)
   }
+
 
   const updateUser = () => {
     let toSend = {
-      "UserID": localStorage.getItem("userID"),
+      "UserID": localStorage.getItem("UserID"),
       "user": {
         "Type": type,
         "Username": username,
@@ -99,7 +113,7 @@ const Profile = () => {
       if (parseInt(e.status) === 200) {
         seteditable(false)
 
-        getUserDetails()
+        props.getUserDetails(userid)
         setTimeout(() => { seteditable(true) }, 1000)
       }
     })
@@ -449,4 +463,20 @@ const Profile = () => {
 
 }
 
-export default Profile;
+
+const mapStateToProps = (state) => {
+  return {
+    UserDetails: state.UserDetails,
+    UserDetailsLoading: state.UserDetailsLoading,
+    isLoggedIn: _.get(state, "isLoggedIn", false),
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getUserDetails: e => dispatch(getUserDetails(e))
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

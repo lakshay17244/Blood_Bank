@@ -17,7 +17,7 @@
 */
 import classnames from "classnames";
 import React, { useEffect, useState } from "react";
-import { Link, useHistory} from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 // reactstrap components
 import { Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from "reactstrap";
 import * as req from "../../requests";
@@ -51,7 +51,7 @@ const Register = () => {
 			let dateToday = today.getFullYear() - 18 + '-' + month + '-' + day
 			setdate(dateToday)
 		}
-	}, [DidMount])
+	}, [DidMount,history])
 
 	const registerUser = () => {
 		let toSend = {

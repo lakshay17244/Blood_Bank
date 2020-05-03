@@ -15,8 +15,9 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useState, useEffect } from 'react';
-
+import React, { useState, useEffect, useCallback } from 'react';
+import { connect } from "react-redux"
+import _ from "lodash"
 import {
   CardFooter,
   Button,
@@ -36,14 +37,11 @@ import Header from "components/Headers/Header.js";
 import * as req from "../../requests"
 import AddRemoveAdmins from "../../components/AddRemoveAdmins"
 
-const BloodBank = () => {
+const BloodBank = (props) => {
 
-  const [hasOrganization, sethasOrganization] = useState(true)
-
-  const [DidMount, setDidMount] = useState(false)
+  // const [DidMount, setDidMount] = useState(false)
 
   const [associatedDCs, setassociatedDCs] = useState(true)
-
 
   const [BBID, setBBID] = useState('')
   const [BBName, setBBName] = useState('')
@@ -75,58 +73,57 @@ const BloodBank = () => {
     })
   }
 
-  const getBBDetails = () => {
-    req.getBBDetails(localStorage.getItem('userID')).then((result) => {
-      setBBDetails(result)
-      if (result && result.length > 0) {
-        let BB = result[0]
-        setBBName(BB.Name)
-        setBBAddress(BB.Address)
-        setBBID(BB.BBID)
-        setBBPincode(BB.Pincode)
-        setBBCapacity(BB.TotalCapacity)
-      }
-    })
-  }
+  const getBBDetails = useCallback(
+    () => {
+      req.getBBDetails(props.UserID).then((result) => {
+        setBBDetails(result)
+        if (result && result.length > 0) {
+          let BB = result[0]
+          setBBName(BB.Name)
+          setBBAddress(BB.Address)
+          setBBID(BB.BBID)
+          setBBPincode(BB.Pincode)
+          setBBCapacity(BB.TotalCapacity)
+        }
+      })
+    },
+    [props.UserID],
+  )
 
-  const getBBStoredBlood = () => {
-    req.getBBStoredBlood(localStorage.getItem('userID')).then((result) => {
-      setBBStoredBlood(result)
-    })
-  }
+  const getBBStoredBlood = useCallback(
+    () => {
+      req.getBBStoredBlood(props.UserID).then((result) => {
+        setBBStoredBlood(result)
+      })
+    },
+    [props.UserID],
+  )
 
-  const sumTotalStoredBlood = () => {
-    let total = 0
-    BBStoredBlood && BBStoredBlood.forEach(res => {
-      total = total + res.Amount
-    })
-    return total
-  }
+  const sumTotalStoredBlood = useCallback(
+    () => {
+      let total = 0
+      BBStoredBlood && BBStoredBlood.forEach(res => {
+        total = total + res.Amount
+      })
+      return total
+    },
+    [BBStoredBlood],
+  )
 
-  const getAdminOrganization = () => {
-    req.getAdminOrganization(localStorage.getItem('userID')).then((result) => {
-      sethasOrganization(result)
-    })
-  }
 
-  const getAssociatedDonationCenter = () => {
-    req.getAssociatedDonationCenter(localStorage.getItem('userID')).then((result) => {
-      setassociatedDCs(result)
-    })
-  }
+  const getAssociatedDonationCenter = useCallback(
+    () => {
+      req.getAssociatedDonationCenter(props.UserID).then((result) => {
+        setassociatedDCs(result)
+      })
+    }, [props.UserID])
+
 
   useEffect(() => {
-
-    if (!DidMount) {
-      setDidMount(true)
-
-      getAssociatedDonationCenter()
-      getBBStoredBlood()
-      getBBDetails()
-      getAdminOrganization()
-    }
-
-  },[DidMount])
+    getAssociatedDonationCenter()
+    getBBStoredBlood()
+    getBBDetails()
+  }, [getAssociatedDonationCenter, getBBStoredBlood, getBBDetails])
 
 
   return (
@@ -137,10 +134,10 @@ const BloodBank = () => {
 
         {/* ----------------------------------------- BLOOD BANK PAGE ----------------------------------------- */}
 
-        <AddRemoveAdmins hasOrganization={hasOrganization} BB={true} HS={false} DC={false} />
-        {hasOrganization && hasOrganization.BBE === 1 ?
+        <AddRemoveAdmins BB={true} HS={false} DC={false} />
+        {props.hasBloodBank ?
 
-          <Row className="mt-6">
+          < Row className="mt-6">
             <Col xl={6} l={6} m={6}>
 
               {BBDetails && BBDetails.length > 0 ?
@@ -338,4 +335,12 @@ const BloodBank = () => {
   );
 }
 
-export default BloodBank;
+const mapStateToProps = (state) => {
+  return {
+    isLoggedIn: _.get(state, 'isLoggedIn', false),
+    UserID: _.get(state, "UserDetails.UserID"),
+    hasBloodBank: _.get(state, "UserDetails.hasBloodBank", false)
+  }
+}
+
+export default connect(mapStateToProps)(BloodBank);

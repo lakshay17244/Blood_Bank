@@ -459,7 +459,7 @@ export const getemergencyrequirements = async (UserId) => {
     await axios.get(URL + `getemergencyrequirements/` + UserId)
         .then(res => {
             details = res.data;
-            console.log(details);
+            // console.log(details);
         }).catch(e => {
             details = e
             console.log("ERROR")
@@ -472,7 +472,7 @@ export const getDonorERNearby = async (UserId) => {
     await axios.get(URL + `getDonorERNearby/` + UserId)
         .then(res => {
             details = res.data;
-            console.log(details);
+            // console.log(details);
         }).catch(e => {
             details = e
             console.log("ERROR")
@@ -486,7 +486,7 @@ export const getDonorERAll = async (UserId) => {
     await axios.get(URL + `getDonorERAll/` + UserId)
         .then(res => {
             details = res.data;
-            console.log(details);
+            // console.log(details);
         }).catch(e => {
             details = e
             console.log("ERROR")
@@ -677,8 +677,7 @@ export const loginAPI = async (UserId, Password) => {
 
     let result = 401
     let message = ""
-    // console.log("===>", UserId)
-    // console.log("===>", Password)
+
     await axios({
         method: 'post',
         url: URL + "login",
@@ -693,10 +692,8 @@ export const loginAPI = async (UserId, Password) => {
     }).catch(e => {
         console.log("ERROR | " + e)
     });
-
-    let loggedIn = result === 200;
     return {
-        "loggedIn": loggedIn,
+        "loggedIn": result === 200,
         "message": message
     };
 
@@ -714,10 +711,12 @@ export const getUserDetails = async (UserId) => {
 
     await axios.get(URL + `showprofile/` + UserId)
         .then(res => {
-            details = res.data;
-            localStorage.setItem("name", details.Username)
-            localStorage.setItem("type", details.Type)
-            localStorage.setItem("email", details.Email)
+            if (res.status === 200) {
+                details = res;
+                // localStorage.setItem("name", res.data.Username)
+                // localStorage.setItem("type", res.data.Type)
+                // localStorage.setItem("email", res.data.Email)
+            }
         }).catch(e => {
             details = e
             console.log("ERROR")

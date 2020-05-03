@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, CardBody, CardHeader, Col, Input, Row, Table } from "reactstrap";
 import * as req from "../requests";
-
+import { connect } from "react-redux"
+import _ from "lodash"
 
 const ErrorMessage = (props) => {
     return (<Row>
@@ -46,17 +47,17 @@ const AddRemoveAdmins = (props) => {
             if (r.status === 200) {
                 switch (place) {
                     case "hospital":
-                        req.getAdmins("H", localStorage.getItem("userID")).then((res) => {
+                        req.getAdmins("H", props.UserID).then((res) => {
                             setHAdmins(res)
                         })
                         break
                     case "blood_bank":
-                        req.getAdmins("BB", localStorage.getItem("userID")).then((res) => {
+                        req.getAdmins("BB", props.UserID).then((res) => {
                             setBBAdmins(res)
                         })
                         break
                     case "donation_centers":
-                        req.getAdmins("DC", localStorage.getItem("userID")).then((res) => {
+                        req.getAdmins("DC", props.UserID).then((res) => {
                             setDCAdmins(res)
                         })
                         break
@@ -78,17 +79,17 @@ const AddRemoveAdmins = (props) => {
             if (r.status === 200) {
                 switch (place) {
                     case "hospital":
-                        req.getAdmins("H", localStorage.getItem("userID")).then((res) => {
+                        req.getAdmins("H", props.UserID).then((res) => {
                             setHAdmins(res)
                         })
                         break
                     case "blood_bank":
-                        req.getAdmins("BB", localStorage.getItem("userID")).then((res) => {
+                        req.getAdmins("BB", props.UserID).then((res) => {
                             setBBAdmins(res)
                         })
                         break
                     case "donation_centers":
-                        req.getAdmins("DC", localStorage.getItem("userID")).then((res) => {
+                        req.getAdmins("DC", props.UserID).then((res) => {
                             setDCAdmins(res)
                         })
                         break
@@ -99,24 +100,26 @@ const AddRemoveAdmins = (props) => {
     }
 
     useEffect(() => {
+        console.log("ADD ADMIN PROPS => ", props)
         if (!DidMount) {
+            console.log("ADD ADMIN PROPS = ", props)
             setDidMount(true)
-            let hasOrganization = props.hasOrganization
+            // let hasOrganization = props.hasOrganization
 
-            if (hasOrganization && hasOrganization["BBE"] === 1) {
-                req.getAdmins("BB", localStorage.getItem("userID")).then((res) => {
+            if (props.hasBloodBank && props.BB) {
+                req.getAdmins("BB", props.UserID).then((res) => {
                     setBBAdmins(res)
                 })
 
             }
-            if (hasOrganization && hasOrganization["DCE"] === 1) {
-                req.getAdmins("DC", localStorage.getItem("userID")).then((res) => {
+            if (props.hasDonationCenter && props.DC) {
+                req.getAdmins("DC", props.UserID).then((res) => {
                     setDCAdmins(res)
                 })
 
             }
-            if (hasOrganization && hasOrganization["HE"] === 1) {
-                req.getAdmins("H", localStorage.getItem("userID")).then((res) => {
+            if (props.hasHospital && props.HS) {
+                req.getAdmins("H", props.UserID).then((res) => {
                     setHAdmins(res)
                 })
 
@@ -131,7 +134,7 @@ const AddRemoveAdmins = (props) => {
 
         <>
             {props.DC ?
-                props && props.hasOrganization && props.hasOrganization.DCE === 1 ?
+                props.hasDonationCenter ?
                     <Row >
                         {/* <Col xl={1} l={1} m={1}></Col> */}
                         <Col xl={12} l={12} m={12}>
@@ -195,7 +198,7 @@ const AddRemoveAdmins = (props) => {
 
             {props.BB ?
 
-                props && props.hasOrganization && props.hasOrganization.BBE === 1 ?
+                props.hasBloodBank ?
 
                     <Row >
                         {/* <Col xl={1} l={1} m={1}></Col> */}
@@ -261,7 +264,7 @@ const AddRemoveAdmins = (props) => {
 
             {props.HS ?
 
-                props && props.hasOrganization && props.hasOrganization.HE === 1 ?
+                props.hasHospital ?
                     <Row>
                         {/* <Col xl={1} l={1} m={1}> */}
                         {/* </Col> */}
@@ -326,5 +329,14 @@ const AddRemoveAdmins = (props) => {
     )
 }
 
+const mapStateToProps = (state) => {
+    return {
+        isLoggedIn: _.get(state, 'isLoggedIn', false),
+        UserID: _.get(state, "UserDetails.UserID"),
+        hasBloodBank: _.get(state, "UserDetails.hasBloodBank", false),
+        hasDonationCenter: _.get(state, "UserDetails.hasDonationCenter", false),
+        hasHospital: _.get(state, "UserDetails.hasHospital", false)
+    }
+}
 
-export default AddRemoveAdmins;
+export default connect(mapStateToProps)(AddRemoveAdmins);
