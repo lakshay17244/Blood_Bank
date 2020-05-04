@@ -19,9 +19,9 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 // reactstrap components
-import { Button, Card, CardBody, Col, Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from "reactstrap";
+import { Button, Card, CardBody, Col, Form, FormGroup, Input, Spinner, InputGroup, InputGroupAddon, InputGroupText, Row } from "reactstrap";
 import { login } from "../../redux/actions_and_reducers/actions";
-
+import _ from "lodash"
 
 const Login = (props) => {
   const [Password, setPassword] = useState("");
@@ -113,9 +113,11 @@ const Login = (props) => {
                 </label>
               </div>
               <div className="text-center">
-                <Button className="my-4" color="primary" type="button" onClick={() => props.login(UserID, Password)}>
-                  Sign in
-                  </Button>
+
+                {props.LoginLoading ?
+                  <Spinner color="primary" /> : <Button className="my-4" color="primary" type="button" onClick={() => props.login(UserID, Password)}>
+                    Sign in
+                  </Button>}
               </div>
             </Form>
           </CardBody>
@@ -151,7 +153,8 @@ const Login = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    LoginMessage: state.LoginMessage
+    LoginMessage: _.get(state, "LoginMessage", ""),
+    LoginLoading: _.get(state, "LoginLoading", false)
   }
 }
 
