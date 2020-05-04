@@ -54,25 +54,16 @@ const Index = (props) => {
   const [sortAsc, setsortAsc] = useState(false)
   const [currHead, setcurrHead] = useState('')
 
-
-  // const getAdminOrganization = () => {
-
-  //   props.isLoggedIn && req.getAdminOrganization(props.UserID).then((result) => {
-  //     sethasOrganization(result)
-  //   })
-  // }
-
   useEffect(() => {
     if (!DidMount) {
       console.log("Index.js Mounted", props)
       setDidMount(true)
-      props.isLoggedIn && props.Type === "Donor " && req.getPastDonations(props.UserID).then((donations) => {
+      props.isLoggedIn && props.Type === "Donor" && req.getPastDonations(props.UserID).then((donations) => {
         setDonations(donations)
       })
-      // getAdminOrganization()
       setType(props.Type)
     }
-  }, [DidMount])
+  }, [DidMount, props])
 
 
   const getNextDonationDate = () => {
@@ -113,7 +104,6 @@ const Index = (props) => {
         }
         req.registerOrganization("Hospital", toSend).then(r => {
           setregisterOrganizationMessage(r)
-          // getAdminOrganization()
           props.getUserDetails(props.UserID)
         })
         // console.log(toSend)
@@ -130,7 +120,6 @@ const Index = (props) => {
         }
         req.registerOrganization("BloodBank", toSend).then(r => {
           setregisterOrganizationMessage(r)
-          // getAdminOrganization()
           props.getUserDetails(props.UserID)
         })
         // console.log(toSend)
@@ -147,7 +136,6 @@ const Index = (props) => {
         console.log(toSend)
         req.registerOrganization("DonationCenter", toSend).then(r => {
           setregisterOrganizationMessage(r)
-          // getAdminOrganization()
           props.getUserDetails(props.UserID)
         })
         break;
@@ -201,7 +189,7 @@ const Index = (props) => {
     return sum
   }
   let { hasHospital, hasBloodBank, hasDonationCenter } = props
-  console.log("=======>PROPS=", props)
+
   return (
     <>
       <Header />
@@ -214,9 +202,6 @@ const Index = (props) => {
           // ----------------------------------------- ADMIN PAGE -----------------------------------------
           <>
             {
-              // (parseInt(hasOrganization["BBE"]) === 1
-              //   || parseInt(hasOrganization["DCE"]) === 1
-              //   || parseInt(hasOrganization["HE"]) === 1) ?
               (hasHospital || hasDonationCenter || hasBloodBank) ?
                 <>
 
@@ -231,35 +216,31 @@ const Index = (props) => {
 
                           <Row className="text-center">
                             <Col>
-
-                              {/* {hasOrganization["DCE"] === 1 && */}
                               {hasDonationCenter === 1 &&
                                 <Link to="/admin/DonationCenter">
                                   <Button className="my-2 mx-2" color="primary" type="button" onClick={() => { }}>Donation Center</Button>
                                 </Link>}
-
                             </Col>
                           </Row>
+
                           <Row>
                             <Col>
-
-                              {/* {hasOrganization["BBE"] === 1 && */}
                               {hasBloodBank === 1 &&
                                 <Link to="/admin/BB">
                                   <Button className="my-2 mx-2" color="primary" type="button" onClick={() => { }}>Blood Bank</Button>
                                 </Link>}
-
                             </Col>
                           </Row>
+
                           <Row>
                             <Col>
-                              {/* {hasOrganization["HE"] === 1 && */}
                               {hasHospital === 1 &&
                                 <Link to="/admin/Hospital">
                                   <Button className="my-2 mx-2" color="primary" type="button" onClick={() => { }}>Hospital</Button>
                                 </Link>}
                             </Col>
                           </Row>
+
                         </CardBody>
                       </Card>
                     </Col>
@@ -282,11 +263,7 @@ const Index = (props) => {
 
             }
 
-            {
-              // (parseInt(hasOrganization["BBE"]) !== 1 ||
-              //   parseInt(hasOrganization["DCE"]) !== 1 ||
-              //   parseInt(hasOrganization["HE"]) !== 1) &&
-              (!hasHospital || !hasDonationCenter || !hasBloodBank) &&
+            {(!hasHospital || !hasDonationCenter || !hasBloodBank) &&
               <Row className="mt-5">
                 <Col xl={2}></Col>
                 <Col xl={8}>
@@ -301,12 +278,10 @@ const Index = (props) => {
                       </div>
 
                       <Row className="btn-wrapper text-center">
-                        {/* {hasOrganization["HE"] !== 1 && */}
                         {!hasHospital &&
                           <Col>
-
                             <Button
-                              className="btn-neutral btn-icon"
+                              className="btn-neutral btn-icon mt-4 mt-sm-0"
                               color="default"
                               href="#pablo"
                               onClick={e => {
@@ -318,12 +293,10 @@ const Index = (props) => {
                               <span className="btn-inner--text">Hospital</span>
                             </Button>
                           </Col>}
-
-                        {/* {hasOrganization["BBE"] !== 1 && */}
                         {!hasBloodBank &&
                           <Col>
                             <Button
-                              className="btn-neutral btn-icon"
+                              className="btn-neutral btn-icon mt-4 mt-sm-0"
                               color="default"
                               href="#pablo"
                               onClick={e => {
@@ -335,11 +308,10 @@ const Index = (props) => {
                               <span className="btn-inner--text">Blood Bank</span>
                             </Button>
                           </Col>}
-                        {/* {hasOrganization["DCE"] !== 1 && */}
                         {!hasDonationCenter &&
                           <Col>
                             <Button
-                              className="btn-neutral btn-icon mt-0 mt-4 mt-sm-0"
+                              className="btn-neutral btn-icon mt-4 mt-sm-0"
                               color="default"
                               href="#pablo"
                               onClick={e => {
@@ -352,7 +324,6 @@ const Index = (props) => {
                             </Button>
                           </Col>}
                       </Row>
-                      {/* </CardHeader> */}
                     </CardHeader>
                     <CardBody>
 
@@ -499,38 +470,41 @@ const Index = (props) => {
             <Col xl={8} l={8} m={8}>
 
               {donations && donations.length > 0 ?
+
                 <Card className="shadow">
                   <CardHeader className="border-0 text-center">
                     <h3 className="mb-0">Past Blood Donations</h3>
                   </CardHeader>
-                  <Table className="align-items-center table-flush" responsive>
-                    <thead className="thead-light">
-                      <tr>
+                  <div className={donations.length > 6 ? 'scrollspy-example-2' : ''}>
+                    <Table bordered hover className="align-items-center table-flush" responsive>
+                      <thead className="thead-light">
+                        <tr>
 
-                        <th onClick={e => onSort(e, 'Date')} scope="col">
-                          {currHead === 'Date' && sortAsc ? <i className='ni ni-bold-down mr-2'></i> : null}
-                          {currHead === 'Date' && !sortAsc ? <i className='ni ni-bold-up mr-2'></i> : null}
+                          <th onClick={e => onSort(e, 'Date')} scope="col">
+                            {currHead === 'Date' && sortAsc ? <i className='ni ni-bold-down mr-2'></i> : null}
+                            {currHead === 'Date' && !sortAsc ? <i className='ni ni-bold-up mr-2'></i> : null}
                           Date</th>
-                        <th scope="col">Donation Center ID</th>
-                        <th scope="col">Donation Center Name</th>
-                        {/* <th onClick={e => onSort(e, 'Amount')} scope="col">
+                          <th scope="col">Donation Center ID</th>
+                          <th scope="col">Donation Center Name</th>
+                          {/* <th onClick={e => onSort(e, 'Amount')} scope="col">
                           {currHead === 'Amount' && sortAsc ? <i className='ni ni-bold-down mr-2'></i> : null}
                           {currHead === 'Amount' && !sortAsc ? <i className='ni ni-bold-up mr-2'></i> : null}
                           Amount</th> */}
-                        <th scope="col" />
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {donations && donations.map((res, index) => {
-                        return <tr key={index}>
-                          <td> {res.DateRecieved} </td>
-                          <td> {res.DCID} </td>
-                          <td> {res.Name} </td>
-                          {/* <td> {res.Amount} </td> */}
+                          <th scope="col" />
                         </tr>
-                      })}
-                    </tbody>
-                  </Table>
+                      </thead>
+                      <tbody>
+                        {donations && donations.map((res, index) => {
+                          return <tr key={index}>
+                            <td> {res.DateRecieved} </td>
+                            <td> {res.DCID} </td>
+                            <td> {res.Name} </td>
+                            {/* <td> {res.Amount} </td> */}
+                          </tr>
+                        })}
+                      </tbody>
+                    </Table>
+                  </div>
                   <CardFooter className="py-4 text-center">
                     <h2>Total Amount of Blood Donated = {getTotalBlood()} units</h2>
                     {showDonationDate ?
@@ -542,6 +516,7 @@ const Index = (props) => {
                     }
                   </CardFooter>
                 </Card>
+
                 :
                 <Card className="bg-secondary shadow">
                   <CardHeader className="border-0 bg-secondary text-center">

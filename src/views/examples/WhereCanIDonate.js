@@ -19,14 +19,15 @@ import Header from "components/Headers/Header.js";
 import emailjs from 'emailjs-com';
 // reactstrap components
 import Moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Row, Table } from "reactstrap";
 import * as req from "../../requests";
+import { connect } from 'react-redux';
+import _ from "lodash"
 
 
-
-const WhereCanIDonate = () => {
+const WhereCanIDonate = (props) => {
 
   // Donate Blood
   const [AppointmentDate, setAppointmentDate] = useState('')
@@ -67,14 +68,14 @@ const WhereCanIDonate = () => {
   const bookAppointment = () => {
     let toSend = {
       "DCID": AppointmentDCID,
-      "UserID": localStorage.getItem("userID"),
+      "UserID": props.UserID,
       "Date": AppointmentDate
     }
     let DC = searchDC(AppointmentDCID)
 
     let paramsToSend = {
-      "email": localStorage.getItem("email"),
-      "name": localStorage.getItem("name"),
+      "email": props.Email,
+      "name": props.Name,
       "dcname": DC.Name,
       "address": DC.Address,
       "date": Moment(AppointmentDate).format('LL')
@@ -106,13 +107,16 @@ const WhereCanIDonate = () => {
     }
     return res;
   }
-  const getDonorAppointments = () => {
-    req.getDonorAppointments(localStorage.getItem("userID")).then(r => {
-      if (r && r.length > 0) {
-        setdonorAppointments(r)
-      }
-    })
-  }
+  const getDonorAppointments = useCallback(
+    () => {
+      req.getDonorAppointments(props.UserID).then(r => {
+        if (r && r.length > 0) {
+          setdonorAppointments(r)
+        }
+      })
+    },
+    [props.UserID],
+  )
 
 
   useEffect(() => {
@@ -120,20 +124,20 @@ const WhereCanIDonate = () => {
       setDidMount(true)
       getDonorAppointments()
 
-      req.getPastDonations(localStorage.getItem('userID')).then((donations) => {
+      req.getPastDonations(props.UserID).then((donations) => {
 
         getNextDonationDate(donations)
       })
 
-      req.getnearbydc(localStorage.getItem('userID')).then((nearbydc) => {
+      req.getnearbydc(props.UserID).then((nearbydc) => {
         setnearbydc(nearbydc)
       })
 
-      req.getalldc(localStorage.getItem('userID')).then((alldc) => {
+      req.getalldc(props.UserID).then((alldc) => {
         setalldc(alldc)
       })
     }
-  }, [DidMount])
+  }, [DidMount, props.UserID, getDonorAppointments])
 
 
   return (
@@ -145,156 +149,178 @@ const WhereCanIDonate = () => {
         {/* ----------------------------------------- DONOR PAGE ----------------------------------------- */}
 
         <Row >
-          <Col xl={6} l={6} m={6}>
 
-            {nearbydc && nearbydc.length > 0 ?
-              <Card className="shadow">
-                <CardHeader className="border-0 text-center">
-                  <h3 className="mb-0">Nearby Blood Donation Centers</h3>
-                </CardHeader>
-                <div className='scrollspy-example-2'>
-                  <Table className="align-items-center table-flush" responsive>
-                    <thead className="thead-light">
-                      <tr>
-                        {/* <th onClick={e => onSort(e, 'Date')} scope="col">Date</th> */}
-                        <th scope="col">Donation Center ID</th>
-                        <th scope="col">Donation Center Name</th>
-                        <th scope="col">Address</th>
-                        <th scope="col">Pincode</th>
-                        <th scope="col" />
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {nearbydc && nearbydc.map((res, index) => {
-                        return <tr key={index}>
-                          <td> {res.DCID} </td>
-                          <td> {res.Name} </td>
-                          <td> {res.Address} </td>
-                          <td> {res.Pincode} </td>
-                        </tr>
-                      })}
-                    </tbody>
-                  </Table>
-                </div>
-                <CardFooter className="py-4 text-center">
-                </CardFooter>
-              </Card>
-              :
-              <Card className="bg-secondary shadow">
-                <CardHeader className="border-0 bg-secondary text-center">
-                  <h3 className="mb-0">No Nearby Blood Donation Centers Found!</h3>
-                </CardHeader>
-                <CardBody className=' text-center'>
-                  <h2>We tried searching near your address, but could not find any nearby blood donation centers</h2>
-                  <div className="text-center">
-                    <Link to="/admin/EBR">
-                      <Button className="my-4" color="primary" type="button" onClick={() => { }}>
-                        Check Emergency Blood Requirements
-                  </Button>
-                    </Link>
-                  </div>
-                </CardBody>
-              </Card>
-
-            }
-          </Col>
-          <Col xl={6} l={6} m={6}>
-            {alldc && alldc.length > 0 ?
-              <Card className="shadow">
-                <CardHeader className="border-0 text-center">
-                  <h3 className="mb-0">All Blood Donation Centers</h3>
-                </CardHeader>
-                <div className='scrollspy-example-2'>
-                  <Table className="align-items-center table-flush" responsive>
-                    <thead className="thead-light">
-                      <tr>
-                        {/* <th onClick={e => onSort(e, 'Date')} scope="col">Date</th> */}
-                        <th scope="col">Donation Center ID</th>
-                        <th scope="col">Donation Center Name</th>
-                        <th scope="col">Address</th>
-                        <th scope="col">Pincode</th>
-                        <th scope="col" />
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {alldc && alldc.map((res, index) => {
-                        return <tr key={index}>
-                          <td> {res.DCID} </td>
-                          <td> {res.Name} </td>
-                          <td> {res.Address} </td>
-                          <td> {res.Pincode} </td>
-                        </tr>
-                      })}
-                    </tbody>
-                  </Table>
-                </div>
-                <CardFooter className="py-4 text-center">
-                </CardFooter>
-              </Card>
-              : null}
-          </Col>
-        </Row>
-
-        <Row className="mt-6">
-          <Col xl={2} l={2} m={2}></Col>
-          <Col xl={8} l={8} m={8}>
-            <Card className="shadow my-4">
-              <CardHeader className="border-0 text-center">
-                <h2 className="mb-0">Appointments</h2>
-              </CardHeader>
-              <CardBody>
-                {donorAppointments && donorAppointments.length > 0 ?
-                  <h3>You have an appointment at <b>{donorAppointments[0].Name}</b>, <b>{donorAppointments[0].Address}</b> on <b>{Moment(donorAppointments[0].Date).format('YYYY-MM-DD')}</b></h3>
+          {!_.isEmpty(alldc) ?
+            <>
+              {/* SHOW NEARBY DONATION CENTERS */}
+              <Col xl={6} l={6} m={6}>
+                {!_.isEmpty(nearbydc) ?
+                  <Card className="shadow">
+                    <CardHeader className="border-0 text-center">
+                      <h3 className="mb-0">Nearby Blood Donation Centers</h3>
+                    </CardHeader>
+                    <div className={nearbydc.length > 6 ? 'scrollspy-example-2' : ''}>
+                      <Table bordered hover className="align-items-center table-flush" responsive>
+                        <thead className="thead-light">
+                          <tr>
+                            {/* <th onClick={e => onSort(e, 'Date')} scope="col">Date</th> */}
+                            <th scope="col">Donation Center ID</th>
+                            <th scope="col">Donation Center Name</th>
+                            <th scope="col">Address</th>
+                            <th scope="col">Pincode</th>
+                            <th scope="col" />
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {nearbydc && nearbydc.map((res, index) => {
+                            return <tr key={index}>
+                              <td> {res.DCID} </td>
+                              <td> {res.Name} </td>
+                              <td> {res.Address} </td>
+                              <td> {res.Pincode} </td>
+                            </tr>
+                          })}
+                        </tbody>
+                      </Table>
+                    </div>
+                    <CardFooter className="py-4 text-center">
+                    </CardFooter>
+                  </Card>
                   :
-                  <>
-                    <h4 className="text-center">Select any donation center from above</h4>
-                    <Form role="form">
-
-                      {/* DCID */}
-                      <FormGroup>
-                        <Input
-                          value={AppointmentDCID}
-                          onChange={e => setAppointmentDCID(e.target.value)}
-                          className="form-control-alternative"
-                          placeholder="DCID"
-                          type="text"
-                        />
-                      </FormGroup>
-
-                      {/* Date */}
-                      <FormGroup>
-                        <InputGroup className="input-group-alternative mb-3">
-                          <InputGroupAddon addonType="prepend">
-                            <InputGroupText>
-                              <i className="ni ni-calendar-grid-58 mr-2" /> Date Of Appointment
-                      </InputGroupText>
-                          </InputGroupAddon>
-                          <Input type="date" pattern="[0-9]*" value={AppointmentDate} onChange={(e) => setAppointmentDate(e.target.value)} min={nextDonationDate} />
-                        </InputGroup>
-                      </FormGroup>
-
-                      <div className="text-center">
-                        <Button className="my-4" disabled={booked} color="primary" type="button" onClick={bookAppointment}>{booked ? "Booked!" : "Book"}</Button>
-                      </div>
-                    </Form>
-
-                  </>
-                }
-              </CardBody>
-              <CardFooter className="py-4 text-center">
-              </CardFooter>
-            </Card>
-
-          </Col>
-          <Col xl={2} l={2} m={2}></Col>
+                  <Card className="shadow">
+                    <CardHeader className="border-0 text-center">
+                      <h3 className="mb-0">No Nearby Blood Donation Centers Found!</h3>
+                    </CardHeader>
+                    <CardBody className=' text-center'>
+                      <h2>We tried searching near your address, but could not find any nearby blood donation centers</h2>
+                    </CardBody>
+                  </Card>}
+              </Col>
+              {/* SHOW ALL DONATION CENTERS */}
+              <Col xl={6} l={6} m={6}>
+                <Card className="shadow mt-4 mt-sm-0">
+                  <CardHeader className="border-0 text-center">
+                    <h3 className="mb-0">All Blood Donation Centers</h3>
+                  </CardHeader>
+                  <div className={alldc.length > 6 ? 'scrollspy-example-2' : ''}>
+                    <Table bordered hover className="align-items-center table-flush" responsive>
+                      <thead className="thead-light">
+                        <tr>
+                          {/* <th onClick={e => onSort(e, 'Date')} scope="col">Date</th> */}
+                          <th scope="col">Donation Center ID</th>
+                          <th scope="col">Donation Center Name</th>
+                          <th scope="col">Address</th>
+                          <th scope="col">Pincode</th>
+                          <th scope="col" />
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {alldc && alldc.map((res, index) => {
+                          return <tr key={index}>
+                            <td> {res.DCID} </td>
+                            <td> {res.Name} </td>
+                            <td> {res.Address} </td>
+                            <td> {res.Pincode} </td>
+                          </tr>
+                        })}
+                      </tbody>
+                    </Table>
+                  </div>
+                  <CardFooter className="py-4 text-center">
+                  </CardFooter>
+                </Card>
+              </Col>
+            </>
+            :
+            <>
+              <Col xl={8} l={8} m={8} className="mx-auto">
+                <Card className="bg-secondary shadow">
+                  <CardHeader className="border-0 bg-secondary text-center">
+                    <h3 className="mb-0">No Blood Donation Centers Found!</h3>
+                  </CardHeader>
+                  <CardBody className=' text-center'>
+                    <h2>We tried searching, but could not find any blood donation centers</h2>
+                    <div className="text-center">
+                      <Link to="/admin/EBR">
+                        <Button className="my-4" color="primary" type="button" onClick={() => { }}>
+                          Check Emergency Blood Requirements
+                </Button>
+                      </Link>
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
+            </>}
         </Row>
 
 
+        {/* APPOINTMENT BOOKING */}
+        {!_.isEmpty(alldc) ?
+          <Row className="mt-6">
+            <Col xl={8} l={8} m={8} className="mx-auto">
+              <Card className="shadow my-4">
+                <CardHeader className="border-0 text-center">
+                  <h2 className="mb-0">Appointments</h2>
+                </CardHeader>
+                <CardBody>
+                  {donorAppointments && donorAppointments.length > 0 ?
+                    <h3>You have an appointment at <b>{donorAppointments[0].Name}</b>, <b>{donorAppointments[0].Address}</b> on <b>{Moment(donorAppointments[0].Date).format('YYYY-MM-DD')}</b></h3>
+                    :
+                    <>
+                      <h4 className="text-center">Select any donation center from above</h4>
+                      <Form role="form">
 
+                        {/* DCID */}
+                        <FormGroup>
+                          <Input
+                            value={AppointmentDCID}
+                            onChange={e => setAppointmentDCID(e.target.value)}
+                            className="form-control-alternative"
+                            placeholder="DCID"
+                            type="text"
+                          />
+                        </FormGroup>
+
+                        {/* Date */}
+                        <FormGroup>
+                          <InputGroup className="input-group-alternative mb-3">
+                            <InputGroupAddon addonType="prepend">
+                              <InputGroupText>
+                                <i className="ni ni-calendar-grid-58 mr-2" /> Date Of Appointment
+                      </InputGroupText>
+                            </InputGroupAddon>
+                            <Input type="date" pattern="[0-9]*" value={AppointmentDate} onChange={(e) => setAppointmentDate(e.target.value)} min={nextDonationDate} />
+                          </InputGroup>
+                        </FormGroup>
+
+                        <div className="text-center">
+                          <Button className="my-4" disabled={booked} color="primary" type="button" onClick={bookAppointment}>{booked ? "Booked!" : "Book"}</Button>
+                        </div>
+                      </Form>
+
+                    </>
+                  }
+                </CardBody>
+                <CardFooter className="py-4 text-center">
+                </CardFooter>
+              </Card>
+            </Col>
+          </Row>
+          :
+          null}
       </Container>
 
     </>
   );
 }
 
-export default WhereCanIDonate;
+
+const mapStateToProps = (state) => {
+  return {
+    UserID: _.get(state, "UserDetails.UserID"),
+    Name: _.get(state, "UserDetails.Username"),
+    Email: _.get(state, "UserDetails.Email")
+  }
+}
+
+export default connect(mapStateToProps)(WhereCanIDonate);

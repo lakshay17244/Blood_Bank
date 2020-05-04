@@ -17,14 +17,14 @@
 */
 import classnames from "classnames";
 import React, { useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+// import { connect } from 'react-redux';
+import { Link } from "react-router-dom";
 // reactstrap components
 import { Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from "reactstrap";
 import * as req from "../../requests";
 
 const Register = () => {
-	let history = useHistory();
-	const [DidMount, setDidMount] = useState(false)
+	// const [DidMount, setDidMount] = useState(false)
 	const [type, settype] = useState('Donor')
 	const [name, setName] = useState('')
 	const [phone, setPhone] = useState('')
@@ -40,18 +40,14 @@ const Register = () => {
 	const [UserIdMade, setUserIdMade] = useState(-1)
 
 	useEffect(() => {
-		if (!DidMount) {
-			if (localStorage.getItem('isLoggedIn') === "true") {
-				history.push("/admin/index");
-			}
-			setDidMount(true)
-			let today = new Date()
-			let month = (today.getMonth() + 1) >= 10 ? today.getMonth() + 1 : '0' + (today.getMonth() + 1);
-			let day = today.getDate() >= 10 ? today.getDate() : '0' + today.getDate();
-			let dateToday = today.getFullYear() - 18 + '-' + month + '-' + day
-			setdate(dateToday)
-		}
-	}, [DidMount,history])
+		console.log("REGISTER MOUNTED!")
+		let today = new Date()
+		let month = (today.getMonth() + 1) >= 10 ? today.getMonth() + 1 : '0' + (today.getMonth() + 1);
+		let day = today.getDate() >= 10 ? today.getDate() : '0' + today.getDate();
+		let dateToday = today.getFullYear() - 18 + '-' + month + '-' + day
+		setdate(dateToday)
+
+	}, [])
 
 	const registerUser = () => {
 		let toSend = {
@@ -70,7 +66,6 @@ const Register = () => {
 		}
 		req.createUser(toSend).then(e => {
 			if (parseInt(e.status) === 200) {
-				localStorage.setItem("UserMade", 1)
 				setUserMade(true)
 				setUserIdMade(e.userid)
 			}
@@ -80,8 +75,6 @@ const Register = () => {
 
 	return (
 		<>
-
-
 			<Col lg="6" md="8">
 				{!UserMade ?
 					<Card className="bg-secondary shadow border-0">
@@ -320,4 +313,11 @@ const Register = () => {
 
 }
 
-export default Register;
+// const mapStateToProps = (state) => {
+// 	return {
+// 		isLoggedIn: state.isLoggedIn
+// 	}
+// }
+
+// export default connect(mapStateToProps)(Register);
+export default Register

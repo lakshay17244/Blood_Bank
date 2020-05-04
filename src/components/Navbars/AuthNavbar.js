@@ -19,8 +19,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 // reactstrap components
 import { Col, Container, Nav, Navbar, NavbarBrand, NavItem, NavLink, Row, UncontrolledCollapse } from "reactstrap";
-import { connect } from "react-redux"
-import _ from "lodash"
 
 const AdminNavbar = (props) => {
 
@@ -59,14 +57,16 @@ const AdminNavbar = (props) => {
                 </Col>
               </Row>
             </div>
+
+
             <Nav className="ml-auto" navbar>
-              {props.isLoggedIn ?
+              {/* {props.isLoggedIn ?
                 <NavItem>
                   <NavLink className="nav-link-icon" to="/" tag={Link}>
                     <i className="ni ni-planet" />
                     <span className="nav-link-inner--text">Dashboard</span>
                   </NavLink>
-                </NavItem> : null}
+                </NavItem> : null} */}
 
               <NavItem>
                 <NavLink
@@ -89,7 +89,7 @@ const AdminNavbar = (props) => {
                 </NavLink>
               </NavItem>
 
-              {props.isLoggedIn ?
+              {/* {props.isLoggedIn ?
                 <NavItem>
                   <NavLink
                     className="nav-link-icon"
@@ -99,7 +99,9 @@ const AdminNavbar = (props) => {
                     <i className="ni ni-single-02" />
                     <span className="nav-link-inner--text">Profile</span>
                   </NavLink>
-                </NavItem> : null}
+                </NavItem> : null} */}
+
+
             </Nav>
           </UncontrolledCollapse>
         </Container>
@@ -109,10 +111,12 @@ const AdminNavbar = (props) => {
 
 }
 
-const mapStateToProps = (state) => {
-  return {
-    isLoggedIn: _.get(state, "isLoggedIn", false),
-  }
-}
+// const mapStateToProps = (state) => {
+//   return {
+//     isLoggedIn: _.get(state, "isLoggedIn", false),
+//   }
+// }
 
-export default connect(mapStateToProps)(AdminNavbar);
+// export default connect(mapStateToProps)(AdminNavbar);
+
+export default AdminNavbar

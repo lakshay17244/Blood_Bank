@@ -25,7 +25,6 @@ import Profile from "views/examples/Profile.js";
 import Register from "views/examples/Register.js";
 import WhereCanIDonate from "views/examples/WhereCanIDonate";
 import Index from "views/Index.js";
-import _ from "lodash"
 
 const getallroutes = (Type = "Anon") => {
 

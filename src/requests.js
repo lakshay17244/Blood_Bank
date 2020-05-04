@@ -706,33 +706,17 @@ export const loginAPI = async (UserId, Password) => {
 }
 
 
-export const getUserDetails = async (UserId) => {
-    let details = "Couldn't Do the request";
+// export const getUserDetails = async (UserId) => {
+//     let details = "Couldn't Do the request";
 
-    await axios.get(URL + `showprofile/` + UserId)
-        .then(res => {
-            if (res.status === 200) {
-                details = res;
-                // localStorage.setItem("name", res.data.Username)
-                // localStorage.setItem("type", res.data.Type)
-                // localStorage.setItem("email", res.data.Email)
-            }
-        }).catch(e => {
-            details = e
-            console.log("ERROR")
-        });
-    return details;
-
-    // let dummy =
-    // {
-    //     Address: "6085/2 D-6 SANTUSHTI APARTMENTS",
-    //     Age: 18,
-    //     Email: "asd",
-    //     Phone: "9999563824",
-    //     Pincode: "110070",
-    //     Type: "Admin",
-    //     UserID: 114,
-    //     Username: "Lakshay Sharma",
-    // }
-    // return dummy
-}
+//     await axios.get(URL + `showprofile/` + UserId)
+//         .then(res => {
+//             if (res.status === 200) {
+//                 details = res;
+//             }
+//         }).catch(e => {
+//             details = e
+//             console.log("ERROR")
+//         });
+//     return details;
+// }

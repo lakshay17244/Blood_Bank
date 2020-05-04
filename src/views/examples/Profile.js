@@ -30,7 +30,7 @@ const Profile = (props) => {
   const [type, settype] = useState('Donor')
   const [date, setdate] = useState('')
   const [username, setusername] = useState('Lakshay')
-  const [userid, setuserid] = useState('1')
+  const [UserID, setUserID] = useState('1')
   const [email, setemail] = useState('')
   const [dob, setdob] = useState(0)
   const [bloodgroup, setbloodgroup] = useState('')
@@ -41,7 +41,7 @@ const Profile = (props) => {
   const [newpass, setnewpass] = useState('')
   const [WTD, setWTD] = useState(false)
   const [editable, seteditable] = useState(true)
-  const [loading, setloading] = useState(true)
+  // const [loading, setloading] = useState(true)
 
   useEffect(() => {
     if (!DidMount) {
@@ -53,9 +53,8 @@ const Profile = (props) => {
         console.log("If statement")
         let UserID = localStorage.getItem("UserID")
         if (UserID && UserID.length > 0) {
-          setloading(true)
+          // setloading(true)
           props.getUserDetails(UserID).then(e => {
-            console.log("======", e)
             // Set all user details
             setUserDetails(e)
           })
@@ -77,7 +76,7 @@ const Profile = (props) => {
     if (!_.isEmpty(e)) {
       settype(e.Type)
       setusername(e.Username)
-      setuserid(e.UserID)
+      setUserID(e.UserID)
       setemail(e.Email)
       setdob(e.Age)
       setbloodgroup(e.BloodGroup)
@@ -85,10 +84,8 @@ const Profile = (props) => {
       setaddress(e.Address)
       setpincode(e.Pincode)
       setWTD(e.WillingToDonate)
-      setloading(false)
+      // setloading(false)
     }
-    else
-      setloading(false)
   }
 
 
@@ -113,7 +110,7 @@ const Profile = (props) => {
       if (parseInt(e.status) === 200) {
         seteditable(false)
 
-        props.getUserDetails(userid)
+        props.getUserDetails(UserID)
         setTimeout(() => { seteditable(true) }, 1000)
       }
     })
@@ -128,7 +125,7 @@ const Profile = (props) => {
 
       <Container className="mt--7" fluid>
         <Row>
-          <Col className="order-xl-1" xl="12">
+          <Col className="order-xl-1" xl={12}>
             {/* Profile Picture */}
 
             <Card className="bg-secondary shadow">
@@ -173,7 +170,7 @@ const Profile = (props) => {
                 </Row>
               </CardHeader>
 
-              {!loading ?
+              {!props.UserDetailsLoading ?
                 <CardBody>
                   <Form>
                     <h6 className="heading-small text-muted mb-4">
@@ -206,13 +203,12 @@ const Profile = (props) => {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-userid"
                             >
                               User ID
                             </label>
                             <Input
                               readOnly
-                              value={userid}
+                              value={UserID}
                               className="form-control-alternative"
                               id="input-userID"
                               placeholder="UserID"
@@ -449,7 +445,7 @@ const Profile = (props) => {
 
                 :
 
-                <div className="text-center"> <Spinner color="primary" /></div>
+                <div className="text-center my-xl-5"> <Spinner color="primary" /></div>
 
               }
             </Card>

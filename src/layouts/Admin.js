@@ -24,12 +24,11 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Route, Switch, useHistory } from "react-router-dom";
 // reactstrap components
-import { Container, Col, Row } from "reactstrap";
+import { Container } from "reactstrap";
 import getallroutes from "routes.js";
 import im from "../assets/img/brand/argon-react.png";
 import { getUserDetails, login, logout } from "../redux/actions_and_reducers/actions";
-import Loading from "./Loading"
-import "./center.css"
+import Loading from "./Loading";
 
 const Admin = (props) => {
   let history = useHistory();
@@ -153,12 +152,7 @@ const Admin = (props) => {
             </Container>
           </div>
         </> :
-
-
-        <div className="splash-screen">
-          <Loading />
-        </div>
-
+        <Loading />
       }
     </>
   );

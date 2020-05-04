@@ -18,7 +18,7 @@
 /*eslint-disable*/
 // nodejs library to set properties for components
 import { PropTypes } from "prop-types";
-import React , {useState}from "react";
+import React, { useState } from "react";
 import { Link, NavLink as NavLinkRRD } from "react-router-dom";
 // reactstrap components
 import { Col, Collapse, Container, DropdownItem, DropdownMenu, DropdownToggle, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Media, Nav, Navbar, NavbarBrand, NavItem, NavLink, Row, UncontrolledDropdown } from "reactstrap";
@@ -33,18 +33,17 @@ const Sidebar = (props) => {
   const [collapseOpen, setcollapseOpen] = useState(false)
 
   // verifies if routeName is the one active (in browser input)
-  const activeRoute = (routeName) => {
-    return props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
-  }
+  // const activeRoute = (routeName) => {
+  //   return props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
+  // }
   // toggles collapse between opened and closed (true/false)
-  const toggleCollapse = () => {
-    setcollapseOpen(!collapseOpen)
-
-  };
-  // closes the collapse
-  const closeCollapse = () => {
-    setcollapseOpen(!false)
-  };
+  // const toggleCollapse = () => {
+  //   setcollapseOpen(!collapseOpen)
+  // };
+  // // closes the collapse
+  // const closeCollapse = () => {
+  //   setcollapseOpen(false)
+  // };
 
   // creates the links that appear in the left menu / Sidebar
   const createLinks = routes => {
@@ -58,7 +57,7 @@ const Sidebar = (props) => {
             <NavLink
               to={prop.layout + prop.path}
               tag={NavLinkRRD}
-              onClick={closeCollapse}
+              onClick={() => setcollapseOpen(false)}
               activeClassName="active"
             >
               <i className={prop.icon} />
@@ -70,7 +69,7 @@ const Sidebar = (props) => {
     });
   };
 
-  const { bgColor, routes, logo } = props;
+  const { routes, logo } = props;
   let navbarBrandProps;
   if (logo && logo.innerLink) {
     navbarBrandProps = {
@@ -94,7 +93,7 @@ const Sidebar = (props) => {
         <button
           className="navbar-toggler"
           type="button"
-          onClick={toggleCollapse}
+          onClick={() => setcollapseOpen(!collapseOpen)}
         >
           <span className="navbar-toggler-icon" />
         </button>
@@ -110,12 +109,11 @@ const Sidebar = (props) => {
           </NavbarBrand>
         ) : null}
         {props.Type &&
-
-          <h3 className="text-center text-primary">{props.Type}</h3>
+          <h3 className="text-center text-primary mb-0">{props.Type}</h3>
         }
         {/* User */}
         <Nav className="align-items-center d-md-none">
-          <UncontrolledDropdown nav>
+          {/* <UncontrolledDropdown nav>
             <DropdownToggle nav className="nav-link-icon">
               <i className="ni ni-bell-55" />
             </DropdownToggle>
@@ -129,7 +127,7 @@ const Sidebar = (props) => {
               <DropdownItem divider />
               <DropdownItem>Something else here</DropdownItem>
             </DropdownMenu>
-          </UncontrolledDropdown>
+          </UncontrolledDropdown> */}
           <UncontrolledDropdown nav>
             <DropdownToggle nav>
               <Media className="align-items-center">
@@ -179,22 +177,29 @@ const Sidebar = (props) => {
             <Row>
               {logo ? (
                 <Col className="collapse-brand" xs="6">
-                  {logo.innerLink ? (
-                    <Link to={logo.innerLink}>
-                      <img alt={logo.imgAlt} src={logo.imgSrc} />
-                    </Link>
-                  ) : (
-                      <a href={logo.outterLink}>
+                  <Row>
+
+                    {logo.innerLink ? (
+                      <Link to={logo.innerLink}>
                         <img alt={logo.imgAlt} src={logo.imgSrc} />
-                      </a>
-                    )}
+                      </Link>
+                    ) : (
+                        <a href={logo.outterLink}>
+                          <img alt={logo.imgAlt} src={logo.imgSrc} />
+                        </a>
+                      )}
+
+                    {props.Type &&
+                      <h3 className="text-center text-primary ml-3 my-auto">{props.Type}</h3>
+                    }
+                  </Row>
                 </Col>
               ) : null}
               <Col className="collapse-close" xs="6">
                 <button
                   className="navbar-toggler"
                   type="button"
-                  onClick={toggleCollapse}
+                  onClick={() => setcollapseOpen(false)}
                 >
                   <span />
                   <span />
@@ -203,7 +208,7 @@ const Sidebar = (props) => {
             </Row>
           </div>
           {/* Form */}
-          <Form className="mt-4 mb-3 d-md-none">
+          {/* <Form className="mt-4 mb-3 d-md-none">
             <InputGroup className="input-group-rounded input-group-merge">
               <Input
                 aria-label="Search"
@@ -217,7 +222,7 @@ const Sidebar = (props) => {
                 </InputGroupText>
               </InputGroupAddon>
             </InputGroup>
-          </Form>
+          </Form> */}
           {/* Navigation */}
           <Nav navbar>{createLinks(routes)}</Nav>
           {/* Divider */}

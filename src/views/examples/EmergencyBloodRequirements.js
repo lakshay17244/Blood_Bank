@@ -21,11 +21,12 @@ import Moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { Card, CardFooter, CardHeader, Col, Container, Row, Table } from "reactstrap";
 import * as req from "../../requests";
+import { connect } from 'react-redux';
+import _ from "lodash"
 
 
 
-
-const EmergencyBloodRequirements = () => {
+const EmergencyBloodRequirements = (props) => {
 
   const [DidMount, setDidMount] = useState(false);
 
@@ -36,14 +37,14 @@ const EmergencyBloodRequirements = () => {
   useEffect(() => {
     if (!DidMount) {
       setDidMount(true)
-      req.getDonorERNearby(localStorage.getItem('userID')).then((ER) => {
+      req.getDonorERNearby(props.UserID).then((ER) => {
         setERNearby(ER)
       })
-      req.getDonorERAll(localStorage.getItem('userID')).then(ER => {
+      req.getDonorERAll(props.UserID).then(ER => {
         setERAll(ER)
       })
     }
-  }, [DidMount])
+  }, [DidMount, props.UserID])
 
 
   return (
@@ -63,7 +64,7 @@ const EmergencyBloodRequirements = () => {
                   <h3 className="mb-0">Emergency Blood Requirements Near You</h3>
                 </CardHeader>
                 <div className={ERNearby.length > 6 ? 'scrollspy-example-2' : ''}>
-                  <Table className="align-items-center table-flush" responsive>
+                  <Table bordered hover className="align-items-center table-flush" responsive>
                     <thead className="thead-light">
                       <tr>
                         {/* <th onClick={e => onSort(e, 'Date')} scope="col">Date</th> */}
@@ -109,7 +110,7 @@ const EmergencyBloodRequirements = () => {
                   <h3 className="mb-0">All Emergency Blood Requirements</h3>
                 </CardHeader>
                 <div className={ERAll.length > 6 ? 'scrollspy-example-2' : ''}>
-                  <Table className="align-items-center table-flush" responsive>
+                  <Table bordered hover className="align-items-center table-flush" responsive>
                     <thead className="thead-light">
                       <tr>
                         {/* <th onClick={e => onSort(e, 'Date')} scope="col">Date</th> */}
@@ -253,4 +254,11 @@ const EmergencyBloodRequirements = () => {
   );
 }
 
-export default EmergencyBloodRequirements;
+const mapStateToProps = (state) => {
+  return {
+    hasDonationCenter: _.get(state, "UserDetails.hasDonationCenter", false),
+    UserID: _.get(state, "UserDetails.UserID")
+  }
+}
+
+export default connect(mapStateToProps)(EmergencyBloodRequirements);

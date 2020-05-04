@@ -16,23 +16,21 @@
 
 */
 import Header from "components/Headers/Header.js";
+import _ from "lodash";
 // reactstrap components
 import Moment from 'moment';
 import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Row, Table } from "reactstrap";
 import AddRemoveAdmins from "../../components/AddRemoveAdmins";
 import * as req from "../../requests";
-import { connect } from 'react-redux';
-import _ from "lodash"
+import { useCallback } from 'react';
 
 const DonationCenter = (props) => {
 
   const [hasOrganization, sethasOrganization] = useState(true)
 
   const [DidMount, setDidMount] = useState(false)
-
-
-
   const [donatedBlood, setdonatedBlood] = useState([])
   const [BBDetails, setBBDetails] = useState([])
 
@@ -48,58 +46,47 @@ const DonationCenter = (props) => {
 
   const [Appointments, setAppointments] = useState([])
 
-  useEffect(() => {
-
-    if (!DidMount) {
-      setDidMount(true)
-
-      if (props.hasDonationCenter) {
-        getDCDetails()
-        getDonatedBlood()
-        getAppointment()
-        req.getAdminOrganization(props.UserID).then((result) => {
-          sethasOrganization(result)
-        })
-        req.getAssociatedBloodBank(props.UserID).then((result) => {
-          setBBDetails(result)
-        })
+  const getAppointment = useCallback(
+    () => {
+      let toSend = {
+        "UserID": props.UserID
       }
-
-    }
-  }, [DidMount, props.hasDonationCenter, props.UserID])
-
-  const getAppointment = () => {
-    let toSend = {
-      "UserID": localStorage.getItem("userID")
-    }
-    req.getAppointment(toSend).then((result) => {
-      // console.log(result)
-      setAppointments(result)
-    })
-  }
-
-  const getDonatedBlood = () => {
-    req.getDonatedBlood(props.UserID).then((result) => {
-      setdonatedBlood(result)
-      setbloodsent(true)
-      result.forEach((record) => {
-        if (parseInt(record.Available) === 0)
-          setbloodsent(false)
+      req.getAppointment(toSend).then((result) => {
+        // console.log(result)
+        setAppointments(result)
       })
-    })
-  }
+    },
+    [props.UserID],
+  )
 
-  const getDCDetails = () => {
-    req.getDCDetails(props.UserID).then((result) => {
-      if (result && result.length > 0) {
-        let DC = result[0]
-        setDCName(DC.Name)
-        setDCAddress(DC.Address)
-        setDCID(DC.DCID)
-        setPincode(DC.Pincode)
-      }
-    })
-  }
+  const getDonatedBlood = useCallback(
+    () => {
+      req.getDonatedBlood(props.UserID).then((result) => {
+        setdonatedBlood(result)
+        setbloodsent(true)
+        result.forEach((record) => {
+          if (parseInt(record.Available) === 0)
+            setbloodsent(false)
+        })
+      })
+    },
+    [props.UserID],
+  )
+
+  const getDCDetails = useCallback(
+    () => {
+      req.getDCDetails(props.UserID).then((result) => {
+        if (result && result.length > 0) {
+          let DC = result[0]
+          setDCName(DC.Name)
+          setDCAddress(DC.Address)
+          setDCID(DC.DCID)
+          setPincode(DC.Pincode)
+        }
+      })
+    },
+    [props.UserID],
+  )
 
   const updateDCDetails = () => {
     let toSend = {
@@ -126,7 +113,7 @@ const DonationCenter = (props) => {
     let toSend = {
       'UserID': donatedBloodUserID.split(","),
       'DateRecieved': dateToday,
-      'AdminID': localStorage.getItem("userID")
+      'AdminID': props.UserID
     }
     // console.log("To send = ", toSend)
     req.donateBlood(toSend).then((res) => {
@@ -152,6 +139,28 @@ const DonationCenter = (props) => {
       }
     })
   }
+
+
+  useEffect(() => {
+
+    if (!DidMount) {
+      setDidMount(true)
+
+      if (props.hasDonationCenter) {
+        getDCDetails()
+        getDonatedBlood()
+        getAppointment()
+        req.getAdminOrganization(props.UserID).then((result) => {
+          sethasOrganization(result)
+        })
+        req.getAssociatedBloodBank(props.UserID).then((result) => {
+          setBBDetails(result)
+        })
+      }
+
+    }
+  }, [DidMount, props.hasDonationCenter, props.UserID, getDCDetails, getDonatedBlood, getAppointment])
+
 
   return (
     <>
@@ -269,13 +278,14 @@ const DonationCenter = (props) => {
             <Col xl={6} l={6} m={6}>
               {donatedBlood && donatedBlood.length > 0 ?
                 <>
-                  <div className={donatedBlood.length > 6 ? 'scrollspy-example-2 mt-4' : 'mt-4'}>
-                    <Card className="shadow" >
-                      <CardHeader className="border-0 text-center">
-                        <h3 className="mb-0">Blood Donation Records</h3>
 
-                      </CardHeader>
-                      <Table className="align-items-center table-flush mb-4" responsive>
+                  <Card className="shadow" >
+                    <CardHeader className="border-0 text-center">
+                      <h3 className="mb-0">Blood Donation Records</h3>
+
+                    </CardHeader>
+                    <div className={donatedBlood.length > 6 ? 'scrollspy-example-2 mt-4' : 'mt-4'}>
+                      <Table bordered hover className="align-items-center table-flush mb-4" responsive>
                         <thead className="thead-light">
                           <tr>
                             <th scope="col">UserID</th>
@@ -296,8 +306,9 @@ const DonationCenter = (props) => {
                           })}
                         </tbody>
                       </Table>
-                    </Card >
-                  </div>
+                    </div>
+                  </Card >
+
                   <Card className="shadow mt-4" >
                     <CardHeader className="border-0 text-center">
                       <h3 className="mb-0">Send Blood To Blood Bank</h3>
@@ -348,39 +359,43 @@ const DonationCenter = (props) => {
 
 
               {Appointments && Appointments.length > 0 ?
+
                 <Card className="shadow my-4" >
                   <CardHeader className="border-0 text-center">
                     <h3 className="mb-0">Appointments</h3>
 
                   </CardHeader>
-                  <Table className="align-items-center table-flush mb-4" responsive>
-                    <thead className="thead-light">
-                      <tr>
-                        <th scope="col">Date</th>
-                        <th scope="col">UserID</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Phone</th>
-                        <th scope="col">Blood Group</th>
-                        <th scope="col" />
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Appointments.map((res, index) => {
-                        return <tr key={index}>
-                          <td> {Moment(res.Date).format('LL')} </td>
-                          <td> {res.UserID} </td>
-                          <td> {res.Name} </td>
-                          <td> {res.Phone} </td>
-                          <td> {res.BloodGroup} </td>
+                  <div className={Appointments.length > 6 ? 'scrollspy-example-2' : ''}>
+                    <Table bordered hover className="align-items-center table-flush mb-4" responsive>
+                      <thead className="thead-light">
+                        <tr>
+                          <th scope="col">Date</th>
+                          <th scope="col">UserID</th>
+                          <th scope="col">Name</th>
+                          <th scope="col">Phone</th>
+                          <th scope="col">Blood Group</th>
+                          <th scope="col" />
                         </tr>
-                      })}
-                    </tbody>
-                  </Table>
+                      </thead>
+                      <tbody>
+                        {Appointments.map((res, index) => {
+                          return <tr key={index}>
+                            <td> {Moment(res.Date).format('LL')} </td>
+                            <td> {res.UserID} </td>
+                            <td> {res.Name} </td>
+                            <td> {res.Phone} </td>
+                            <td> {res.BloodGroup} </td>
+                          </tr>
+                        })}
+                      </tbody>
+                    </Table>
+                  </div>
                   <CardFooter>
-
                     <h3 className="text-center">Your donation center has {Appointments.length} appointments today!</h3>
                   </CardFooter>
-                </Card > :
+                </Card >
+
+                :
                 <Card className="shadow my-4" >
                   <CardHeader className="border-0 text-center">
                     <h3 className="mb-0">Appointments</h3>

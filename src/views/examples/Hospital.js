@@ -25,6 +25,7 @@ import AddRemoveAdmins from "../../components/AddRemoveAdmins";
 import * as req from "../../requests";
 import _ from "lodash"
 import { connect } from "react-redux"
+import { useCallback } from 'react';
 
 
 const Hospital = (props) => {
@@ -75,16 +76,18 @@ const Hospital = (props) => {
     })
   }
 
-  const getemergencyrequirements = () => {
-
-    // Clear previous results
-    setemergencyRequirements([])
-    req.getemergencyrequirements(props.UserID).then((result) => {
-      if (result && result.length > 0) {
-        setemergencyRequirements(result)
-      }
-    })
-  }
+  const getemergencyrequirements = useCallback(
+    () => {
+      // Clear previous results
+      setemergencyRequirements([])
+      req.getemergencyrequirements(props.UserID).then((result) => {
+        if (result && result.length > 0) {
+          setemergencyRequirements(result)
+        }
+      })
+    },
+    [props.UserID],
+  )
 
   const addemergencyrequirement = () => {
     setERMessage('')
@@ -185,18 +188,21 @@ const Hospital = (props) => {
     })
   }
 
-  const getHDetails = () => {
-    req.getHDetails(props.UserID).then((result) => {
-      setHDetails(result)
-      if (result && result.length > 0) {
-        let H = result[0]
-        setHName(H.Name)
-        setHAddress(H.Address)
-        setHID(H.HID)
-        setHPincode(H.Pincode)
-      }
-    })
-  }
+  const getHDetails = useCallback(
+    () => {
+      req.getHDetails(props.UserID).then((result) => {
+        setHDetails(result)
+        if (result && result.length > 0) {
+          let H = result[0]
+          setHName(H.Name)
+          setHAddress(H.Address)
+          setHID(H.HID)
+          setHPincode(H.Pincode)
+        }
+      })
+    },
+    [props.UserID],
+  )
 
   const updateHDetails = () => {
     let toSend = {
@@ -215,15 +221,18 @@ const Hospital = (props) => {
     })
   }
 
-  const getPatientDetails = () => {
-    req.getPatientDetails(props.UserID).then((result) => {
-      setPatientDetails(result)
-    })
+  const getPatientDetails = useCallback(
+    () => {
+      req.getPatientDetails(props.UserID).then((result) => {
+        setPatientDetails(result)
+      })
 
-    req.getPatientDetailsUnderYou(props.UserID).then((result) => {
-      setPatientDetailsUnderYou(result)
-    })
-  }
+      req.getPatientDetailsUnderYou(props.UserID).then((result) => {
+        setPatientDetailsUnderYou(result)
+      })
+    },
+    [props.UserID],
+  )
 
   useEffect(() => {
     if (!DidMount) {
@@ -234,7 +243,7 @@ const Hospital = (props) => {
         getemergencyrequirements()
       }
     }
-  }, [DidMount])
+  }, [DidMount, props.hasHospital, getHDetails, getPatientDetails, getemergencyrequirements])
 
 
   return (
@@ -338,43 +347,46 @@ const Hospital = (props) => {
                     </CardBody>
                   </Card>
                 }
-
               </Col>
               <Col xl={6} l={6} m={6}>
 
                 {PatientDetailsUnderYou && PatientDetailsUnderYou.length > 0 ?
-                  // <div className='scrollspy-example-2 mt-4'>
+
                   <>
+
                     <Card className="shadow mt-4" >
                       <CardHeader className="border-0 text-center">
                         <h3 className="mb-0">Record of Admitted Patients Under You</h3>
 
                       </CardHeader>
-                      <Table className="align-items-center table-flush mb-4" responsive>
-                        <thead className="thead-light">
-                          <tr>
-                            <th scope="col">Patient ID</th>
-                            <th scope="col">Blood Needed</th>
-                            <th scope="col">Admission Date</th>
-                            <th scope="col">Doctor UserID</th>
-                            <th scope="col" />
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {PatientDetailsUnderYou.map((res, index) => {
-                            return <tr key={index}>
-                              <td> {res.PID} </td>
-                              <td> {res.BloodNeeded} </td>
-                              <td> {Moment(res.AdmissionDate).format('LL')} </td>
-                              <td> {res.UserID} </td>
+                      <div className={PatientDetailsUnderYou.length > 3 ? 'scrollspy-example' : ''}>
+                        <Table bordered hover className="align-items-center table-flush mb-4" responsive>
+
+                          <thead className="thead-light">
+                            <tr>
+                              <th scope="col">Patient ID</th>
+                              <th scope="col">Blood Needed</th>
+                              <th scope="col">Admission Date</th>
+                              <th scope="col">Doctor UserID</th>
+                              <th scope="col" />
                             </tr>
-                          })}
-                        </tbody>
-                      </Table>
+                          </thead>
+
+                          <tbody>
+                            {PatientDetailsUnderYou.map((res, index) => {
+                              return <tr key={index}>
+                                <td> {res.PID} </td>
+                                <td> {res.BloodNeeded} </td>
+                                <td> {Moment(res.AdmissionDate).format('LL')} </td>
+                                <td> {res.UserID} </td>
+                              </tr>
+                            })}
+                          </tbody>
+                        </Table>
+                      </div>
                     </Card >
 
                   </>
-                  // </div>
                   :
                   <Card className="shadow mt-4" >
                     <CardBody>
@@ -386,29 +398,30 @@ const Hospital = (props) => {
                   <Card className="shadow mt-4" >
                     <CardHeader className="border-0 text-center">
                       <h3 className="mb-0">Record of All Admitted Patients</h3>
-
                     </CardHeader>
-                    <Table className="align-items-center table-flush mb-4" responsive>
-                      <thead className="thead-light">
-                        <tr>
-                          <th scope="col">Patient ID</th>
-                          <th scope="col">Blood Needed</th>
-                          <th scope="col">Admission Date</th>
-                          <th scope="col">Doctor UserID</th>
-                          <th scope="col" />
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {PatientDetails.map((res, index) => {
-                          return <tr key={index}>
-                            <td> {res.PID} </td>
-                            <td> {res.BloodNeeded} </td>
-                            <td> {Moment(res.AdmissionDate).format('LL')} </td>
-                            <td> {res.UserID} </td>
+                    <div className={PatientDetails.length > 3 ? 'scrollspy-example' : ''}>
+                      <Table bordered hover className="align-items-center table-flush mb-4" responsive>
+                        <thead className="thead-light">
+                          <tr>
+                            <th scope="col">Patient ID</th>
+                            <th scope="col">Blood Needed</th>
+                            <th scope="col">Admission Date</th>
+                            <th scope="col">Doctor UserID</th>
+                            <th scope="col" />
                           </tr>
-                        })}
-                      </tbody>
-                    </Table>
+                        </thead>
+                        <tbody>
+                          {PatientDetails.map((res, index) => {
+                            return <tr key={index}>
+                              <td> {res.PID} </td>
+                              <td> {res.BloodNeeded} </td>
+                              <td> {Moment(res.AdmissionDate).format('LL')} </td>
+                              <td> {res.UserID} </td>
+                            </tr>
+                          })}
+                        </tbody>
+                      </Table>
+                    </div>
                   </Card > :
                   <Card className="shadow mt-4" >
                     <CardBody>
@@ -484,7 +497,6 @@ const Hospital = (props) => {
                   </CardBody>
                 </Card>
 
-
                 {hasCheckedBG && ((CheckBGAvailibilityNearby && CheckBGAvailibilityNearby.length > 0) || (CheckBGAvailibility && CheckBGAvailibility.length > 0)) ?
                   <Card className="shadow mt-4 mb-2">
                     <CardHeader>
@@ -526,29 +538,31 @@ const Hospital = (props) => {
                               <h3 className="mb-0">Blood Banks Nearby Containing Your Selected Blood Group</h3>
 
                             </CardHeader>
-                            <Table className="align-items-center table-flush mb-4" responsive>
-                              <thead className="thead-light">
-                                <tr>
-                                  <th scope="col">BBID</th>
-                                  <th scope="col">Name</th>
-                                  <th scope="col">Address</th>
-                                  <th scope="col">Pincode</th>
-                                  <th scope="col">Amount</th>
-                                  <th scope="col" />
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {CheckBGAvailibilityNearby.map((res, index) => {
-                                  return <tr key={index}>
-                                    <td> {res.BBID} </td>
-                                    <td> {res.Name} </td>
-                                    <td> {res.Address} </td>
-                                    <td> {res.Pincode} </td>
-                                    <td> {res.Amount} </td>
+                            <div className={CheckBGAvailibilityNearby.length > 6 ? 'scrollspy-example-2' : ''}>
+                              <Table bordered hover className="align-items-center table-flush mb-4" responsive>
+                                <thead className="thead-light">
+                                  <tr>
+                                    <th scope="col">BBID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Pincode</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col" />
                                   </tr>
-                                })}
-                              </tbody>
-                            </Table>
+                                </thead>
+                                <tbody>
+                                  {CheckBGAvailibilityNearby.map((res, index) => {
+                                    return <tr key={index}>
+                                      <td> {res.BBID} </td>
+                                      <td> {res.Name} </td>
+                                      <td> {res.Address} </td>
+                                      <td> {res.Pincode} </td>
+                                      <td> {res.Amount} </td>
+                                    </tr>
+                                  })}
+                                </tbody>
+                              </Table>
+                            </div>
                           </Card >
                           : <Card className="shadow mt-4" >
                             <CardHeader className="border-0 text-center">
@@ -565,29 +579,31 @@ const Hospital = (props) => {
                             <CardHeader className="border-0 text-center">
                               <h3 className="mb-0">All Blood Banks Containing Your Selected Blood Group</h3>
                             </CardHeader>
-                            <Table className="align-items-center table-flush mb-4" responsive>
-                              <thead className="thead-light">
-                                <tr>
-                                  <th scope="col">BBID</th>
-                                  <th scope="col">Name</th>
-                                  <th scope="col">Address</th>
-                                  <th scope="col">Pincode</th>
-                                  <th scope="col">Amount</th>
-                                  <th scope="col" />
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {CheckBGAvailibility.map((res, index) => {
-                                  return <tr key={index}>
-                                    <td> {res.BBID} </td>
-                                    <td> {res.Name} </td>
-                                    <td> {res.Address} </td>
-                                    <td> {res.Pincode} </td>
-                                    <td> {res.Amount} </td>
+                            <div className={CheckBGAvailibility.length > 6 ? 'scrollspy-example-2' : ''}>
+                              <Table bordered hover className="align-items-center table-flush mb-4" responsive>
+                                <thead className="thead-light">
+                                  <tr>
+                                    <th scope="col">BBID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Pincode</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col" />
                                   </tr>
-                                })}
-                              </tbody>
-                            </Table>
+                                </thead>
+                                <tbody>
+                                  {CheckBGAvailibility.map((res, index) => {
+                                    return <tr key={index}>
+                                      <td> {res.BBID} </td>
+                                      <td> {res.Name} </td>
+                                      <td> {res.Address} </td>
+                                      <td> {res.Pincode} </td>
+                                      <td> {res.Amount} </td>
+                                    </tr>
+                                  })}
+                                </tbody>
+                              </Table>
+                            </div>
                           </Card >
                           : <Card className="shadow mt-4" >
                             <CardHeader className="border-0 text-center">
@@ -606,39 +622,44 @@ const Hospital = (props) => {
             </Row>
 
             <Row className="my-4">
-              <Col>
+              <Col className="mx-auto">
                 <Card className="shadow mt-4 mb-2">
                   <CardHeader>
                     <h2 className="text-center">Emergency Requirement of Blood</h2>
                   </CardHeader>
-                  <CardBody className="text-center">
+                  <CardBody className="text-center mt-0">
 
                     <Row>
-                      <Table className="align-items-center table-flush mb-4" responsive>
-                        <thead className="thead-light">
-                          <tr>
-                            <th scope="col">EID</th>
-                            <th scope="col">Blood Needed</th>
-                            <th scope="col">Date Posted</th>
-                            <th scope="col">Doctor's UserID</th>
-                            <th scope="col" />
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {emergencyRequirements.map((res, index) => {
-                            return <tr key={index}>
-                              <td> {res.EID} </td>
-                              <td> {res.BloodNeeded} </td>
-                              <td> {Moment(res.DateRecieved).format('LL')} </td>
-                              <td> {res.DoctorID} </td>
-                            </tr>
-                          })}
-                        </tbody>
-                      </Table>
+                      <Col xl={12}>
+                        <div className={emergencyRequirements.length > 6 ? 'scrollspy-example-2' : ''}>
+                          <Table bordered hover className="align-items-center table-flush mb-4" responsive>
+                            <thead className="thead-light">
+                              <tr>
+                                <th scope="col">EID</th>
+                                <th scope="col">Blood Needed</th>
+                                <th scope="col">Date Posted</th>
+                                <th scope="col">Doctor's UserID</th>
+                                <th scope="col" />
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {emergencyRequirements.map((res, index) => {
+                                return <tr key={index}>
+                                  <td> {res.EID} </td>
+                                  <td> {res.BloodNeeded} </td>
+                                  <td> {Moment(res.DateRecieved).format('LL')} </td>
+                                  <td> {res.DoctorID} </td>
+                                </tr>
+                              })}
+                            </tbody>
+                          </Table>
+                        </div>
+                      </Col>
+
                     </Row>
 
 
-                    <Row>
+                    <Row className="mt-4">
                       <Col xl={2}></Col>
                       <Col xl={4}>
                         <h3>Post Requirement</h3>

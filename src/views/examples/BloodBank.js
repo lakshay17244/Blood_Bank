@@ -120,10 +120,12 @@ const BloodBank = (props) => {
 
 
   useEffect(() => {
-    getAssociatedDonationCenter()
-    getBBStoredBlood()
-    getBBDetails()
-  }, [getAssociatedDonationCenter, getBBStoredBlood, getBBDetails])
+    if (props.hasBloodBank) {
+      getAssociatedDonationCenter()
+      getBBStoredBlood()
+      getBBDetails()
+    }
+  }, [props.hasBloodBank, getAssociatedDonationCenter, getBBStoredBlood, getBBDetails])
 
 
   return (
@@ -247,13 +249,14 @@ const BloodBank = (props) => {
             </Col>
             <Col xl={6} l={6} m={6}>
               {associatedDCs && associatedDCs.length > 0 ?
-                <div className={associatedDCs.length > 6 ? 'scrollspy-example-2' : ''}>
-                  <Card className="shadow" >
-                    <CardHeader className="border-0 text-center">
-                      <h3 className="mb-0">Associated Donation Centers</h3>
 
-                    </CardHeader>
-                    <Table className="align-items-center table-flush mb-4" responsive>
+                <Card className="shadow" >
+                  <CardHeader className="border-0 text-center">
+                    <h3 className="mb-0">Associated Donation Centers</h3>
+
+                  </CardHeader>
+                  <div className={associatedDCs.length > 6 ? 'scrollspy-example-2' : ''}>
+                    <Table bordered hover className="align-items-center table-flush mb-4" responsive>
                       <thead className="thead-light">
                         <tr>
                           <th scope="col">DCID</th>
@@ -274,8 +277,8 @@ const BloodBank = (props) => {
                         })}
                       </tbody>
                     </Table>
-                  </Card >
-                </div>
+                  </div>
+                </Card >
                 :
                 <Card className="shadow mt-4" >
                   <CardBody>
@@ -286,13 +289,14 @@ const BloodBank = (props) => {
 
               {
                 BBStoredBlood && BBStoredBlood.length > 0 ?
-                  <div className={BBStoredBlood.length > 6 ? 'scrollspy-example-2' : ''}>
-                    <Card className="shadow mt-4" >
-                      <CardHeader className="border-0 text-center">
-                        <h3 className="mb-0">Stored Blood</h3>
 
-                      </CardHeader>
-                      <Table className="align-items-center table-flush mb-4" responsive>
+                  <Card className="shadow mt-4" >
+                    <CardHeader className="border-0 text-center">
+                      <h3 className="mb-0">Stored Blood</h3>
+
+                    </CardHeader>
+                    <div className={BBStoredBlood.length > 6 ? 'scrollspy-example-2' : ''}>
+                      <Table bordered hover className="align-items-center table-flush mb-4" responsive>
                         <thead className="thead-light">
                           <tr>
                             <th scope="col">Blood Group</th>
@@ -309,12 +313,13 @@ const BloodBank = (props) => {
                           })}
                         </tbody>
                       </Table>
-                      <CardFooter>
-                        {sumTotalStoredBlood() > 0 && <h3 className="text-center">Total Amount of Stored Blood = {sumTotalStoredBlood()}</h3>}
-                        <h3 className="text-center"> Capacity Left = {BBCapacity - sumTotalStoredBlood()} units</h3>
-                      </CardFooter>
-                    </Card >
-                  </div>
+                    </div>
+                    <CardFooter>
+                      {sumTotalStoredBlood() > 0 && <h3 className="text-center">Total Amount of Stored Blood = {sumTotalStoredBlood()}</h3>}
+                      <h3 className="text-center"> Capacity Left = {BBCapacity - sumTotalStoredBlood()} units</h3>
+                    </CardFooter>
+                  </Card >
+
                   :
                   <Card className="shadow my-4" >
                     <CardBody>

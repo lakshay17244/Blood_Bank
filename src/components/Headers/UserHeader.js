@@ -19,10 +19,9 @@ import React from "react";
 // reactstrap components
 import { Col, Container, Row } from "reactstrap";
 import { connect } from "react-redux"
+import _ from "lodash"
 
 const UserHeader = (props) => {
-
-
   return (
     <>
       <div
@@ -45,13 +44,6 @@ const UserHeader = (props) => {
               <p className="text-white mt-0 mb-5">
                 You can see your details here and update them.
                 </p>
-              {/* <Button
-                  color="info"
-                  href="#pablo"
-                  onClick={e => e.preventDefault()}
-                >
-                  Edit profile
-                </Button> */}
             </Col>
           </Row>
         </Container>
@@ -64,7 +56,7 @@ const UserHeader = (props) => {
 const mapStateToProps = (state) => {
   console.log(state)
   return {
-    Name: state && state.UserDetails && state.UserDetails.Username ? state.UserDetails.Username : ""
+    Name: _.get(state, "UserDetails.Username", "Anon")
   }
 }
 

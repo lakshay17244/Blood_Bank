@@ -18,7 +18,7 @@ const ErrorMessage = (props) => {
     </Row>)
 }
 
-
+const cW = 10 //componentWidth - from 1 to 12, bootstrap col width
 const AddRemoveAdmins = (props) => {
     const [DidMount, setDidMount] = useState(false);
 
@@ -100,11 +100,8 @@ const AddRemoveAdmins = (props) => {
     }
 
     useEffect(() => {
-        console.log("ADD ADMIN PROPS => ", props)
         if (!DidMount) {
-            console.log("ADD ADMIN PROPS = ", props)
             setDidMount(true)
-            // let hasOrganization = props.hasOrganization
 
             if (props.hasBloodBank && props.BB) {
                 req.getAdmins("BB", props.UserID).then((res) => {
@@ -130,22 +127,19 @@ const AddRemoveAdmins = (props) => {
 
 
     return (
-
-
         <>
             {props.DC ?
                 props.hasDonationCenter ?
-                    <Row >
-                        {/* <Col xl={1} l={1} m={1}></Col> */}
-                        <Col xl={12} l={12} m={12}>
+                    <Row>
+                        <Col className="mx-auto" xl={cW} l={cW} m={cW}>
 
-                            <div className='scrollspy-example-2'>
+                            <div className={DCAdmins.length > 6 ? 'scrollspy-example-2' : ''}>
                                 <Card className="shadow" >
                                     <CardHeader className="border-0 text-center">
                                         <h3 className="mb-0">Donation Center Admins</h3>
                                         <h4 className="text-muted">{DCAdmins && DCAdmins.length > 0 ? "(DCID=" + DCAdmins[0].DCID + ")" : null}</h4>
                                     </CardHeader>
-                                    <Table className="align-items-center table-flush mb-4" responsive>
+                                    <Table bordered hover className="align-items-center table-flush mb-4" responsive>
                                         <thead className="thead-light">
                                             <tr>
                                                 <th scope="col">UserID</th>
@@ -172,7 +166,7 @@ const AddRemoveAdmins = (props) => {
                                     </Table>
                                 </Card >
                             </div>
-                            <Row>
+                            <Row className="mt-4">
                                 <Col xl={6} l={6} m={6} >
                                     <div className="mt-4 mx-5 text-center">
                                         <h5>Add Donation Center Admins</h5>
@@ -189,7 +183,6 @@ const AddRemoveAdmins = (props) => {
                                 </Col>
                             </Row>
                         </Col>
-                        {/* <Col xl={1} l={1} m={1}></Col> */}
                     </Row>
                     :
                     <ErrorMessage message={"Donation Center"} />
@@ -200,17 +193,16 @@ const AddRemoveAdmins = (props) => {
 
                 props.hasBloodBank ?
 
-                    <Row >
-                        {/* <Col xl={1} l={1} m={1}></Col> */}
-                        <Col xl={12} l={12} m={12}>
+                    <Row>
+                        <Col className="mx-auto" xl={cW} l={cW} m={cW}>
 
-                            <div className='scrollspy-example-2'>
+                            <div className={BBAdmins.length > 6 ? 'scrollspy-example-2' : ''}>
                                 <Card className="shadow" >
                                     <CardHeader className="border-0 text-center">
                                         <h3 className="mb-0">Blood Bank Admins</h3>
                                         <h4 className="text-muted">{BBAdmins && BBAdmins.length > 0 ? "(BBID=" + BBAdmins[0].BBID + ")" : null}</h4>
                                     </CardHeader>
-                                    <Table className="align-items-center table-flush mb-4" responsive>
+                                    <Table bordered hover className="align-items-center table-flush mb-4" responsive>
                                         <thead className="thead-light">
                                             <tr>
                                                 <th scope="col">UserID</th>
@@ -237,7 +229,7 @@ const AddRemoveAdmins = (props) => {
                                     </Table>
                                 </Card >
                             </div>
-                            <Row>
+                            <Row className="mt-4">
                                 <Col xl={6} l={6} m={6} >
                                     <div className="mt-4 mx-5 text-center">
                                         <h5>Add Blood Bank Admins</h5>
@@ -254,7 +246,6 @@ const AddRemoveAdmins = (props) => {
                                 </Col>
                             </Row>
                         </Col>
-                        {/* <Col xl={1} l={1} m={1}></Col> */}
                     </Row>
                     : <ErrorMessage message={"Blood Bank"} />
 
@@ -263,19 +254,16 @@ const AddRemoveAdmins = (props) => {
             }
 
             {props.HS ?
-
                 props.hasHospital ?
                     <Row>
-                        {/* <Col xl={1} l={1} m={1}> */}
-                        {/* </Col> */}
-                        <Col xl={12} l={12} m={12}>
-                            <div className='scrollspy-example-2'>
+                        <Col className="mx-auto" xl={cW} l={cW} m={cW}>
+                            <div className={HAdmins.length > 6 ? 'scrollspy-example-2' : ''}>
                                 <Card className="shadow" >
                                     <CardHeader className="border-0 text-center">
                                         <h3 className="mb-0">Hospital Admins</h3>
                                         <h4 className="text-muted">{HAdmins && HAdmins.length > 0 ? "(HID=" + HAdmins[0].HID + ")" : null}</h4>
                                     </CardHeader>
-                                    <Table className="align-items-center table-flush mb-4" responsive>
+                                    <Table bordered hover className="align-items-center table-flush mb-4" responsive>
                                         <thead className="thead-light">
                                             <tr>
                                                 <th scope="col">UserID</th>
@@ -302,7 +290,7 @@ const AddRemoveAdmins = (props) => {
                                     </Table>
                                 </Card >
                             </div>
-                            <Row>
+                            <Row className="mt-4">
                                 <Col xl={6} l={6} m={6} >
                                     <div className="mt-4 mx-5 text-center">
                                         <h5>Add Hospital Admins</h5>
@@ -319,7 +307,6 @@ const AddRemoveAdmins = (props) => {
                                 </Col>
                             </Row>
                         </Col>
-                        {/* <Col xl={1} l={1} m={1}></Col> */}
                     </Row >
                     :
                     <ErrorMessage message={"Hospital"} />
