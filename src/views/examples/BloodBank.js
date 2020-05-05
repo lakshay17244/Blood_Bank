@@ -321,8 +321,8 @@ const BloodBank = (props) => {
                     </div>
                     <CardFooter>
                       {sumTotalStoredBlood() > 0 && <h3 className="text-center">Total Amount of Stored Blood = {sumTotalStoredBlood()}</h3>}
-                      {/* <h3 className="text-center"> Capacity Left = {BBCapacity - sumTotalStoredBlood()} units</h3> */}
-                      <h3 className="text-center"> Capacity Left = {BBCapacityLeft} units</h3>
+                      <h3 className="text-center"> Capacity Left = {BBCapacity - sumTotalStoredBlood()} units</h3>
+                      {/* <h3 className="text-center"> Capacity Left = {BBCapacityLeft} units</h3> */}
                     </CardFooter>
                   </Card >
 
