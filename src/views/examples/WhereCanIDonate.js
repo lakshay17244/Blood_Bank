@@ -264,7 +264,7 @@ const WhereCanIDonate = (props) => {
                 </CardHeader>
                 <CardBody>
                   {donorAppointments && donorAppointments.length > 0 ?
-                    <h3>You have an appointment at <b>{donorAppointments[0].Name}</b>, <b>{donorAppointments[0].Address}</b> on <b>{Moment(donorAppointments[0].Date).format('YYYY-MM-DD')}</b></h3>
+                    <h3 className="text-center">You have an appointment at <b>{donorAppointments[0].Name}</b>, <b>{donorAppointments[0].Address}</b> on <b>{Moment(donorAppointments[0].Date).format('YYYY-MM-DD')}</b></h3>
                     :
                     <>
                       <h4 className="text-center">Select any donation center from above</h4>

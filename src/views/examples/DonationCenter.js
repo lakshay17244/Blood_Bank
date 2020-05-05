@@ -122,7 +122,7 @@ const DonationCenter = (props) => {
         getDonatedBlood()
       }
       else
-        setDonateBloodMessage("Error in SQL - " + res.message)
+        setDonateBloodMessage("Error - " + res.message)
     })
 
   }

@@ -33,7 +33,10 @@ const AddRemoveAdmins = (props) => {
     const [DCRInputUserID, setDCRInputUserID] = useState('')
     const [BBRInputUserID, setBBRInputUserID] = useState('')
     const [HSRInputUserID, setHSRInputUserID] = useState('')
+    const [Timer, setTimer] = useState('')
 
+    const [AdminReqErrorMessage, setAdminReqErrorMessage] = useState('')
+    const [AdminReqSuccessMessage, setAdminReqSuccessMessage] = useState('')
 
     const addAdmin = (UserID, place, id) => {
         let toSend = {
@@ -63,7 +66,26 @@ const AddRemoveAdmins = (props) => {
                         break
                     default: break
                 }
+                // Clear previous message and timeout if any
+                setAdminReqSuccessMessage("")
+                setAdminReqErrorMessage("")
+                clearTimeout(Timer);
+
+                // Set the new message
+                setAdminReqSuccessMessage(r.message)
+                setTimer(setTimeout(() => setAdminReqSuccessMessage(""), 5000))
             }
+            else {
+                // Clear previous message and timeout if any
+                setAdminReqErrorMessage("")
+                setAdminReqSuccessMessage("")
+                clearTimeout(Timer);
+
+                // Set the new error
+                setAdminReqErrorMessage("Error - " + r.message)
+                setTimer(setTimeout(() => setAdminReqErrorMessage(""), 5000))
+            }
+
         })
     }
 
@@ -95,6 +117,24 @@ const AddRemoveAdmins = (props) => {
                         break
                     default: break
                 }
+                // Clear previous message and timeout if any
+                setAdminReqSuccessMessage("")
+                setAdminReqErrorMessage("")
+                clearTimeout(Timer);
+
+                // Set the new message
+                setAdminReqSuccessMessage(r.message)
+                setTimer(setTimeout(() => setAdminReqSuccessMessage(""), 5000))
+            }
+            else {
+                // Clear previous message and timeout if any
+                setAdminReqErrorMessage("")
+                setAdminReqSuccessMessage("")
+                clearTimeout(Timer);
+
+                // Set the new error
+                setAdminReqErrorMessage("Error - " + r.message)
+                setTimer(setTimeout(() => setAdminReqErrorMessage(""), 5000))
             }
         })
     }
@@ -122,8 +162,8 @@ const AddRemoveAdmins = (props) => {
 
             }
         }
-
-    }, [DidMount, props])
+        return () => clearTimeout(Timer);
+    }, [DidMount, props, Timer])
 
 
     return (
@@ -166,6 +206,14 @@ const AddRemoveAdmins = (props) => {
                                     </Table>
                                 </Card >
                             </div>
+
+                            <Row className="mt-2">
+                                <Col>
+                                    <h2 className="text-center text-red">{AdminReqErrorMessage}</h2>
+                                    <h2 className="text-center text-green">{AdminReqSuccessMessage}</h2>
+                                </Col>
+                            </Row>
+
                             <Row className="mt-4">
                                 <Col xl={6} l={6} m={6} >
                                     <div className="mt-4 mx-5 text-center">
@@ -229,6 +277,12 @@ const AddRemoveAdmins = (props) => {
                                     </Table>
                                 </Card >
                             </div>
+                            <Row className="mt-2">
+                                <Col>
+                                    {AdminReqErrorMessage && <h2 className="text-center text-red">{AdminReqErrorMessage}</h2>}
+                                    {AdminReqSuccessMessage && <h2 className="text-center text-green">{AdminReqSuccessMessage}</h2>}
+                                </Col>
+                            </Row>
                             <Row className="mt-4">
                                 <Col xl={6} l={6} m={6} >
                                     <div className="mt-4 mx-5 text-center">
@@ -290,6 +344,12 @@ const AddRemoveAdmins = (props) => {
                                     </Table>
                                 </Card >
                             </div>
+                            <Row className="mt-2">
+                                <Col>
+                                    <h2 className="text-center text-red">{AdminReqErrorMessage}</h2>
+                                    <h2 className="text-center text-green">{AdminReqSuccessMessage}</h2>
+                                </Col>
+                            </Row>
                             <Row className="mt-4">
                                 <Col xl={6} l={6} m={6} >
                                     <div className="mt-4 mx-5 text-center">

@@ -47,7 +47,9 @@ const BloodBank = (props) => {
   const [BBName, setBBName] = useState('')
   const [BBAddress, setBBAddress] = useState('')
   const [BBPincode, setBBPincode] = useState('')
-  const [BBCapacity, setBBCapacity] = useState('')
+  const [BBCapacity, setBBCapacity] = useState(0)
+  const [BBCapacityOriginal, setBBCapacityOriginal] = useState(0)
+  const [BBCapacityLeft, setBBCapacityLeft] = useState(0)
   const [saved, setsaved] = useState(false)
 
   const [BBDetails, setBBDetails] = useState([])
@@ -60,7 +62,8 @@ const BloodBank = (props) => {
       "Name": BBName,
       "Address": BBAddress,
       "Pincode": BBPincode,
-      "TotalCapacity": BBCapacity
+      "TotalCapacity": BBCapacity,
+      "CapacityLeft": BBCapacity - (BBCapacityOriginal - BBCapacityLeft)
     }
 
     req.updateBB(toSend).then(e => {
@@ -84,6 +87,8 @@ const BloodBank = (props) => {
           setBBID(BB.BBID)
           setBBPincode(BB.Pincode)
           setBBCapacity(BB.TotalCapacity)
+          setBBCapacityOriginal(BB.TotalCapacity)   //To store the original capacity recieved from server, in order to correctly update capacity left on update BB Details
+          setBBCapacityLeft(BB.CapacityLeft)
         }
       })
     },
@@ -224,7 +229,7 @@ const BloodBank = (props) => {
                           className="form-control-alternative"
                           placeholder="Total Capacity"
                           onChange={(e) => setBBCapacity(e.target.value)}
-                          type="text"
+                          type="number"
                         />
                       </FormGroup>
 
@@ -316,7 +321,8 @@ const BloodBank = (props) => {
                     </div>
                     <CardFooter>
                       {sumTotalStoredBlood() > 0 && <h3 className="text-center">Total Amount of Stored Blood = {sumTotalStoredBlood()}</h3>}
-                      <h3 className="text-center"> Capacity Left = {BBCapacity - sumTotalStoredBlood()} units</h3>
+                      {/* <h3 className="text-center"> Capacity Left = {BBCapacity - sumTotalStoredBlood()} units</h3> */}
+                      <h3 className="text-center"> Capacity Left = {BBCapacityLeft} units</h3>
                     </CardFooter>
                   </Card >
 
