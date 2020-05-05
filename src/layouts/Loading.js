@@ -2,7 +2,7 @@ import { Lottie } from "@crello/react-lottie"
 import React from "react"
 import FadeIn from "react-fade-in"
 import "./center.css"
-import * as heartbeat from "./heartbeat-medical.json"
+import * as heartbeat from "../components/LottieFiles/heartbeat-medical.json"
 
 
 

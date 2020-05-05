@@ -25,7 +25,8 @@ import { Col, Collapse, Container, DropdownItem, DropdownMenu, DropdownToggle, F
 import getallroutes from "../../routes";
 import { logout } from "../../redux/actions_and_reducers/actions"
 import { connect } from "react-redux"
-
+import { Lottie } from "@crello/react-lottie"
+import FadeIn from "react-fade-in"
 
 
 const Sidebar = (props) => {
@@ -36,18 +37,12 @@ const Sidebar = (props) => {
   // const activeRoute = (routeName) => {
   //   return props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
   // }
-  // toggles collapse between opened and closed (true/false)
-  // const toggleCollapse = () => {
-  //   setcollapseOpen(!collapseOpen)
-  // };
-  // // closes the collapse
-  // const closeCollapse = () => {
-  //   setcollapseOpen(false)
-  // };
 
   // creates the links that appear in the left menu / Sidebar
   const createLinks = routes => {
+
     return getallroutes(props.Type).map((prop, key) => {
+      console.log(prop)
       if (prop.name == "Login" || prop.name == "Register") {
         return null
       }
@@ -60,7 +55,14 @@ const Sidebar = (props) => {
               onClick={() => setcollapseOpen(false)}
               activeClassName="active"
             >
-              <i className={prop.icon} />
+              {prop.iconAnimated ?
+                <FadeIn className="mr-4">
+                  <Lottie config={prop.iconAnimated} height={40} width={40} />
+                </FadeIn>
+                :
+                <FadeIn className="mr-4">
+                  <i className={prop.icon} size={40} />
+                </FadeIn>}
               {prop.name}
             </NavLink>
           </NavItem>

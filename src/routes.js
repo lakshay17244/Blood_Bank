@@ -25,6 +25,34 @@ import Profile from "views/examples/Profile.js";
 import Register from "views/examples/Register.js";
 import WhereCanIDonate from "views/examples/WhereCanIDonate";
 import Index from "views/Index.js";
+import * as BlueHeartbeat from "./components/LottieFiles/BlueHeartbeat.json";
+import * as DCIcon from "./components/LottieFiles/DCIcon.json";
+import * as WhereCanIDonateIcon from "./components/LottieFiles/DeliveryIcon.json";
+import * as PledgeOrgansIcon from "./components/LottieFiles/HeartBowIcon.json";
+import * as HospitalIcon2 from "./components/LottieFiles/HospitalIcon2.json";
+import * as NinjaIcon from "./components/LottieFiles/NinjaIcon.json";
+import * as SpinningPlusSign from "./components/LottieFiles/SpinningPlusSign.json";
+
+const DCIconOptions = {
+  loop: true,
+  autoplay: true,
+  animationData: DCIcon.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice"
+  }
+};
+
+const getOptions = (jsonFile) => {
+  return {
+    loop: true,
+    autoplay: true,
+    animationData: jsonFile.default,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice"
+    }
+  }
+}
+
 
 const getallroutes = (Type = "Anon") => {
 
@@ -33,6 +61,7 @@ const getallroutes = (Type = "Anon") => {
       path: "/index",
       name: "Dashboard",
       icon: "ni ni-tv-2 text-primary",
+      iconAnimated: { ...getOptions(SpinningPlusSign) },
       component: Index,
       layout: "/admin"
     },
@@ -40,6 +69,7 @@ const getallroutes = (Type = "Anon") => {
       path: "/user-profile",
       name: "User Profile",
       icon: "ni ni-single-02 text-yellow",
+      iconAnimated: { ...getOptions(NinjaIcon) },
       component: Profile,
       layout: "/admin"
     },
@@ -64,6 +94,7 @@ const getallroutes = (Type = "Anon") => {
       path: "/EBR",
       name: "Emergency Blood Requirements",
       icon: "ni ni-ambulance text-red",
+      iconAnimated: { ...DCIconOptions },
       component: EmergencyBloodRequirements,
       layout: "/admin"
     })
@@ -72,6 +103,7 @@ const getallroutes = (Type = "Anon") => {
         path: "/WCID",
         name: "Where Can I Donate",
         icon: "ni ni-square-pin text-green",
+        iconAnimated: { ...getOptions(WhereCanIDonateIcon) },
         component: WhereCanIDonate,
         layout: "/admin"
       })
@@ -80,6 +112,7 @@ const getallroutes = (Type = "Anon") => {
         path: "/OrganPledge",
         name: "Pledge Organs",
         icon: "ni ni-active-40 text-purple",
+        iconAnimated: { ...getOptions(PledgeOrgansIcon) },
         component: PledgeOrgans,
         layout: "/admin"
       })
@@ -90,6 +123,7 @@ const getallroutes = (Type = "Anon") => {
       path: "/BB",
       name: "Blood Bank",
       icon: "ni ni-ambulance text-red",
+      iconAnimated: {...getOptions(DCIcon)},
       component: BloodBank,
       layout: "/admin"
     })
@@ -98,6 +132,7 @@ const getallroutes = (Type = "Anon") => {
         path: "/Hospital",
         name: "Hospital",
         icon: "ni ni-square-pin text-green",
+        iconAnimated: {...getOptions(HospitalIcon2)},
         component: Hospital,
         layout: "/admin"
       })
@@ -106,6 +141,7 @@ const getallroutes = (Type = "Anon") => {
         path: "/DonationCenter",
         name: "Donation Center",
         icon: "ni ni-active-40 text-purple",
+        iconAnimated: {...getOptions(BlueHeartbeat)},
         component: DonationCenter,
         layout: "/admin"
       })
