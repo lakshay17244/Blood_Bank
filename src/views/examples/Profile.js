@@ -23,7 +23,18 @@ import * as req from "../../requests";
 import { connect } from "react-redux";
 import { getUserDetails } from "../../redux/actions_and_reducers/actions"
 import _ from "lodash"
+import Select from 'react-select';
 
+const BloodGroups = [
+  { value: 'A+', label: 'A+' },
+  { value: 'A-', label: 'A-' },
+  { value: 'B+', label: 'B+' },
+  { value: 'B-', label: 'B-' },
+  { value: 'AB+', label: 'AB+' },
+  { value: 'AB-', label: 'AB-' },
+  { value: 'O+', label: 'O+' },
+  { value: 'O-', label: 'O-' }
+]
 
 const Profile = (props) => {
   const [DidMount, setDidMount] = useState(false)
@@ -33,7 +44,7 @@ const Profile = (props) => {
   const [UserID, setUserID] = useState('1')
   const [email, setemail] = useState('')
   const [dob, setdob] = useState(0)
-  const [bloodgroup, setbloodgroup] = useState('')
+  const [BloodGroup, setBloodGroup] = useState(BloodGroups[2])
   const [phone, setphone] = useState('')
   const [address, setaddress] = useState('')
   const [pincode, setpincode] = useState('')
@@ -79,7 +90,7 @@ const Profile = (props) => {
       setUserID(e.UserID)
       setemail(e.Email)
       setdob(e.Age)
-      setbloodgroup(e.BloodGroup)
+      setBloodGroup({ value: e.BloodGroup, label: e.BloodGroup })
       setphone(e.Phone)
       setaddress(e.Address)
       setpincode(e.Pincode)
@@ -97,7 +108,7 @@ const Profile = (props) => {
         "Username": username,
         "Email": email,
         "Age": dob,
-        "Bloodgroup": bloodgroup,
+        "Bloodgroup": BloodGroup.value,
         "Phone": phone,
         "Address": address,
         "Pincode": pincode,
@@ -278,16 +289,18 @@ const Profile = (props) => {
 
                                     </InputGroupText>
                                   </InputGroupAddon>
-                                  <select value={bloodgroup} onChange={(e) => setbloodgroup(e.target.value)}>
-                                    <option value="A+">A+</option>
-                                    <option value="A-">A-</option>
-                                    <option value="B+">B+</option>
-                                    <option value="B-">B-</option>
-                                    <option value="AB+">AB+</option>
-                                    <option value="AB-">AB-</option>
-                                    <option value="O+">O+</option>
-                                    <option value="O-">O-</option>
-                                  </select>
+                                  <Select
+                                    className="basic-single my-auto w-25"
+                                    classNamePrefix="select"
+                                    defaultValue={"Select"}
+                                    // isDisabled={isDisabled}
+                                    // isLoading={isLoading}
+                                    // isClearable={isClearable}
+                                    value={BloodGroup}
+                                    onChange={(e) => { setBloodGroup(e) }}
+                                    name="color"
+                                    options={BloodGroups}
+                                  />
                                 </InputGroup>
                               </FormGroup>)
                               :

@@ -22,6 +22,20 @@ import { Link } from "react-router-dom";
 // reactstrap components
 import { Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from "reactstrap";
 import * as req from "../../requests";
+import Select from 'react-select';
+
+const BloodGroups = [
+	{ value: 'A+', label: 'A+' },
+	{ value: 'A-', label: 'A-' },
+	{ value: 'B+', label: 'B+' },
+	{ value: 'B-', label: 'B-' },
+	{ value: 'AB+', label: 'AB+' },
+	{ value: 'AB-', label: 'AB-' },
+	{ value: 'O+', label: 'O+' },
+	{ value: 'O-', label: 'O-' }
+]
+
+
 
 const Register = () => {
 	// const [DidMount, setDidMount] = useState(false)
@@ -33,7 +47,7 @@ const Register = () => {
 	const [address, setAddress] = useState('')
 	const [pincode, setPincode] = useState('')
 	const [password, setPassword] = useState('')
-	const [bloodGroup, setBloodGroup] = useState('B+')
+	const [BloodGroup, setBloodGroup] = useState(BloodGroups[2])
 	const [date, setdate] = useState(new Date())
 	const [wtd, setwtd] = useState(false)
 	const [UserMade, setUserMade] = useState(false)
@@ -56,7 +70,7 @@ const Register = () => {
 				"Username": name,
 				"Email": email,
 				"Dob": dob,
-				"Bloodgroup": bloodGroup,
+				"Bloodgroup": BloodGroup.value,
 				"Phone": phone,
 				"Address": address,
 				"Pincode": pincode,
@@ -177,8 +191,8 @@ const Register = () => {
 									<InputGroup className="input-group-alternative mb-3">
 										<InputGroupAddon addonType="prepend">
 											<InputGroupText>
-												<i className="ni ni-calendar-grid-58 mr-2" /> DOB
-                      </InputGroupText>
+												<i className="ni ni-calendar-grid-58 mr-2" /> Dob
+											</InputGroupText>
 										</InputGroupAddon>
 										<Input type="date" pattern="[0-9]*" value={dob} onChange={(e) => setDob(e.target.value)} max={date} />
 									</InputGroup>
@@ -196,16 +210,19 @@ const Register = () => {
 													Blood Group
 												</InputGroupText>
 												</InputGroupAddon>
-												<select value={bloodGroup} onChange={(e) => setBloodGroup(e.target.value)}>
-													<option value="A+">A+</option>
-													<option value="A-">A-</option>
-													<option value="B+">B+</option>
-													<option value="B-">B-</option>
-													<option value="AB+">AB+</option>
-													<option value="AB-">AB-</option>
-													<option value="O+">O+</option>
-													<option value="O-">O-</option>
-												</select>
+												<Select
+													className="basic-single my-auto ml-1 w-25"
+													classNamePrefix="select"
+													defaultValue={"Select"}
+													// isDisabled={isDisabled}
+													// isLoading={isLoading}
+													// isClearable={isClearable}
+													value={BloodGroup}
+													onChange={(e) => { setBloodGroup(e) }}
+													name="color"
+													options={BloodGroups}
+												/>
+
 											</InputGroup>
 										</FormGroup>)
 										:
