@@ -214,6 +214,7 @@ const Register = () => {
 													className="basic-single my-auto ml-1 w-25"
 													classNamePrefix="select"
 													defaultValue={"Select"}
+													inputProps={{readOnly:true}}
 													// isDisabled={isDisabled}
 													// isLoading={isLoading}
 													// isClearable={isClearable}
