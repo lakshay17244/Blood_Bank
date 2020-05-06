@@ -292,11 +292,7 @@ const Profile = (props) => {
                                   <Select
                                     className="basic-single my-auto w-25"
                                     classNamePrefix="select"
-                                    inputProps={{readOnly:true}}
                                     defaultValue={"Select"}
-                                    // isDisabled={isDisabled}
-                                    // isLoading={isLoading}
-                                    // isClearable={isClearable}
                                     value={BloodGroup}
                                     onChange={(e) => { setBloodGroup(e) }}
                                     name="color"

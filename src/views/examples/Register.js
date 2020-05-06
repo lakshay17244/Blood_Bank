@@ -214,11 +214,7 @@ const Register = () => {
 													className="basic-single my-auto ml-1 w-25"
 													classNamePrefix="select"
 													defaultValue={"Select"}
-													inputProps={{readOnly:true}}
 													isSearchable={false}
-													// isDisabled={isDisabled}
-													// isLoading={isLoading}
-													// isClearable={isClearable}
 													value={BloodGroup}
 													onChange={(e) => { setBloodGroup(e) }}
 													name="color"
