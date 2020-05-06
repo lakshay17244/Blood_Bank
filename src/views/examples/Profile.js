@@ -293,6 +293,7 @@ const Profile = (props) => {
                                     className="basic-single my-auto w-25"
                                     classNamePrefix="select"
                                     defaultValue={"Select"}
+                                    isSearchable={false}
                                     value={BloodGroup}
                                     onChange={(e) => { setBloodGroup(e) }}
                                     name="color"
