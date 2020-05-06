@@ -215,6 +215,7 @@ const Register = () => {
 													classNamePrefix="select"
 													defaultValue={"Select"}
 													inputProps={{readOnly:true}}
+													isSearchable={false}
 													// isDisabled={isDisabled}
 													// isLoading={isLoading}
 													// isClearable={isClearable}
