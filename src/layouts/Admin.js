@@ -49,33 +49,29 @@ const Admin = (props) => {
       console.log("Admin.js Mounted", props)
       setDidMount(true)
       let { isLoggedIn, UserDetailsLoading, UserDetails } = props
-      let UserID = localStorage.getItem("UserID");
-      let Password = localStorage.getItem("Password");
+      // let UserID = localStorage.getItem("UserID");
+      let access_token = localStorage.getItem("access_token");
 
       if (isLoggedIn) {
-        let UserID = localStorage.getItem("UserID")
         // If user is logged in and UserDetails haven't been fetched or fetching yet => Fetch User Details
-        if (!UserDetailsLoading && _.isEmpty(UserDetails) && UserID && UserID.length > 0) {
-          console.log("Fetchin User Details")
-          props.getUserDetails(UserID).then(() => {
-            console.log("Fetchin User Details DOne!")
+        if (!UserDetailsLoading && _.isEmpty(UserDetails)) {
+          props.getUserDetails().then(() => {
             setLoadedUserDetails(true)
           })
         }
         else
           setLoadedUserDetails(true)
-
       }
+
       else {
         // TRY TO AUTO LOGIN
-        if (UserID && Password)
-          props.login(UserID, Password, true).then(e => {
+        if (access_token)
+          props.login("", "", true).then(e => {
             if (e.status === 200) {
-              if (!UserDetailsLoading && _.isEmpty(UserDetails) && UserID && UserID.length > 0) {
-                props.getUserDetails(UserID).then(() => setLoadedUserDetails(true))
+              if (!UserDetailsLoading && _.isEmpty(UserDetails)) {
+                props.getUserDetails().then(() => setLoadedUserDetails(true))
               }
             }
-
             else
               history.push("/auth/login") && props.logout()
           })

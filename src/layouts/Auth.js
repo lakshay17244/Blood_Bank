@@ -26,7 +26,7 @@ import AuthNavbar from "components/Navbars/AuthNavbar.js";
 
 import getallroutes from "routes.js";
 import { connect } from "react-redux"
-import { login, getUserDetails } from "../redux/actions_and_reducers/actions"
+import { login } from "../redux/actions_and_reducers/actions"
 import _ from "lodash"
 
 const Auth = (props) => {
@@ -43,12 +43,12 @@ const Auth = (props) => {
       setDidMount(true)
       document.body.classList.add("bg-default");
       let { isLoggedIn } = props
-      let UserID = localStorage.getItem("UserID");
-      let Password = localStorage.getItem("Password");
+      // let UserID = localStorage.getItem("UserID");
+      let access_token = localStorage.getItem("access_token");
 
       // AUTO LOGIN
-      if (!isLoggedIn && UserID && Password) {
-        props.login(UserID, Password, true)
+      if (!isLoggedIn && access_token) {
+        props.login("", "", true)
       }
     }
 
@@ -133,7 +133,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getUserDetails: e => dispatch(getUserDetails(e)),
     login: (u, p, a) => dispatch(login(u, p, a))
   }
 }

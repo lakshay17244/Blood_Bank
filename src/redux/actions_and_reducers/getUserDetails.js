@@ -1,6 +1,4 @@
-import axios from 'axios';
-import {URL} from "./initial"
-// const URL = process.env.NODE_ENV === 'development' ? "http://127.0.0.1:5000/" : "https://dbmsbloodbank.herokuapp.com/"
+import axios from './initial';
 
 // ========================== GET USER DETAILS API ==========================
 
@@ -23,11 +21,11 @@ export const getUserDetailsFail = (payload) => {
 }
 
 
-export const getUserDetails = (UserID) => {
+export const getUserDetails = () => {
     return dispatch => {
         dispatch(getUserDetailsStarted());
 
-        return axios.get(URL + `showprofile/` + parseInt(UserID))
+        return axios.get(`showprofile`)
             .then(res => {
                 dispatch(getUserDetailsSuccess(res.data));
                 return res.data

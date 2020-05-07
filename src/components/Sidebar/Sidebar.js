@@ -42,7 +42,6 @@ const Sidebar = (props) => {
   const createLinks = routes => {
 
     return getallroutes(props.Type).map((prop, key) => {
-      console.log(prop)
       if (prop.name == "Login" || prop.name == "Register") {
         return null
       }

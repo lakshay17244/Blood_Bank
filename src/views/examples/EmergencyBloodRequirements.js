@@ -44,6 +44,7 @@ const EmergencyBloodRequirements = (props) => {
         setERAll(ER)
       })
     }
+
   }, [DidMount, props.UserID])
 
 

@@ -56,25 +56,21 @@ const Profile = (props) => {
 
   useEffect(() => {
     if (!DidMount) {
-      console.log("Mounted Profile.js")
       setDidMount(true)
-      let { UserDetails, UserDetailsLoading, isLoggedIn } = props
-
-      if (_.isEmpty(UserDetails) && !UserDetailsLoading && isLoggedIn) {
-        console.log("If statement")
-        let UserID = localStorage.getItem("UserID")
-        if (UserID && UserID.length > 0) {
-          // setloading(true)
-          props.getUserDetails(UserID).then(e => {
-            // Set all user details
-            setUserDetails(e)
-          })
-        }
-      }
-      else {
+      // let { UserDetails, UserDetailsLoading, isLoggedIn } = props
+      // if (_.isEmpty(UserDetails) && !UserDetailsLoading && isLoggedIn) {
+      //   if (props.UserID && props.UserID.length > 0) {
+      //     // setloading(true)
+      //     props.getUserDetails(UserID).then(e => {
+      //       // Set all user details
+      //       setUserDetails(e)
+      //     })
+      //   }
+      // }
+      let { UserDetails, isLoggedIn } = props
+      if (!_.isEmpty(UserDetails) && isLoggedIn) {
         setUserDetails(UserDetails)
       }
-
       let today = new Date()
       let month = (today.getMonth() + 1) >= 10 ? today.getMonth() + 1 : '0' + (today.getMonth() + 1);
       let day = today.getDate() >= 10 ? today.getDate() : '0' + today.getDate();
@@ -102,7 +98,7 @@ const Profile = (props) => {
 
   const updateUser = () => {
     let toSend = {
-      "UserID": localStorage.getItem("UserID"),
+      "UserID": props.UserID,
       "user": {
         "Type": type,
         "Username": username,
@@ -120,8 +116,7 @@ const Profile = (props) => {
     req.updateUser(toSend).then(e => {
       if (parseInt(e.status) === 200) {
         seteditable(false)
-
-        props.getUserDetails(UserID)
+        props.getUserDetails()
         setTimeout(() => { seteditable(true) }, 1000)
       }
     })
@@ -476,12 +471,13 @@ const mapStateToProps = (state) => {
     UserDetails: state.UserDetails,
     UserDetailsLoading: state.UserDetailsLoading,
     isLoggedIn: _.get(state, "isLoggedIn", false),
+    UserID: _.get(state, "UserDetails.UserID"),
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getUserDetails: e => dispatch(getUserDetails(e))
+    getUserDetails: () => dispatch(getUserDetails())
   }
 }
 

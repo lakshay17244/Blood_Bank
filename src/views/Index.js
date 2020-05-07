@@ -104,7 +104,7 @@ const Index = (props) => {
         }
         req.registerOrganization("Hospital", toSend).then(r => {
           setregisterOrganizationMessage(r)
-          props.getUserDetails(props.UserID)
+          props.getUserDetails()
         })
         // console.log(toSend)
         break;
@@ -120,7 +120,7 @@ const Index = (props) => {
         }
         req.registerOrganization("BloodBank", toSend).then(r => {
           setregisterOrganizationMessage(r)
-          props.getUserDetails(props.UserID)
+          props.getUserDetails()
         })
         // console.log(toSend)
         break;
@@ -136,7 +136,7 @@ const Index = (props) => {
         console.log(toSend)
         req.registerOrganization("DonationCenter", toSend).then(r => {
           setregisterOrganizationMessage(r)
-          props.getUserDetails(props.UserID)
+          props.getUserDetails()
         })
         break;
 
@@ -553,7 +553,7 @@ const Index = (props) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getUserDetails: (UserID) => dispatch(getUserDetails(UserID)),
+    getUserDetails: () => dispatch(getUserDetails()),
   }
 }
 const mapStateToProps = (state) => {

@@ -1,8 +1,5 @@
-import axios from 'axios';
+import axios from './initial';
 import _ from "lodash"
-import {URL} from "./initial"
-// const URL = process.env.NODE_ENV === 'development' ? "http://127.0.0.1:5000/" : "https://dbmsbloodbank.herokuapp.com/"
-
 
 // ========================== LOGIN API ==========================
 
@@ -31,46 +28,44 @@ export const loginFail = (payload) => {
     return { type: LOGIN_FAILED, payload };
 }
 
-export const login = (UserID, Password, auto = false) => {
+export const login = (UserID, Password = "", autoReq) => {
+
     return dispatch => {
         dispatch(loginStarted())
         return axios({
             method: 'post',
-            url: URL + "login",
-            headers: { 'Content-Type': 'application/json' },
+            url: "login",
             data: {
                 "UserID": parseInt(UserID),
                 "Password": Password
             }
         }).then(res => {
-            let { status, message } = res.data
-            if (auto) message = ""              //If it is auto login attempt, then don't set login message
+            let { message, access_token } = res.data
+            let { status } = res
+            if (autoReq) message = ""              //If it is auto login attempt, then don't set login message
+
             if (status === 200) {
-                localStorage.setItem("UserID", UserID)
-                localStorage.setItem("Password", Password)
+                localStorage.setItem("access_token", access_token)
                 dispatch(loginSuccess({ message, status }))
-                // Set access token instead
             }
             else {
                 dispatch(loginFail({ message, status }))
             }
-            return { status, message }
+            return { message, status }
 
         }).catch(e => {
-            console.log("ERROR | " + e)
-            dispatch(loginFail(e))
-            return e
+            localStorage.clear()        //Clear the local storage if login request fails
+            let message = _.get(e, 'response.data.message', '')
+            let status = _.get(e, 'response.data.status', 401)
+            if (autoReq) message = ""             //If it is auto login attempt, then don't set login message
+            dispatch(loginFail({ message }))
+            return { message, status }
         })
     }
 }
 
-
-
-
-
 // REDUCERS
 const reducer = (state, action) => {
-
     switch (action.type) {
 
         // LOGIN API
