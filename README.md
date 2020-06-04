@@ -22,7 +22,8 @@ npm start
 
 ## Contributors
 
-| [![Lakshay Sharma](https://github.com/lakshay17244.png?size=100)](https://github.com/lakshay17244) |
-| --- |
-| [Lakshay Sharma](https://github.com/lakshay17244) |
+| [![Lakshay Sharma](https://github.com/lakshay17244.png?size=100)](https://github.com/lakshay17244) | [![Pavni Aggarwal](https://github.com/PavniAggarwal.png?size=100)](https://github.com/PavniAggarwal) |
+| --- | --- |
+| [Lakshay Sharma](https://github.com/lakshay17244) | [Pavni Aggarwal](https://github.com/PavniAggarwal) |
+
 
