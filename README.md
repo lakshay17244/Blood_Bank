@@ -1,6 +1,6 @@
 # Blood Bank
 
-This is the frontend of the BloodBank based on React
+This is the frontend of the BloodBank based on React.
 
 ### Installing
 
